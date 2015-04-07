@@ -7,14 +7,23 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import minerful.concept.TaskCharArchive;
 import minerful.concept.TaskClass;
 import minerful.io.encdec.TaskCharEncoderDecoder;
 
 public class StringLogParser extends AbstractLogParser implements LogParser {
     StringEventClassifier strEventClassifier;
+    
+	protected StringLogParser(TaskCharEncoderDecoder taChaEncoDeco,
+			TaskCharArchive taskCharArchive, List<LogTraceParser> traceParsers,
+			StringEventClassifier strEventClassifier) {
+		super(taChaEncoDeco, taskCharArchive, traceParsers);
+		this.strEventClassifier = strEventClassifier;
+	}
 
     public StringLogParser(String[] strings, LogEventClassifier.ClassificationType evtClassType) throws Exception {
         init(evtClassType);
@@ -91,5 +100,12 @@ public class StringLogParser extends AbstractLogParser implements LogParser {
 	@Override
 	public LogEventClassifier getEventClassifier() {
 		return this.strEventClassifier;
+	}
+
+	@Override
+	protected AbstractLogParser makeACopy(
+			TaskCharEncoderDecoder taChaEncoDeco,
+			TaskCharArchive taskCharArchive, List<LogTraceParser> traceParsers) {
+		return new StringLogParser(taChaEncoDeco, taskCharArchive, traceParsers, strEventClassifier);
 	}
 }

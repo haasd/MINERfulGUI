@@ -12,7 +12,7 @@ import minerful.concept.constraint.TaskCharRelatedConstraintsBag;
 import minerful.miner.stats.GlobalStatsTable;
 import minerful.miner.stats.LocalStatsWrapper;
 
-public abstract class ExistenceConstraintsMiner extends ConstraintsMiner {
+public abstract class ExistenceConstraintsMiner extends AbstractConstraintsMiner {
     public ExistenceConstraintsMiner(GlobalStatsTable globalStats, TaskCharArchive taskCharArchive) {
 		super(globalStats, taskCharArchive);
 	}

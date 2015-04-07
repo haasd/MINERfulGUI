@@ -101,4 +101,7 @@ public class GlobalStatsTable {
         }
         return sBuf.toString();
     }
+
+	public void merge(GlobalStatsTable statsTab) {
+	}
 }
