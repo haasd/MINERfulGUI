@@ -1,5 +1,8 @@
 package minerful.miner;
 
+import java.util.Set;
+
+import minerful.concept.TaskChar;
 import minerful.concept.constraint.Constraint;
 import minerful.concept.constraint.TaskCharRelatedConstraintsBag;
 
@@ -32,4 +35,6 @@ public interface ConstraintsMiner {
 	void setSupportThreshold(Double supportThreshold);
 
 	Double getSupportThreshold();
+
+	Set<TaskChar> getTasksToQueryFor();
 }

@@ -8,13 +8,14 @@ import minerful.io.encdec.MxmlEncoder;
 import minerful.io.encdec.XesEncoder;
 import minerful.tracemaker.params.TracesMakerCmdParameters;
 import nl.flotsam.xeger.Xeger;
+import nl.flotsam.xeger.XegerUtils;
 
 import org.apache.log4j.Logger;
 
 
 public class MinerFulTracesMaker {
     private static Logger logger = Logger.getLogger(MinerFulTracesMaker.class.getCanonicalName());
-
+    
 	public String[] makeTraces(TracesMakerCmdParameters params) {
         String regexp = "(" + params.regexps[0] + ")";
         Double avgChrsPerString = 0.0;

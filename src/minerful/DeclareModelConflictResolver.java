@@ -21,10 +21,11 @@ public class DeclareModelConflictResolver {
 		}
 */
 		String xmlFileIn = args[0];
+		String xmlFileOut = args[1];
 //		String xmlFileIn = "/home/claudio/Downloads/DeclareMinerExperiments/A24_C255_NoHier.xml";
 //		String xmlFileOut = args[1];
 		
-		AbstractMinerFulStarter.configureLogging(DebugLevel.trace);
+		AbstractMinerFulStarter.configureLogging(DebugLevel.all);
 
 		TreeSet<Constraint> constraintsALaMinerFul = new TreeSet<Constraint>(DeclareEncoderDecoder.fromDeclareMinerOutputToMinerfulConstraints(xmlFileIn));
 		TreeSet<TaskChar> taskChars = new TreeSet<TaskChar>();
@@ -48,8 +49,10 @@ public class DeclareModelConflictResolver {
 		
 		long timingAfterConflictResolution = System.currentTimeMillis();
 		
-		new MinerFulMinerStarter().printComputationStats(coRes, timingBeforeConflictResolution, timingAfterConflictResolution);
+		coRes.printComputationStats(timingBeforeConflictResolution, timingAfterConflictResolution);
 		
-		System.out.println(coRes.getSafeProcess().bag.createHierarchyUnredundantCopy());
+		System.out.println(coRes.getSafeProcess().bag);
+		
+		new DeclareEncoderDecoder(coRes.getSafeProcess()).marshal(xmlFileOut);
 	}
 }

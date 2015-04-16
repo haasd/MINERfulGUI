@@ -1,10 +1,10 @@
 package minerful.concept.constraint;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -35,11 +35,12 @@ public class TaskCharRelatedConstraintsBag implements Cloneable {
 	@XmlTransient
 	private SortedSet<TaskChar> taskChars = new TreeSet<TaskChar>();
  
-	private TaskCharRelatedConstraintsBag() {}
+	public TaskCharRelatedConstraintsBag() {
+		this(new TreeSet<TaskChar>());
+	}
 	
     public TaskCharRelatedConstraintsBag(Set<TaskChar> taskChars) {
-    	this();
-        this.bag = new HashMap<TaskChar, Set<Constraint>>(taskChars.size(), (float) 1.0);
+        this.bag = new TreeMap<TaskChar, Set<Constraint>>();
         this.setAlphabet(taskChars);
     }
     
@@ -69,13 +70,18 @@ public class TaskCharRelatedConstraintsBag implements Cloneable {
 	public void replaceConstraints(TaskChar taskChar, Collection<? extends Constraint> cs) {
 		this.bag.put(taskChar, new TreeSet<Constraint>());
 	}
+	
 
-    public boolean addAll(TaskChar character, Collection<? extends Constraint> cs) {
-        if (!this.bag.containsKey(character)) {
-            this.bag.put(character, new TreeSet<Constraint>());
-            this.taskChars.add(character);
+	public void add(TaskChar tCh) {
+        if (!this.bag.containsKey(tCh)) {
+            this.bag.put(tCh, new TreeSet<Constraint>());
+            this.taskChars.add(tCh);
         }
-        return this.bag.get(character).addAll(cs);
+	}
+
+    public boolean addAll(TaskChar tCh, Collection<? extends Constraint> cs) {
+        this.add(tCh);
+        return this.bag.get(tCh).addAll(cs);
     }
 
     public Set<TaskChar> getTaskChars() {
@@ -282,4 +288,14 @@ public class TaskCharRelatedConstraintsBag implements Cloneable {
 			}
 		}
     }
+
+	public boolean contains(TaskChar tCh) {
+		return this.taskChars.contains(tCh);
+	}
+
+	public void merge(TaskCharRelatedConstraintsBag other) {
+		for (TaskChar tCh : other.taskChars) {
+			this.addAll(tCh, other.getConstraintsOf(tCh));
+		}
+	}
 }

@@ -130,7 +130,7 @@ public abstract class RelationConstraint extends Constraint {
     }
 
 	@Override
-	public String getRegularExpression() {
+	public String toRegularExpression() {
 		return String.format(this.getRegularExpressionTemplate(), base.toPatternString(true), implied.toPatternString(true));
 	}
 	

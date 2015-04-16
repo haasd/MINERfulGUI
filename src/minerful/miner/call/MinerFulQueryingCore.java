@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,6 +18,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 
 import minerful.concept.ProcessModel;
+import minerful.concept.TaskChar;
 import minerful.concept.TaskCharArchive;
 import minerful.concept.constraint.TaskCharRelatedConstraintsBag;
 import minerful.logparser.LogParser;
@@ -39,6 +41,8 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
 	protected ViewCmdParameters viewParams;
 	protected TaskCharArchive taskCharArchive;
 	protected GlobalStatsTable statsTable;
+	private Set<TaskChar> tasksToQueryFor;
+	public final int jboNum;
 
 	{
         if (logger == null) {
@@ -46,15 +50,29 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
         }
 	}
 
-    public MinerFulQueryingCore(LogParser logParser,
+    public MinerFulQueryingCore(int coreNum, LogParser logParser,
 			MinerFulCmdParameters minerFulParams, ViewCmdParameters viewParams,
 			TaskCharArchive taskCharArchive,
 			GlobalStatsTable globalStatsTable) {
+    	this(coreNum,logParser,minerFulParams,viewParams,taskCharArchive,globalStatsTable,null);
+	}
+
+	public MinerFulQueryingCore(int coreNum,
+			LogParser logParser,
+			MinerFulCmdParameters minerFulParams, ViewCmdParameters viewParams,
+			TaskCharArchive taskCharArchive,
+			GlobalStatsTable globalStatsTable, Set<TaskChar> tasksToQueryFor) {
+		this.jboNum = coreNum;
 		this.logParser = logParser;
 		this.minerFulParams = minerFulParams;
 		this.viewParams = viewParams;
 		this.taskCharArchive = taskCharArchive;
 		this.statsTable = globalStatsTable;
+		if (tasksToQueryFor == null) {
+			this.tasksToQueryFor = taskCharArchive.getTaskChars();
+		} else {
+			this.tasksToQueryFor = tasksToQueryFor;
+		}
 	}
 
 	public TaskCharRelatedConstraintsBag discover() {
@@ -98,7 +116,7 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
         before = System.currentTimeMillis();
 
         // search for existence constraints
-        ConstraintsMiner exiConMiner = new ProbabilisticExistenceConstraintsMiner(statsTable, taskCharArchive);
+        ConstraintsMiner exiConMiner = new ProbabilisticExistenceConstraintsMiner(statsTable, taskCharArchive, tasksToQueryFor);
         exiConMiner.setSupportThreshold(viewParams.supportThreshold);
         exiConMiner.setConfidenceThreshold(viewParams.confidenceThreshold);
         exiConMiner.setInterestFactorThreshold(viewParams.interestThreshold);
@@ -122,9 +140,9 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
         ConstraintsMiner relaConMiner = null;
         
         if (minerFulParams.branchingLimit.equals(MinerFulCmdParameters.MINIMUM_BRANCHING_LIMIT)) {
-        	relaConMiner = new ProbabilisticRelationConstraintsMiner(statsTable, taskCharArchive, minerFulParams.foreseeDistances);
+        	relaConMiner = new ProbabilisticRelationConstraintsMiner(statsTable, taskCharArchive, tasksToQueryFor, minerFulParams.foreseeDistances);
         } else {
-        	relaConMiner = new ProbabilisticRelationBranchedConstraintsMiner(statsTable, taskCharArchive, minerFulParams.branchingLimit);
+        	relaConMiner = new ProbabilisticRelationBranchedConstraintsMiner(statsTable, taskCharArchive, tasksToQueryFor, minerFulParams.branchingLimit);
         }
         relaConMiner.setSupportThreshold(viewParams.supportThreshold);
         relaConMiner.setConfidenceThreshold(viewParams.confidenceThreshold);
@@ -179,8 +197,7 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
         	numOfPrunedByHierarchyExistenceConstraints = numOfExistenceConstraintsBeforeHierarchyBasedPruning;
         	numOfPrunedByHierarchyRelationConstraints = numOfRelationConstraintsBeforeHierarchyBasedPruning;
         }
-        
-        bag = bag.createCopyPrunedByThresholdConfidenceAndInterest(viewParams.supportThreshold, viewParams.confidenceThreshold, viewParams.interestThreshold);
+		bag = bag.createCopyPrunedByThresholdConfidenceAndInterest(viewParams.supportThreshold, viewParams.confidenceThreshold, viewParams.interestThreshold);
         // Let us try to free memory from the unused clone of bag!
 
         after = System.currentTimeMillis();
@@ -194,7 +211,7 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
         	bag = confliReso.getSafeProcess().bag;
         	long afterConflictResolution = System.currentTimeMillis();
             bag = bag.createCopyPrunedByThresholdConfidenceAndInterest(viewParams.supportThreshold, viewParams.confidenceThreshold, viewParams.interestThreshold);
-        	printComputationStats(confliReso, beforeConflictResolution, afterConflictResolution);
+            confliReso.printComputationStats(beforeConflictResolution, afterConflictResolution);
         }
 
         System.gc();
@@ -204,7 +221,7 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
         // If it is not soup, it is wet bread
         numOfRelationConstraintsAfterPruningAndThresholding = numOfConstraintsAfterPruningAndThresholding - numOfExistenceConstraintsAfterPruningAndThresholding;
         
-        printComputationStats(logParser, taskCharArchive,// occuTabTime,
+        printComputationStats(// occuTabTime,
 				exiConTime, relaConTime, pruniTime, //maxMemUsage,
 				0,
 				possibleNumberOfConstraints,
@@ -226,75 +243,8 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
         return bag;
     }
 
-	public void printComputationStats(ConflictAndRedundancyResolver confliReso, long timingBeforeConflictResolution, long timingAfterConflictResolution) {
-        StringBuffer
-    	csvSummaryBuffer = new StringBuffer(),
-    	csvSummaryLegendBuffer = new StringBuffer(),
-    	csvSummaryComprehensiveBuffer = new StringBuffer();
-
-        csvSummaryBuffer.append("'CR'");
-        csvSummaryLegendBuffer.append("'Operation code'");
-        csvSummaryBuffer.append(";");
-        csvSummaryLegendBuffer.append(";");
-      // --------------------------------
-        csvSummaryBuffer.append(confliReso.inputConstraints().size());
-        csvSummaryLegendBuffer.append("'Input constraints for conflict check'");
-        csvSummaryBuffer.append(";");
-        csvSummaryLegendBuffer.append(";");
-     // --------------------------------
-        csvSummaryBuffer.append(confliReso.performedConflictChecks());
-        csvSummaryLegendBuffer.append("'Performed conflict checks'");
-        csvSummaryBuffer.append(";");
-        csvSummaryLegendBuffer.append(";");
-     // --------------------------------
-        csvSummaryBuffer.append(confliReso.checkedConflictingConstraints().size());
-        csvSummaryLegendBuffer.append("'Checked conflicting constraints'");
-        csvSummaryBuffer.append(";");
-        csvSummaryLegendBuffer.append(";");
-     // --------------------------------
-        csvSummaryBuffer.append(confliReso.conflictingConstraintsInOriginalModel().size());
-        csvSummaryLegendBuffer.append("'Conflicting constraints in original model'");
-        csvSummaryBuffer.append(";");
-        csvSummaryLegendBuffer.append(";");
-     // --------------------------------
-        csvSummaryBuffer.append(confliReso.conflictingConstraintsInOriginalUnredundantModel().size());
-        csvSummaryLegendBuffer.append("'Conflicting constraints in original hierarchy-unredundant model'");
-        csvSummaryBuffer.append(";");
-        csvSummaryLegendBuffer.append(";");
-     // --------------------------------
-        csvSummaryBuffer.append(confliReso.performedRedundancyChecks());
-        csvSummaryLegendBuffer.append("'Performed redundancy checks'");
-        csvSummaryBuffer.append(";");
-        csvSummaryLegendBuffer.append(";");
-     // --------------------------------
-        csvSummaryBuffer.append(confliReso.checkedRedundantConstraints().size());
-        csvSummaryLegendBuffer.append("'Checked redundant constraints'");
-        csvSummaryBuffer.append(";");
-        csvSummaryLegendBuffer.append(";");
-        // --------------------------------
-        csvSummaryBuffer.append(confliReso.redundantConstraintsInOriginalModel().size());
-        csvSummaryLegendBuffer.append("'Redundant constraints in original model'");
-        csvSummaryBuffer.append(";");
-        csvSummaryLegendBuffer.append(";");
-     // --------------------------------
-        csvSummaryBuffer.append(confliReso.redundantConstraintsInOriginalUnredundantModel().size());
-        csvSummaryLegendBuffer.append("'Redundant constraints in original hierarchy-unredundant model'");
-        csvSummaryBuffer.append(";");
-        csvSummaryLegendBuffer.append(";");
-     // --------------------------------
-        csvSummaryBuffer.append(timingAfterConflictResolution - timingBeforeConflictResolution);
-        csvSummaryLegendBuffer.append("'Time to resolve conflicts'");
-
-        csvSummaryComprehensiveBuffer.append("\n\nConflict resolution: \n");
-        csvSummaryComprehensiveBuffer.append(csvSummaryLegendBuffer.toString());
-        csvSummaryComprehensiveBuffer.append("\n");
-        csvSummaryComprehensiveBuffer.append(csvSummaryBuffer.toString());
-
-        logger.info(csvSummaryComprehensiveBuffer.toString());
-	}
-
-	public void printComputationStats(LogParser logParser,
-			TaskCharArchive taskCharArchive, //long occuTabTime, 
+	public void printComputationStats(
+			//long occuTabTime, 
 			long exiConTime, long pruniTime,
 			long relaConTime, long maxMemUsage,
 			long possibleNumberOfConstraints,
@@ -312,41 +262,20 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
 			long numOfConstraintsAfterPruningAndThresholding,
 			long numOfExistenceConstraintsAfterPruningAndThresholding,
 			long numOfRelationConstraintsAfterPruningAndThresholding) {
-		long	totalChrs = logParser.numberOfEvents();
-        int		minChrs = logParser.minimumTraceLength(),
-        		maxChrs = logParser.maximumTraceLength();
-        Double avgChrsPerString = 1.0 * totalChrs / logParser.length();
-        
         StringBuffer
         	csvSummaryBuffer = new StringBuffer(),
         	csvSummaryLegendBuffer = new StringBuffer(),
         	csvSummaryComprehensiveBuffer = new StringBuffer();
-        csvSummaryBuffer.append("'M'");
+        csvSummaryBuffer.append("'M-Q'");
         csvSummaryLegendBuffer.append("'Operation code'");
         csvSummaryBuffer.append(";");
         csvSummaryLegendBuffer.append(";");
-        csvSummaryBuffer.append(logParser.length());
-        csvSummaryLegendBuffer.append("'Number of traces'");
+        csvSummaryBuffer.append(jboNum);
+        csvSummaryLegendBuffer.append("'Job number'");
         csvSummaryBuffer.append(";");
         csvSummaryLegendBuffer.append(";");
-        csvSummaryBuffer.append(minChrs);
-        csvSummaryLegendBuffer.append("'Minimum characters per string'");
-        csvSummaryBuffer.append(";");
-        csvSummaryLegendBuffer.append(";");
-        csvSummaryBuffer.append(maxChrs);
-        csvSummaryLegendBuffer.append("'Maximum characters per string'");
-        csvSummaryBuffer.append(";");
-        csvSummaryLegendBuffer.append(";");
-        csvSummaryBuffer.append(avgChrsPerString);
-        csvSummaryLegendBuffer.append("'Average characters per string'");
-        csvSummaryBuffer.append(";");
-        csvSummaryLegendBuffer.append(";");
-        csvSummaryBuffer.append(totalChrs);
-        csvSummaryLegendBuffer.append("'Total characters read'");
-        csvSummaryBuffer.append(";");
-        csvSummaryLegendBuffer.append(";");
-        csvSummaryBuffer.append(taskCharArchive.size());
-        csvSummaryLegendBuffer.append("'Alphabet size'");
+        csvSummaryBuffer.append(tasksToQueryFor.size());
+        csvSummaryLegendBuffer.append("'Number of inspected activities'");
         csvSummaryBuffer.append(";");
         csvSummaryLegendBuffer.append(";");
 

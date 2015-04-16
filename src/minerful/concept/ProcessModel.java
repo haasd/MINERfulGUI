@@ -14,6 +14,7 @@ import java.util.TreeSet;
 
 import minerful.automaton.AutomatonFactory;
 import minerful.automaton.SubAutomaton;
+import minerful.automaton.utils.AutomatonUtils;
 import minerful.concept.constraint.Constraint;
 import minerful.concept.constraint.TaskCharRelatedConstraintsBag;
 import minerful.index.LinearConstraintsIndexFactory;
@@ -36,7 +37,7 @@ public class ProcessModel {
 
 	public ProcessModel(TaskCharRelatedConstraintsBag bag, String name) {
 		this.bag = bag;
-		this.setupBasicAlphabet();
+		this.updateBasicAlphabet();
 		this.name = name;
 	}
 
@@ -44,7 +45,17 @@ public class ProcessModel {
 		return this.name;
 	}
 
-	private void setupBasicAlphabet() {
+	public boolean add(TaskChar tCh) {
+		if (this.bag.contains(tCh)) {
+			return false;
+		} else {
+			this.bag.add(tCh);
+			this.basicAlphabet.add(tCh.identifier);
+			return true;
+		}
+	}
+
+	public void updateBasicAlphabet() {
 		this.basicAlphabet = new ArrayList<Character>(bag.getTaskChars().size());
 		for (TaskChar taskChar : bag.getTaskChars()) {
 			this.basicAlphabet.add(taskChar.identifier);
@@ -52,7 +63,13 @@ public class ProcessModel {
 	}
 
 	public Automaton buildAutomaton() {
-		return buildAutomatonByBoundHeuristic();
+		return AutomatonFactory.buildAutomaton(bag, basicAlphabet);
+	}
+
+	public Automaton buildLengthBoundedAutomaton(int minLen, int maxLen) {
+		assert maxLen >= minLen; 
+		
+		return AutomatonFactory.buildAutomaton(bag, basicAlphabet, minLen, maxLen);
 	}
 
 	public Automaton buildAlphabetAcceptingAutomaton() {
@@ -69,7 +86,7 @@ public class ProcessModel {
 		Collection<Constraint> cns = null;
 //		Collection<TaskChar> involvedTaskChars = null;
 //		Collection<Character> involvedTaskCharIds = null;
-		String alphabetLimitingRegularExpression = AutomatonFactory.createRegExpLimitingTheAlphabet(basicAlphabet);
+		String alphabetLimitingRegularExpression = AutomatonUtils.createRegExpLimitingTheAlphabet(basicAlphabet);
 		
 		for (TaskChar tChr : this.bag.getTaskChars()) {
 //			involvedTaskChars = new TreeSet<TaskChar>();
@@ -78,7 +95,7 @@ public class ProcessModel {
 			regExps = new ArrayList<String>(cns.size());
 			
 			for (Constraint con : cns) {
-				regExps.add(con.getRegularExpression());
+				regExps.add(con.toRegularExpression());
 //				involvedTaskChars.addAll(con.getInvolvedTaskChars());
 			}
 //			involvedTaskCharIds = new ArrayList<Character>(involvedTaskChars.size());
@@ -96,21 +113,7 @@ public class ProcessModel {
 			return AutomatonFactory.subAutomataFromRegularExpressionsInMultiThreading(regExpsMap, basicAlphabet);
 	}
 	
-	
-	/*
-	 * This turned out to be the best heuristic for computing the automaton!
-	 */
-	public Automaton buildAutomatonByBoundHeuristic() {
-		Collection<String> regularExpressions = null;
-		Collection<Constraint> constraints = LinearConstraintsIndexFactory.getAllConstraintsSortedByBoundsSupportFamilyConfidenceInterestFactorHierarchyLevel(this.bag);
-
-		regularExpressions = new ArrayList<String>(constraints.size());
-		for (Constraint con : constraints) {
-			regularExpressions.add(con.getRegularExpression());
-		}
-		return AutomatonFactory.fromRegularExpressions(regularExpressions, basicAlphabet);
-	}
-	
+	@Deprecated
 	public Automaton buildAutomatonByBoundHeuristicAppliedTwiceInMultiThreading() {
 		Map<TaskChar, Map<TaskChar, NavigableSet<Constraint>>> map =
 				LinearConstraintsIndexFactory.indexByImplyingAndImplied(bag);
@@ -147,7 +150,7 @@ public class ProcessModel {
 			}
 			regularExpressions = new ArrayList<String>(constraints.size());
 			for (Constraint con : constraints) {
-				regularExpressions.add(con.getRegularExpression());
+				regularExpressions.add(con.toRegularExpression());
 			}
 			subAutomata.put(tCh, AutomatonFactory.fromRegularExpressions(regularExpressions, basicAlphabet));
 		}
@@ -196,7 +199,7 @@ public class ProcessModel {
 			}
 			regularExpressions = new ArrayList<String>(constraints.size());
 			for (Constraint con : constraints) {
-				regularExpressions.add(con.getRegularExpression());
+				regularExpressions.add(con.toRegularExpression());
 			}
 			indexedRegExps.put(tCh.identifier, regularExpressions);
 		}
@@ -207,11 +210,12 @@ public class ProcessModel {
 		SortedSet<Constraint> constraintsSortedByStrictness = LinearConstraintsIndexFactory.getAllConstraintsSortedByStrictness(this.bag);
 		List<String> regularExpressions = new ArrayList<String>(constraintsSortedByStrictness.size());
 		for (Constraint con : constraintsSortedByStrictness) {
-			regularExpressions.add(con.getRegularExpression());
+			regularExpressions.add(con.toRegularExpression());
 		}
 		return AutomatonFactory.fromRegularExpressions(regularExpressions, basicAlphabet);
 	}
 	
+	@Deprecated
 	public Automaton buildAutomatonByDimensionalityHeuristic() {
 		TreeMap<Character, Collection<String>> regExpsMap = new TreeMap<Character, Collection<String>>();
 		// FIXME This is just for testing purposes!!
@@ -230,7 +234,7 @@ for (Constraint con : impliedIndexedBag.getConstraintsOf(new TaskChar('a'))) {
 		for (TaskChar tChr : bag.getTaskChars()) {
 			Collection<String> regExps = new ArrayList<String>();
 			for (Constraint con : bag.getConstraintsOf(tChr)) {
-				regExps.add(con.getRegularExpression());
+				regExps.add(con.toRegularExpression());
 			}
 			regExpsMap.put(tChr.identifier, regExps);
 		}

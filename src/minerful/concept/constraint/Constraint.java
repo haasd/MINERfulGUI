@@ -210,7 +210,7 @@ public abstract class Constraint implements Comparable<Constraint> {
 		return this.base;
 	}
 	
-	public String getRegularExpression() {
+	public String toRegularExpression() {
 		return String.format(this.getRegularExpressionTemplate(), this.base.toPatternString(true));
 	}
 	

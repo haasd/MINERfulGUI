@@ -1,7 +1,6 @@
 package minerful.index;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Stack;
 

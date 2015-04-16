@@ -228,6 +228,7 @@ public class ConstraintsPrinter {
         sBld.append(String.format(Locale.ENGLISH, "%7.3f%% ", constraint.support * 100));
         sBld.append(String.format("%-" + maxPadding + "s", constraint.toString()));
         sBld.append(String.format(Locale.ENGLISH, "%8.3f%% ", relativeSupport * 100));
+
         if (relativeSupport != 0) {
             for (; (barsCounter < relativeSupport * halfNumberOfBars && barsCounter <= 0); barsCounter++) {
                 sBld.append(' ');
@@ -236,6 +237,7 @@ public class ConstraintsPrinter {
                 sBld.append('|');
             }
         }
+
         for (; barsCounter <= halfNumberOfBars; barsCounter++) {
         	sBld.append(' ');
         }

@@ -36,7 +36,8 @@ public class MinerFulCmdParameters extends ParamsManager {
 	public static final String SHOW_MEMSPACE_USED_PARAM_NAME = "sMS";
 	public static final String EXCLUDED_FROM_RESULTS_SPEC_FILE_PATH_PARAM_NAME = "xF";
 	public static final char AVOID_CONFLICTS_PARAM_NAME = 'C';
-	public static final char PARALLEL_THREADS_PARAM_NAME = 'p';
+	public static final char KB_PARALLEL_COMPUTATION_THREADS_PARAM_NAME = 'p';
+	public static final String QUERY_PARALLEL_COMPUTATION_THREADS_PARAM_NAME = "pQ";
 //	public static final String TIME_ANALYSIS_PARAM_NAME = "time";
 
 	public static final Integer MINIMUM_BRANCHING_LIMIT = 1;
@@ -52,7 +53,8 @@ public class MinerFulCmdParameters extends ParamsManager {
 	public Boolean memSpaceShowingRequested;
     public Collection<String> activitiesToExcludeFromResult;
 	public Boolean avoidConflicts;
-	public Integer parallelProcessingThreads;
+	public Integer kbParallelProcessingThreads;
+	public Integer queryParallelProcessingThreads;
 //	public Boolean takeTime = null;
 
     
@@ -64,7 +66,8 @@ public class MinerFulCmdParameters extends ParamsManager {
 		this.avoidConflicts = false;
 		this.foreseeDistances = false;
 		this.memSpaceShowingRequested = false;
-		this.parallelProcessingThreads = MINIMUM_PARALLEL_EXECUTION_THREADS;
+		this.kbParallelProcessingThreads = MINIMUM_PARALLEL_EXECUTION_THREADS;
+		this.queryParallelProcessingThreads = MINIMUM_PARALLEL_EXECUTION_THREADS;
 //		this.takeTime = false;
 	}
     
@@ -92,14 +95,24 @@ public class MinerFulCmdParameters extends ParamsManager {
 					"Invalid value for " + OUT_BRANCHING_LIMIT_PARAM_NAME + " option" +
 					" (must be equal to or greater than " + (MINIMUM_BRANCHING_LIMIT) + ")");
 		}
-		this.parallelProcessingThreads = Integer.valueOf(line.getOptionValue(
-				PARALLEL_THREADS_PARAM_NAME,
-				parallelProcessingThreads.toString()
+		this.kbParallelProcessingThreads = Integer.valueOf(line.getOptionValue(
+				KB_PARALLEL_COMPUTATION_THREADS_PARAM_NAME,
+				kbParallelProcessingThreads.toString()
 			)
 		);
-		if (this.parallelProcessingThreads < MINIMUM_PARALLEL_EXECUTION_THREADS) {
+		this.queryParallelProcessingThreads = Integer.valueOf(line.getOptionValue(
+				QUERY_PARALLEL_COMPUTATION_THREADS_PARAM_NAME,
+				queryParallelProcessingThreads.toString()
+			)
+		);
+		if (this.kbParallelProcessingThreads < MINIMUM_PARALLEL_EXECUTION_THREADS) {
 			throw new IllegalArgumentException(
-					"Invalid value for " + PARALLEL_THREADS_PARAM_NAME + " option" +
+					"Invalid value for " + KB_PARALLEL_COMPUTATION_THREADS_PARAM_NAME + " option" +
+					" (must be equal to or greater than " + (MINIMUM_PARALLEL_EXECUTION_THREADS) + ")");
+		}
+		if (this.queryParallelProcessingThreads < MINIMUM_PARALLEL_EXECUTION_THREADS) {
+			throw new IllegalArgumentException(
+					"Invalid value for " + QUERY_PARALLEL_COMPUTATION_THREADS_PARAM_NAME + " option" +
 					" (must be equal to or greater than " + (MINIMUM_PARALLEL_EXECUTION_THREADS) + ")");
 		}
         this.avoidRedundancy = line.hasOption(AVOID_REDUNDANCY_PARAM_NAME);
@@ -211,12 +224,22 @@ public class MinerFulCmdParameters extends ParamsManager {
         options.addOption(
         		OptionBuilder
         		.hasArg().withArgName("number")
-        		.withLongOpt("parallel-threads")
+        		.withLongOpt("kb-ll-threads")
         		.withDescription("threads for log-processing parallel execution (must be greater than or equal to "
 						+ (MINIMUM_PARALLEL_EXECUTION_THREADS)
 						+ ", the default)")
         		.withType(new Integer(0))
-        		.create(PARALLEL_THREADS_PARAM_NAME)
+        		.create(KB_PARALLEL_COMPUTATION_THREADS_PARAM_NAME)
+        		);
+        options.addOption(
+        		OptionBuilder
+        		.hasArg().withArgName("number")
+        		.withLongOpt("q-ll-threads")
+        		.withDescription("threads for querying parallel execution of the knowledge base (must be greater than or equal to "
+						+ (MINIMUM_PARALLEL_EXECUTION_THREADS)
+						+ ", the default)")
+        		.withType(new Integer(0))
+        		.create(QUERY_PARALLEL_COMPUTATION_THREADS_PARAM_NAME)
         		);
         options.addOption(
         		OptionBuilder

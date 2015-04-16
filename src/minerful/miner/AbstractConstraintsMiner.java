@@ -1,10 +1,12 @@
 package minerful.miner;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import minerful.concept.TaskChar;
 import minerful.concept.TaskCharArchive;
 import minerful.concept.constraint.Constraint;
 import minerful.concept.constraint.TaskCharRelatedConstraintsBag;
@@ -18,16 +20,19 @@ public abstract class AbstractConstraintsMiner implements ConstraintsMiner {
 
 	protected GlobalStatsTable globalStats;
 	protected TaskCharArchive taskCharArchive;
+	protected Set<TaskChar> tasksToQueryFor;
 	
 	protected Double supportThreshold = null;
 	protected Double confidenceThreshold = null;
 	protected Double interestFactorThreshold = null;
 	
 	protected long computedConstraintsAboveThresholds = 0;
+
 	
-    public AbstractConstraintsMiner(GlobalStatsTable globalStats, TaskCharArchive taskCharArchive) {
+    public AbstractConstraintsMiner(GlobalStatsTable globalStats, TaskCharArchive taskCharArchive, Set<TaskChar> tasksToQueryFor) {
         this.globalStats = globalStats;
         this.taskCharArchive = taskCharArchive;
+        this.tasksToQueryFor = tasksToQueryFor;
         if (logger == null)
     		logger = Logger.getLogger(AbstractConstraintsMiner.class.getCanonicalName());
     }
@@ -57,6 +62,11 @@ public abstract class AbstractConstraintsMiner implements ConstraintsMiner {
 	@Override
 	public void setInterestFactorThreshold(Double interestFactorThreshold) {
 		this.interestFactorThreshold = interestFactorThreshold;
+	}
+
+	@Override
+	public Set<TaskChar> getTasksToQueryFor() {
+		return tasksToQueryFor;
 	}
 
 	@Override

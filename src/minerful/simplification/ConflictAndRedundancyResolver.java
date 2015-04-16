@@ -87,7 +87,7 @@ public class ConflictAndRedundancyResolver {
 			// First pass: order constraints by their number of connections (for the sake of computation), then their support, family, confidence interest factor
 			for (Constraint candidateCon : LinearConstraintsIndexFactory.getAllConstraintsSortedByBoundsSupportFamilyConfidenceInterestFactorHierarchyLevel(safeBag)) {
 				logger.trace("Checking redundancy of " + candidateCon);
-				candidateAutomaton = new RegExp(candidateCon.getRegularExpression()).toAutomaton();
+				candidateAutomaton = new RegExp(candidateCon.toRegularExpression()).toAutomaton();
 				if (!this.isConstraintAlreadyChecked(candidateCon) && this.checkRedundancy(safeAutomatonFirstPass, safeBagFirstPass, candidateAutomaton, candidateCon)) {
 					safeAutomatonFirstPass = this.intersect(safeAutomatonFirstPass, candidateAutomaton);
 					safeBagFirstPass.add(candidateCon.base, candidateCon);
@@ -98,7 +98,7 @@ public class ConflictAndRedundancyResolver {
 			// Second pass: order constraints by their support, then family, confidence interest factor
 			for (Constraint candidateCon : LinearConstraintsIndexFactory.getAllConstraintsSortedBySupportFamilyConfidenceInterestFactorHierarchyLevel(safeBagFirstPass)) {
 				logger.trace("Checking redundancy of " + candidateCon + " for the second time");
-				candidateAutomaton = new RegExp(candidateCon.getRegularExpression()).toAutomaton();
+				candidateAutomaton = new RegExp(candidateCon.toRegularExpression()).toAutomaton();
 				if (this.checkRedundancy(candidateAutomaton, candidateCon)) {
 					this.safeAutomaton = this.intersect(this.safeAutomaton, candidateAutomaton);
 					safeProcess.bag.add(candidateCon.base, candidateCon);
@@ -153,7 +153,7 @@ public class ConflictAndRedundancyResolver {
 		for (Constraint candidateCon : this.notSurelySafeProcessConstraints) {
 			logger.trace("Checking consistency of " + candidateCon);
 			if (!isConstraintAlreadyChecked(candidateCon)) {
-				candidateAutomaton = new RegExp(candidateCon.getRegularExpression()).toAutomaton();
+				candidateAutomaton = new RegExp(candidateCon.toRegularExpression()).toAutomaton();
 				if (!this.avoidingRedundancy || this.checkRedundancy(candidateAutomaton, candidateCon))
 					resolveConflictsRecursively(candidateAutomaton, candidateCon);
 			}
@@ -188,7 +188,7 @@ public class ConflictAndRedundancyResolver {
 			} else {
 				logger.trace(candidateCon + " relaxed to " + relaxedCon);
 
-				resolveConflictsRecursively(new RegExp(relaxedCon.getRegularExpression()).toAutomaton(), relaxedCon);
+				resolveConflictsRecursively(new RegExp(relaxedCon.toRegularExpression()).toAutomaton(), relaxedCon);
 			}
 
 			if (candidateCon.getFamily().equals(ConstraintFamily.COUPLING)) {
@@ -202,10 +202,10 @@ public class ConflictAndRedundancyResolver {
 						+ coCandidateCon.getForwardConstraint() + " and "
 						+ coCandidateCon.getBackwardConstraint());
 				this.resolveConflictsRecursively(
-						new RegExp(forwardCon.getRegularExpression()).toAutomaton(),
+						new RegExp(forwardCon.toRegularExpression()).toAutomaton(),
 						forwardCon);
 				this.resolveConflictsRecursively(
-						new RegExp(backwardCon.getRegularExpression()).toAutomaton(),
+						new RegExp(backwardCon.toRegularExpression()).toAutomaton(),
 						backwardCon);
 			}
 
@@ -319,5 +319,77 @@ public class ConflictAndRedundancyResolver {
 	
 	public int getRedundancyChecksPerformed() {
 		return redundancyChecksPerformed;
+	}
+
+	public Automaton getSafeAutomaton() {
+		return safeAutomaton;
+	}
+
+
+	public void printComputationStats(long timingBeforeConflictResolution, long timingAfterConflictResolution) {
+        StringBuffer
+    	csvSummaryBuffer = new StringBuffer(),
+    	csvSummaryLegendBuffer = new StringBuffer(),
+    	csvSummaryComprehensiveBuffer = new StringBuffer();
+
+        csvSummaryBuffer.append("'CR'");
+        csvSummaryLegendBuffer.append("'Operation code'");
+        csvSummaryBuffer.append(";");
+        csvSummaryLegendBuffer.append(";");
+      // --------------------------------
+        csvSummaryBuffer.append(this.inputConstraints().size());
+        csvSummaryLegendBuffer.append("'Input constraints for conflict check'");
+        csvSummaryBuffer.append(";");
+        csvSummaryLegendBuffer.append(";");
+     // --------------------------------
+        csvSummaryBuffer.append(this.performedConflictChecks());
+        csvSummaryLegendBuffer.append("'Performed conflict checks'");
+        csvSummaryBuffer.append(";");
+        csvSummaryLegendBuffer.append(";");
+     // --------------------------------
+        csvSummaryBuffer.append(this.checkedConflictingConstraints().size());
+        csvSummaryLegendBuffer.append("'Checked conflicting constraints'");
+        csvSummaryBuffer.append(";");
+        csvSummaryLegendBuffer.append(";");
+     // --------------------------------
+        csvSummaryBuffer.append(this.conflictingConstraintsInOriginalModel().size());
+        csvSummaryLegendBuffer.append("'Conflicting constraints in original model'");
+        csvSummaryBuffer.append(";");
+        csvSummaryLegendBuffer.append(";");
+     // --------------------------------
+        csvSummaryBuffer.append(this.conflictingConstraintsInOriginalUnredundantModel().size());
+        csvSummaryLegendBuffer.append("'Conflicting constraints in original hierarchy-unredundant model'");
+        csvSummaryBuffer.append(";");
+        csvSummaryLegendBuffer.append(";");
+     // --------------------------------
+        csvSummaryBuffer.append(this.performedRedundancyChecks());
+        csvSummaryLegendBuffer.append("'Performed redundancy checks'");
+        csvSummaryBuffer.append(";");
+        csvSummaryLegendBuffer.append(";");
+     // --------------------------------
+        csvSummaryBuffer.append(this.checkedRedundantConstraints().size());
+        csvSummaryLegendBuffer.append("'Checked redundant constraints'");
+        csvSummaryBuffer.append(";");
+        csvSummaryLegendBuffer.append(";");
+        // --------------------------------
+        csvSummaryBuffer.append(this.redundantConstraintsInOriginalModel().size());
+        csvSummaryLegendBuffer.append("'Redundant constraints in original model'");
+        csvSummaryBuffer.append(";");
+        csvSummaryLegendBuffer.append(";");
+     // --------------------------------
+        csvSummaryBuffer.append(this.redundantConstraintsInOriginalUnredundantModel().size());
+        csvSummaryLegendBuffer.append("'Redundant constraints in original hierarchy-unredundant model'");
+        csvSummaryBuffer.append(";");
+        csvSummaryLegendBuffer.append(";");
+     // --------------------------------
+        csvSummaryBuffer.append(timingAfterConflictResolution - timingBeforeConflictResolution);
+        csvSummaryLegendBuffer.append("'Time to resolve conflicts'");
+
+        csvSummaryComprehensiveBuffer.append("\n\nConflict resolution: \n");
+        csvSummaryComprehensiveBuffer.append(csvSummaryLegendBuffer.toString());
+        csvSummaryComprehensiveBuffer.append("\n");
+        csvSummaryComprehensiveBuffer.append(csvSummaryBuffer.toString());
+
+        logger.info(csvSummaryComprehensiveBuffer.toString());
 	}
 }

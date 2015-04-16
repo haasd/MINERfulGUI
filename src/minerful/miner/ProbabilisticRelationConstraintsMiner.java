@@ -42,13 +42,13 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 public class ProbabilisticRelationConstraintsMiner extends RelationConstraintsMiner {
 	private final boolean foreseeingDistances;
 
-    public ProbabilisticRelationConstraintsMiner(GlobalStatsTable globalStats, TaskCharArchive taskCharArchive) {
-        super(globalStats, taskCharArchive);
+    public ProbabilisticRelationConstraintsMiner(GlobalStatsTable globalStats, TaskCharArchive taskCharArchive, Set<TaskChar> tasksToQueryFor) {
+        super(globalStats, taskCharArchive, tasksToQueryFor);
         this.foreseeingDistances = false;
     }
 
-    public ProbabilisticRelationConstraintsMiner(GlobalStatsTable globalStats, TaskCharArchive taskCharArchive, boolean foreseeingDistances) {
-    	super(globalStats, taskCharArchive);
+    public ProbabilisticRelationConstraintsMiner(GlobalStatsTable globalStats, TaskCharArchive taskCharArchive, Set<TaskChar> tasksToQueryFor, boolean foreseeingDistances) {
+    	super(globalStats, taskCharArchive, tasksToQueryFor);
     	this.foreseeingDistances = foreseeingDistances;
     }
     
@@ -56,15 +56,15 @@ public class ProbabilisticRelationConstraintsMiner extends RelationConstraintsMi
     public TaskCharRelatedConstraintsBag discoverConstraints(TaskCharRelatedConstraintsBag constraintsBag) {
         // Inizialization
         if (constraintsBag == null) {
-            constraintsBag = new TaskCharRelatedConstraintsBag(taskCharArchive.getTaskChars());
+            constraintsBag = new TaskCharRelatedConstraintsBag(tasksToQueryFor);
         }
         LocalStatsWrapper auxLocalStats = null;
         Set<Constraint> auxRelCons = super.makeTemporarySet(
-        		MetaConstraintUtils.howManyPossibleConstraints(this.taskCharArchive.size()));
-        for (TaskChar tChUnderAnalysis : this.taskCharArchive.getTaskChars()) {
+        		MetaConstraintUtils.howManyPossibleConstraints(tasksToQueryFor.size(), taskCharArchive.size()));
+        for (TaskChar tChUnderAnalysis : tasksToQueryFor) {
             auxLocalStats = this.globalStats.statsTable.get(tChUnderAnalysis);
             // Avoid the famous rule: EX FALSO QUOD LIBET! Meaning: if you have no occurrence of a character, each constraint is potentially valid on it. Thus, it is perfectly useless to indagate over it -- and believe me, if you remove this check, it actually happens you have every possible restrictive constraint as valid in the list!
-            if (auxLocalStats.getTotalAmountOfAppearances() > 0) {
+            if (auxLocalStats.getTotalAmountOfOccurrences() > 0) {
                 auxRelCons.addAll(
                  this.discoverRelationConstraints(tChUnderAnalysis));
             }
@@ -100,25 +100,25 @@ public class ProbabilisticRelationConstraintsMiner extends RelationConstraintsMi
                     reversedInterplayStats = null;
         Set<Constraint>
         	relaCons = super.makeTemporarySet(
-        		MetaConstraintUtils.howManyPossibleRelationConstraints(this.taskCharArchive.size())),
+        		MetaConstraintUtils.howManyPossibleRelationConstraints(this.tasksToQueryFor.size(), this.taskCharArchive.size())),
         	nuRelaCons = super.makeNavigableSet();
         	
         LocalStatsWrapper
                 pivotLocalStats = globalStats.statsTable.get(pivotTask),
                 searchedLocalStats = null;
-        long   pivotAppearances = pivotLocalStats.getTotalAmountOfAppearances(),
+        long   pivotAppearances = pivotLocalStats.getTotalAmountOfOccurrences(),
                 searchedAppearances = 0L;
 
         // For each other character
-        for (TaskChar searchedTask : pivotLocalStats.localStatsTable.keySet()) {
+        for (TaskChar searchedTask : pivotLocalStats.interplayStatsTable.keySet()) {
         	nuRelaCons = super.makeNavigableSet();
             pivotParticipationFraction = this.computeParticipationFraction(pivotTask, pivotLocalStats, globalStats.logSize);
 
             if (!searchedTask.equals(pivotTask)) {
                 searchedLocalStats = globalStats.statsTable.get(searchedTask);
-                interplayStats = pivotLocalStats.localStatsTable.get(searchedTask);
-                reversedInterplayStats = searchedLocalStats.localStatsTable.get(pivotTask);
-                searchedAppearances = searchedLocalStats.getTotalAmountOfAppearances();
+                interplayStats = pivotLocalStats.interplayStatsTable.get(searchedTask);
+                reversedInterplayStats = searchedLocalStats.interplayStatsTable.get(pivotTask);
+                searchedAppearances = searchedLocalStats.getTotalAmountOfOccurrences();
                 searchedParticipationFraction = this.computeParticipationFraction(searchedTask, searchedLocalStats, globalStats.logSize);
                 supportForRespondedExistence =
                         computeSupportForRespondedExistence(interplayStats, pivotAppearances);
@@ -405,7 +405,7 @@ public class ProbabilisticRelationConstraintsMiner extends RelationConstraintsMi
     	if (relCon instanceof RespondedExistence) {
     		RespondedExistence resEx = (RespondedExistence)relCon;
 	    	SummaryStatistics distancesSumStats = new SummaryStatistics();
-	    	NavigableMap<Integer, Integer> distancesMap = implyingLocalStats.localStatsTable.get(implied).distances;
+	    	NavigableMap<Integer, Integer> distancesMap = implyingLocalStats.interplayStatsTable.get(implied).distances;
 	    	
 	    	switch (resEx.getSubFamily()) {
 			case RESPONSE:

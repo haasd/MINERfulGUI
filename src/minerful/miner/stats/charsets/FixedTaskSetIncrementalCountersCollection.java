@@ -158,10 +158,9 @@ public class FixedTaskSetIncrementalCountersCollection extends TaskSetCountersCo
             TaskChar[] sharingTasks) {
 		TreeSet<TasksSetCounter>
 			shared =
-				new TreeSet<TasksSetCounter>(),
+				null,
 			tmpShared =
 				null;
-
 		if (sharingTasks.length > 0) {
 			for (TaskChar currTask : sharingTasks) {
 				if (shared == null) {

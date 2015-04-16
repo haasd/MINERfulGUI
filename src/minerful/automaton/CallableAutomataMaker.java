@@ -32,10 +32,9 @@ public class CallableAutomataMaker implements Callable<Automaton> {
 		if (regularExpressions.size() > 0) {
 			Iterator<String> regExpsIterator = regularExpressions.iterator();
 
-			int i = 0;
+			int i = 1;
 			while (regExpsIterator.hasNext()) {
 				nuRegExp = regExpsIterator.next();
-
 				logger.trace("Intersecting the automaton with the accepting for: "
 						+ nuRegExp + " (" + i + " / " + this.regularExpressions.size() + ")");
 				i++;

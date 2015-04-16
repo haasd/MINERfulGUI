@@ -26,8 +26,7 @@ public class StringLogParser extends AbstractLogParser implements LogParser {
 	}
 
     public StringLogParser(String[] strings, LogEventClassifier.ClassificationType evtClassType) throws Exception {
-        init(evtClassType);
-        
+    	this.init(evtClassType);
         super.archiveTaskChars(this.parseLog(strings));
 	}
 	
@@ -49,6 +48,7 @@ public class StringLogParser extends AbstractLogParser implements LogParser {
 	
 	protected Collection<TaskClass> parseLog(String[] strings) {
 		Set<TaskClass> classes = new TreeSet<TaskClass>();
+		this.traceParsers = new ArrayList<LogTraceParser>(strings.length);
 		
 		for (String strLine : strings) {
         	strLine = strLine.trim();
