@@ -10,8 +10,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 
@@ -27,8 +25,8 @@ import minerful.logparser.LogEventClassifier.ClassificationType;
 import minerful.logparser.LogParser;
 import minerful.logparser.StringLogParser;
 import minerful.logparser.XesLogParser;
-import minerful.miner.call.MinerFulKBCore;
-import minerful.miner.call.MinerFulQueryingCore;
+import minerful.miner.core.MinerFulKBCore;
+import minerful.miner.core.MinerFulQueryingCore;
 import minerful.miner.params.MinerFulCmdParameters;
 import minerful.miner.stats.GlobalStatsTable;
 import minerful.params.InputCmdParameters;
@@ -207,15 +205,12 @@ public class MinerFulMinerStarter extends AbstractMinerFulStarter {
 	public TaskCharRelatedConstraintsBag mine(LogParser logParser,
 			MinerFulCmdParameters minerFulParams, ViewCmdParameters viewParams,
 			SystemCmdParameters systemParams, TaskCharArchive taskCharArchive) {
-		GlobalStatsTable globalStatsTable = new GlobalStatsTable(taskCharArchive,minerFulParams.branchingLimit);
-
+		GlobalStatsTable globalStatsTable = new GlobalStatsTable(taskCharArchive, minerFulParams.branchingLimit);
 		globalStatsTable = computeKB(logParser, minerFulParams,
 				taskCharArchive, globalStatsTable);
+
 		System.gc();
-// System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n" + globalStatsTable);
-		// TODO Probably, parameters should be differentiated. It looks weird
-		// that the same number of parallel threads suits both the computation
-		// of the KB and the querying.
+
 		return queryForConstraints(logParser, minerFulParams, viewParams,
 				taskCharArchive, globalStatsTable);
 	}
@@ -284,7 +279,6 @@ public class MinerFulMinerStarter extends AbstractMinerFulStarter {
 			List<MinerFulQueryingCore> listOfMinerFulCores =
 					new ArrayList<MinerFulQueryingCore>(
 							minerFulParams.queryParallelProcessingThreads);
-			
 			// Associate a dedicated query-computing core to each taskChar-subset
 			for (Set<TaskChar> taskCharSubset : taskCharSubSets) {
 				listOfMinerFulCores.add(
@@ -317,7 +311,7 @@ public class MinerFulMinerStarter extends AbstractMinerFulStarter {
 			bag = minerFulQueryingCore.discover();
 			after = System.currentTimeMillis();
 		}
-		logger.info("Total querying time: " + (after - before));
+		logger.info("Total KB querying time: " + (after - before));
 		return bag;
 	}
 }

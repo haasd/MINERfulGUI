@@ -20,4 +20,5 @@ public abstract class AbstractTraceParser implements LogTraceParser {
 	public SenseOfReading getSenseOfReading() {
 		return senseOfReading;
 	}
+
 }

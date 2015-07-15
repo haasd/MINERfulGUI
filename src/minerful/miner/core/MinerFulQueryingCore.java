@@ -1,4 +1,4 @@
-package minerful.miner.call;
+package minerful.miner.core;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -42,7 +42,8 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
 	protected TaskCharArchive taskCharArchive;
 	protected GlobalStatsTable statsTable;
 	private Set<TaskChar> tasksToQueryFor;
-	public final int jboNum;
+	protected TaskCharRelatedConstraintsBag bag; 
+	public final int jobNum;
 
 	{
         if (logger == null) {
@@ -54,7 +55,7 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
 			MinerFulCmdParameters minerFulParams, ViewCmdParameters viewParams,
 			TaskCharArchive taskCharArchive,
 			GlobalStatsTable globalStatsTable) {
-    	this(coreNum,logParser,minerFulParams,viewParams,taskCharArchive,globalStatsTable,null);
+    	this(coreNum,logParser,minerFulParams,viewParams,taskCharArchive,globalStatsTable,null,null);
 	}
 
 	public MinerFulQueryingCore(int coreNum,
@@ -62,7 +63,25 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
 			MinerFulCmdParameters minerFulParams, ViewCmdParameters viewParams,
 			TaskCharArchive taskCharArchive,
 			GlobalStatsTable globalStatsTable, Set<TaskChar> tasksToQueryFor) {
-		this.jboNum = coreNum;
+		this(coreNum,logParser,minerFulParams,viewParams,taskCharArchive,globalStatsTable,tasksToQueryFor,null);
+	}
+
+	public MinerFulQueryingCore(int coreNum,
+			LogParser logParser,
+			MinerFulCmdParameters minerFulParams, ViewCmdParameters viewParams,
+			TaskCharArchive taskCharArchive,
+			GlobalStatsTable globalStatsTable,
+			TaskCharRelatedConstraintsBag bag) {
+		this(coreNum,logParser,minerFulParams,viewParams,taskCharArchive,globalStatsTable,null,bag);
+	}
+
+	public MinerFulQueryingCore(int coreNum,
+			LogParser logParser,
+			MinerFulCmdParameters minerFulParams, ViewCmdParameters viewParams,
+			TaskCharArchive taskCharArchive,
+			GlobalStatsTable globalStatsTable, Set<TaskChar> tasksToQueryFor,
+			TaskCharRelatedConstraintsBag bag) {
+		this.jobNum = coreNum;
 		this.logParser = logParser;
 		this.minerFulParams = minerFulParams;
 		this.viewParams = viewParams;
@@ -73,6 +92,7 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
 		} else {
 			this.tasksToQueryFor = tasksToQueryFor;
 		}
+		this.bag = (bag == null ? new TaskCharRelatedConstraintsBag(this.tasksToQueryFor) : bag);
 	}
 
 	public TaskCharRelatedConstraintsBag discover() {
@@ -120,7 +140,7 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
         exiConMiner.setSupportThreshold(viewParams.supportThreshold);
         exiConMiner.setConfidenceThreshold(viewParams.confidenceThreshold);
         exiConMiner.setInterestFactorThreshold(viewParams.interestThreshold);
-        TaskCharRelatedConstraintsBag bag = exiConMiner.discoverConstraints();
+        TaskCharRelatedConstraintsBag updatedBag = exiConMiner.discoverConstraints(this.bag);
 
         after = System.currentTimeMillis();
 
@@ -148,7 +168,7 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
         relaConMiner.setConfidenceThreshold(viewParams.confidenceThreshold);
         relaConMiner.setInterestFactorThreshold(viewParams.interestThreshold);
 
-        bag = relaConMiner.discoverConstraints(bag);
+        updatedBag = relaConMiner.discoverConstraints(updatedBag);
         after = System.currentTimeMillis();
 
         relaConTime = after - before;
@@ -171,8 +191,8 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
         numOfRelationConstraintsAboveThresholds = relaConMiner.getComputedConstraintsAboveTresholds();
         numOfConstraintsAboveThresholds += numOfRelationConstraintsAboveThresholds;
 
-        numOfConstraintsBeforeHierarchyBasedPruning = bag.howManyConstraints();
-        numOfExistenceConstraintsBeforeHierarchyBasedPruning = bag.howManyExistenceConstraints();
+        numOfConstraintsBeforeHierarchyBasedPruning = updatedBag.howManyConstraints();
+        numOfExistenceConstraintsBeforeHierarchyBasedPruning = updatedBag.howManyExistenceConstraints();
         // If it is not soup, it is wet bread
         numOfRelationConstraintsBeforeHierarchyBasedPruning = numOfConstraintsBeforeHierarchyBasedPruning - numOfExistenceConstraintsBeforeHierarchyBasedPruning;
 
@@ -181,15 +201,15 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
 
             before = System.currentTimeMillis();
 
-        	bag = bag.createHierarchyUnredundantCopy();
+        	updatedBag = updatedBag.createHierarchyUnredundantCopy();
         	
         	after = System.currentTimeMillis();
         	pruniTime = after - before;
         	
             // Let us try to free memory from the unused clone of bag!
             System.gc();
-            numOfPrunedByHierarchyConstraints = bag.howManyConstraints();
-            numOfPrunedByHierarchyExistenceConstraints = bag.howManyExistenceConstraints();
+            numOfPrunedByHierarchyConstraints = updatedBag.howManyConstraints();
+            numOfPrunedByHierarchyExistenceConstraints = updatedBag.howManyExistenceConstraints();
             // If it is not soup, it is wet bread
             numOfPrunedByHierarchyRelationConstraints = numOfPrunedByHierarchyConstraints - numOfPrunedByHierarchyExistenceConstraints;
         } else {
@@ -197,27 +217,27 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
         	numOfPrunedByHierarchyExistenceConstraints = numOfExistenceConstraintsBeforeHierarchyBasedPruning;
         	numOfPrunedByHierarchyRelationConstraints = numOfRelationConstraintsBeforeHierarchyBasedPruning;
         }
-		bag = bag.createCopyPrunedByThresholdConfidenceAndInterest(viewParams.supportThreshold, viewParams.confidenceThreshold, viewParams.interestThreshold);
+		updatedBag = updatedBag.createCopyPrunedByThresholdConfidenceAndInterest(viewParams.supportThreshold, viewParams.confidenceThreshold, viewParams.interestThreshold);
         // Let us try to free memory from the unused clone of bag!
 
         after = System.currentTimeMillis();
         relaConTime = after - before;
 
         if (minerFulParams.avoidConflicts || minerFulParams.deepAvoidRedundancy) {
-        	ProcessModel process = new ProcessModel(bag);
+        	ProcessModel process = new ProcessModel(updatedBag);
         	long beforeConflictResolution = System.currentTimeMillis();
         	ConflictAndRedundancyResolver confliReso = new ConflictAndRedundancyResolver(process, minerFulParams.deepAvoidRedundancy);
         	confliReso.resolveConflicts();
-        	bag = confliReso.getSafeProcess().bag;
+        	updatedBag = confliReso.getSafeProcess().bag;
         	long afterConflictResolution = System.currentTimeMillis();
-            bag = bag.createCopyPrunedByThresholdConfidenceAndInterest(viewParams.supportThreshold, viewParams.confidenceThreshold, viewParams.interestThreshold);
+            updatedBag = updatedBag.createCopyPrunedByThresholdConfidenceAndInterest(viewParams.supportThreshold, viewParams.confidenceThreshold, viewParams.interestThreshold);
             confliReso.printComputationStats(beforeConflictResolution, afterConflictResolution);
         }
 
         System.gc();
 
-        numOfConstraintsAfterPruningAndThresholding = bag.howManyConstraints();
-        numOfExistenceConstraintsAfterPruningAndThresholding = bag.howManyExistenceConstraints();
+        numOfConstraintsAfterPruningAndThresholding = updatedBag.howManyConstraints();
+        numOfExistenceConstraintsAfterPruningAndThresholding = updatedBag.howManyExistenceConstraints();
         // If it is not soup, it is wet bread
         numOfRelationConstraintsAfterPruningAndThresholding = numOfConstraintsAfterPruningAndThresholding - numOfExistenceConstraintsAfterPruningAndThresholding;
         
@@ -240,7 +260,7 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
 				numOfExistenceConstraintsAfterPruningAndThresholding,
 				numOfRelationConstraintsAfterPruningAndThresholding);
 
-        return bag;
+        return updatedBag;
     }
 
 	public void printComputationStats(
@@ -267,10 +287,10 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
         	csvSummaryLegendBuffer = new StringBuffer(),
         	csvSummaryComprehensiveBuffer = new StringBuffer();
         csvSummaryBuffer.append("'M-Q'");
-        csvSummaryLegendBuffer.append("'Operation code'");
+        csvSummaryLegendBuffer.append("'Operation code for KB querying'");
         csvSummaryBuffer.append(";");
         csvSummaryLegendBuffer.append(";");
-        csvSummaryBuffer.append(jboNum);
+        csvSummaryBuffer.append(jobNum);
         csvSummaryLegendBuffer.append("'Job number'");
         csvSummaryBuffer.append(";");
         csvSummaryLegendBuffer.append(";");
@@ -287,6 +307,10 @@ public class MinerFulQueryingCore implements Callable<TaskCharRelatedConstraints
 //        csvSummaryLegendBuffer.append(";");
 //        csvSummaryBuffer.append(occuTabTime);
 //        csvSummaryBuffer.append(";");
+        csvSummaryLegendBuffer.append("'Total querying time'");
+        csvSummaryLegendBuffer.append(";");
+        csvSummaryBuffer.append(exiConTime + relaConTime + pruniTime);
+        csvSummaryBuffer.append(";");
         csvSummaryLegendBuffer.append("'Constraints check time'");
         csvSummaryLegendBuffer.append(";");
         csvSummaryBuffer.append(exiConTime + relaConTime);

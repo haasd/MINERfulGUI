@@ -148,7 +148,6 @@ public class TaskCharArchive {
 	public Collection<Set<TaskChar>> splitTaskCharsIntoSubsets(Integer parts) {
 		if (parts <= 0)
 			throw new IllegalArgumentException("The log cannot be split in " + parts + " parts. Only positive integer values are allowed");
-
 		int taskCharsPerSubset = this.taskChars.size() / parts;
 		
 		Collection<Set<TaskChar>> taskCharsSubsets = new ArrayList<Set<TaskChar>>(parts);

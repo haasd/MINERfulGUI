@@ -46,7 +46,7 @@ public class XesLogParser extends AbstractLogParser implements LogParser {
         		throw new IllegalArgumentException("Unparsable log file: " + xesFile.getAbsolutePath());
         	}
         }
-        
+
         super.archiveTaskChars(this.parseLog(xesFile));
 	}
     

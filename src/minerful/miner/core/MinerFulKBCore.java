@@ -1,4 +1,4 @@
-package minerful.miner.call;
+package minerful.miner.core;
 
 import java.util.concurrent.Callable;
 
@@ -75,7 +75,7 @@ public class MinerFulKBCore implements Callable<GlobalStatsTable> {
         	csvSummaryLegendBuffer = new StringBuffer(),
         	csvSummaryComprehensiveBuffer = new StringBuffer();
         csvSummaryBuffer.append("'M-KB'");
-        csvSummaryLegendBuffer.append("'Operation code'");
+        csvSummaryLegendBuffer.append("'Operation code for KB construction'");
         csvSummaryBuffer.append(";");
         csvSummaryLegendBuffer.append(";");
         csvSummaryBuffer.append(jboNum);
