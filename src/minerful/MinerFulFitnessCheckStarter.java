@@ -7,7 +7,6 @@ package minerful;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
-import jdk.nashorn.internal.ir.CallNode.EvalArgs;
 import minerful.checking.params.CheckingCmdParameters;
 import minerful.checking.relevance.dao.ModelFitnessEvaluation;
 import minerful.concept.ProcessModel;
@@ -15,9 +14,8 @@ import minerful.io.params.InputModelParameters;
 import minerful.io.params.OutputModelParameters;
 import minerful.params.InputLogCmdParameters;
 import minerful.params.SystemCmdParameters;
-import minerful.params.SystemCmdParameters.DebugLevel;
-import minerful.postprocessing.params.PostProcessingCmdParameters;
 import minerful.params.ViewCmdParameters;
+import minerful.postprocessing.params.PostProcessingCmdParameters;
 import minerful.utils.MessagePrinter;
 
 public class MinerFulFitnessCheckStarter extends MinerFulMinerStarter {

@@ -1,0 +1,21 @@
+.root {
+    -fx-font-size: 14px;
+    -fx-font-family: sans-serif;
+    -fx-background-color: #273a50;
+}
+
+.root .label {
+	-fx-text-fill: #ffffff;
+}
+
+.split-pane {
+ -fx-background-color: #344d69;
+ }
+ 
+ .split-pane .items {
+ -fx-background-color: #344d69;
+ }
+ 
+.menu-bar {
+	-fx-background-color: #273a50;
+}

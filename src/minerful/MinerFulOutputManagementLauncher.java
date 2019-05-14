@@ -10,11 +10,6 @@ import java.util.NavigableMap;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.PropertyException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamSource;
 
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
