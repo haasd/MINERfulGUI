@@ -1,0 +1,5 @@
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.effect.DropShadow?>
+
+<GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="minerful.gui.controller.GeneratorController">
+</GridPane>

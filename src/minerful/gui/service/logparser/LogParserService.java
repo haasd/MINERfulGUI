@@ -1,9 +1,12 @@
 package minerful.gui.service.logparser;
 
+import java.util.Map;
+
 import javafx.concurrent.Task;
+import minerful.gui.service.loginfo.LogInfo;
 
 public interface LogParserService {
 
-	public Task<Void> parseLog();
+	public Task<LogInfo> parseLog();
 	
 }

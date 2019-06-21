@@ -52,6 +52,26 @@
 			<artifactId>junit-jupiter-engine</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.kordamp.ikonli</groupId>
+			<artifactId>ikonli-fontawesome-pack</artifactId>
+			<version>11.3.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.kordamp.ikonli</groupId>
+			<artifactId>ikonli-fontawesome5-pack</artifactId>
+			<version>11.3.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.kordamp.ikonli</groupId>
+			<artifactId>ikonli-typicons-pack</artifactId>
+			<version>11.3.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.kordamp.ikonli</groupId>
+			<artifactId>ikonli-javafx</artifactId>
+			<version>11.3.4</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -61,8 +81,8 @@
 				<configuration>
 					<release>11</release>
 					<includes>
-                        <include>${project.basedir}/lib/*.jar</include>
-                    </includes>
+						<include>${project.basedir}/lib/*.jar</include>
+					</includes>
 				</configuration>
 			</plugin>
 			<plugin>

@@ -1,21 +1,149 @@
 .root {
-    -fx-font-size: 14px;
+    -fx-font-size: 12px;
     -fx-font-family: sans-serif;
-    -fx-background-color: #273a50;
+    -fx-text-fill: "#393939";
+	-fx-font-family: open sans; 
 }
 
-.root .label {
-	-fx-text-fill: #ffffff;
+.menu-button {
+	-fx-background-color: transparent;
+	-fx-text-fill: "#292928";
+	-fx-font-family: open sans;
+	-fx-font-size: 16px;
+	-fx-cursor: hand;
+	-fx-graphic-text-gap: 35px;
+	-fx-padding: 15px 0 15px 15px;
 }
 
-.split-pane {
- -fx-background-color: #344d69;
- }
- 
- .split-pane .items {
- -fx-background-color: #344d69;
- }
- 
-.menu-bar {
-	-fx-background-color: #273a50;
+.menu-button:hover {
+	-fx-opacity: 0.5;
+	-fx-text-fill: white;
+	-fx-background-color: black;
+	-fx-background-radius: 0px;
+}
+
+.menu-icon {
+	-fx-color: white;
+}
+
+.content {
+	-fx-border-width: 0 0 0 1px;
+	-fx-border-color: #393939;
+}
+
+.area-content {
+	-fx-padding: 0 30px 30px 0;
+}
+
+.area-header {
+	-fx-padding: 20px 0px 5px 30px;
+	-fx-font-size: 36px;
+	-fx-border-color: "#393939";
+	-fx-border-width: 0 0 1px 0;
+	-fx-font-weight: bold;
+}
+
+.section-header1, .section-header2 {
+	-fx-font-weight: bold;
+	-fx-text-fill: #393939;
+	-fx-text-alignment: center;
+}
+
+.section-header1 {
+	-fx-font-size: 24px;
+}
+
+.section-header2 {
+	-fx-font-size: 18px;
+}
+
+.section {
+	-fx-padding: 10px 30px 0 30px;
+	-fx-spacing: 10px;
+}
+
+.section-menu {
+	-fx-border-width: 0 1px 0 0;
+	-fx-border-color: #393939;
+}
+
+.model-canvas {
+	-fx-border-color: #393939;
+	-fx-border-width: 1px;
+	-fx-border-radius: 2px;
+}
+
+.table, .log-infos {
+	-fx-border-width: 1 0 1 0;
+	-fx-border-color: #A5A39C;
+}
+
+.column-left .label {
+	-fx-alignment: CENTER-LEFT;
+	-fx-background-color: transparent;
+}
+
+.column-header,
+.column-header .filler,
+.column-header-background .filler {
+    -fx-background-color: white;
+}
+
+.table-view, .list-view {
+    -fx-background-color: transparent;
+}
+
+.table-view:focused {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header-background .label {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+}
+
+.table-view .table-cell, .list-cell {
+    -fx-border-width: 0 0 0 0;
+    -fx-background-color:white;
+    -fx-text-fill: #393939;
+}
+
+.table-cell:selected {
+	-fx-background-color: blue;
+}
+
+.table-row-cell {
+    -fx-border-width: 0 0 0 0;
+    -fx-border-color: white;
+}
+
+.table-row-cell:selected, .list-cell:selected {
+    -fx-background-insets: 0;
+    -fx-background-radius: 1;
+}
+
+.table-row-cell {
+	-fx-border-width: 0 0 0 0;
+}
+
+.btn-default {
+	-fx-border-width: 2px;
+	-fx-border-color: #393939;
+	-fx-font-weight: bold;
+	-fx-background-color: #393939;
+	-fx-text-fill: white;
+	-fx-background-radius: 0px;
+	-fx-cursor: hand;
+}
+
+.btn-default:hover {
+	-fx-border-color: #232323;
+	-fx-background-color: #232323;
 }
