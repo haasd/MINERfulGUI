@@ -19,6 +19,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableCell;
@@ -59,7 +60,13 @@ public class DiscoverController implements Initializable {
 	TableView<EventFilter> eventsTable;
 	
 	@FXML
+	TableView<EventFilter> constraintsTable;
+	
+	@FXML
 	ListView<String> logInfoList;
+	
+	@FXML
+	ListView<String> resultList;
 	
 	@FXML
 	TableColumn<LogInfo, String> filenameColumn;
@@ -113,24 +120,15 @@ public class DiscoverController implements Initializable {
 
             return cell;
         });
-		
-	    DoubleBinding eventLogtableHeightBinding = new SimpleDoubleProperty().add(30*5);
-	    DoubleBinding informationListHeightBinding = new SimpleDoubleProperty().add(25*5);
-	    DoubleBinding eventTableHeightBinding = new SimpleDoubleProperty().add(25*10);
 
-	    eventLogTable.minHeightProperty().bind(eventLogtableHeightBinding);
-	    eventLogTable.prefHeightProperty().bind(eventLogtableHeightBinding);
-	    eventLogTable.maxHeightProperty().bind(eventLogtableHeightBinding);
+	    setHeight(eventLogTable, 150);
 	    eventLogTable.managedProperty().bind(eventLogTable.visibleProperty());
 	    eventLogTable.visibleProperty().bind(Bindings.isEmpty(eventLogTable.getItems()).not());
 	    
-	    logInfoList.minHeightProperty().bind(informationListHeightBinding);
-	    logInfoList.prefHeightProperty().bind(informationListHeightBinding);
-	    logInfoList.maxHeightProperty().bind(informationListHeightBinding);
-	    
-	    eventsTable.minHeightProperty().bind(eventTableHeightBinding);
-	    eventsTable.prefHeightProperty().bind(eventTableHeightBinding);
-	    eventsTable.maxHeightProperty().bind(eventTableHeightBinding);
+	    setHeight(logInfoList, 125);
+	    setHeight(resultList, 125);  
+	    setHeight(eventsTable, 250);
+	    setHeight(constraintsTable, 250);
 		
 		// define date-column and set format
 		dateColumn.setCellValueFactory(
@@ -249,6 +247,14 @@ public class DiscoverController implements Initializable {
 		logInfos.add(GuiConstants.LONGEST_TRACE+logInfo.getLogParser().maximumTraceLength());
 		
 		logInfoList.setItems(logInfos);
+	}
+	
+	private void setHeight(Control tableView, Integer height) {
+		DoubleBinding heightBinding = new SimpleDoubleProperty().add(height);
+		
+		tableView.minHeightProperty().bind(heightBinding);
+		tableView.prefHeightProperty().bind(heightBinding);
+		tableView.maxHeightProperty().bind(heightBinding);
 	}
 
 }

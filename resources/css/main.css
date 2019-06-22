@@ -32,7 +32,11 @@
 }
 
 .area-content {
-	-fx-padding: 0 30px 30px 0;
+	-fx-padding: 0 0 15px 0;
+}
+
+.constraints-table {
+	-fx-padding: 0 0 30px 0;
 }
 
 .area-header {
@@ -68,7 +72,7 @@
 }
 
 .model-canvas {
-	-fx-border-color: #393939;
+	-fx-border-color: #A5A39C;
 	-fx-border-width: 1px;
 	-fx-border-radius: 2px;
 }
@@ -143,7 +147,26 @@
 	-fx-cursor: hand;
 }
 
+.btn-round {
+	-fx-background-radius: 40px;
+	-fx-border-radius: 40px;
+    -fx-min-width: 40px;
+    -fx-min-height: 40px;
+    -fx-max-width: 40px;
+    -fx-max-height: 40px;
+}
+
 .btn-default:hover {
 	-fx-border-color: #232323;
 	-fx-background-color: #232323;
+}
+
+.btn-save {
+	-fx-border-color: #40d622;
+	-fx-background-color: #40d622;
+}
+
+.btn-save:hover {
+	-fx-border-color: #39bb1b;
+	-fx-background-color: #39bb1b;
 }
