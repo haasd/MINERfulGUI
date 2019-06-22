@@ -35,12 +35,12 @@
     			<ListView styleClass="log-infos" fx:id="logInfoList" maxWidth="200.0">
     			</ListView>
     			<Label styleClass="section-header2" text="Trace-Filter" />
-				<GridPane>
+				<GridPane vgap="10">
 					<children>
 						<Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Start from Trace:" />
-						<TextField GridPane.columnIndex="1" GridPane.rowIndex="0" ></TextField> 
+						<TextField fx:id="startAtTrace" GridPane.columnIndex="1" GridPane.rowIndex="0" ></TextField> 
 						<Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Stop at Trace:" />
-						<TextField GridPane.columnIndex="1" GridPane.rowIndex="1" ></TextField>
+						<TextField fx:id="stopAtTrace" GridPane.columnIndex="1" GridPane.rowIndex="1" ></TextField>
 					</children>
 					<columnConstraints>
 				        <ColumnConstraints percentWidth="60.0" />

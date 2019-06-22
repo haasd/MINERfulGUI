@@ -24,27 +24,23 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import minerful.concept.TaskChar;
 import minerful.concept.TaskCharArchive;
+import minerful.gui.common.GuiConstants;
 import minerful.gui.common.ProgressForm;
+import minerful.gui.common.ValidationEngine;
 import minerful.gui.service.loginfo.EventFilter;
 import minerful.gui.service.loginfo.LogInfo;
 import minerful.gui.service.logparser.LogParserService;
 import minerful.gui.service.logparser.LogParserServiceImpl;
 
 public class DiscoverController implements Initializable {
-	
-	private static String FILENAME="Filename: ";
-	private static String NUMBER_OF_EVENTS="Number of Events: ";
-	private static String NUMBER_OF_TRACES="Number of Traces: ";
-	private static String SHORTEST_TRACE="Minimum Trace Length: ";
-	private static String LONGEST_TRACE="Maximum Trace Length: ";
-	private static String NO_EVENT_LOG="No Event-Log loaded!";
-	
+
 	Logger logger = Logger.getLogger(DiscoverController.class);
 
 	private final ObservableList<LogInfo> loadedLogFiles =
@@ -76,13 +72,22 @@ public class DiscoverController implements Initializable {
 	
 	@FXML
 	TableColumn<EventFilter, Boolean> filterColumn;
+	
+	@FXML
+	TextField startAtTrace;
+	
+	@FXML
+	TextField stopAtTrace;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		eventLogTable.setPlaceholder(new Label(NO_EVENT_LOG));
-		logInfoList.setPlaceholder(new Label(NO_EVENT_LOG));
-		eventsTable.setPlaceholder(new Label(NO_EVENT_LOG));
+		eventLogTable.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
+		logInfoList.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
+		eventsTable.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
+		
+		startAtTrace.setTextFormatter(ValidationEngine.getNumericFilter());
+		stopAtTrace.setTextFormatter(ValidationEngine.getNumericFilter());
 
 		// define eventLogTable
 		filenameColumn.setCellValueFactory(
@@ -237,11 +242,11 @@ public class DiscoverController implements Initializable {
 			eventInfos.add(new EventFilter(taskChar.getName(), false));
 		}
 		
-		logInfos.add(FILENAME+new File(logInfo.getPath()).getName());
-		logInfos.add(NUMBER_OF_EVENTS+logInfo.getLogParser().numberOfEvents());
-		logInfos.add(NUMBER_OF_TRACES+logInfo.getLogParser().length());
-		logInfos.add(SHORTEST_TRACE+logInfo.getLogParser().minimumTraceLength());
-		logInfos.add(LONGEST_TRACE+logInfo.getLogParser().maximumTraceLength());
+		logInfos.add(GuiConstants.FILENAME+new File(logInfo.getPath()).getName());
+		logInfos.add(GuiConstants.NUMBER_OF_EVENTS+logInfo.getLogParser().numberOfEvents());
+		logInfos.add(GuiConstants.NUMBER_OF_TRACES+logInfo.getLogParser().length());
+		logInfos.add(GuiConstants.SHORTEST_TRACE+logInfo.getLogParser().minimumTraceLength());
+		logInfos.add(GuiConstants.LONGEST_TRACE+logInfo.getLogParser().maximumTraceLength());
 		
 		logInfoList.setItems(logInfos);
 	}
