@@ -82,8 +82,18 @@
 	-fx-border-color: #A5A39C;
 }
 
-.column-left .label {
+.column-left .column-header .label, .column-left .label {
 	-fx-alignment: CENTER-LEFT;
+	-fx-background-color: transparent;
+}
+
+.column-right .label {
+	-fx-alignment: CENTER-RIGHT;
+	-fx-background-color: transparent;
+}
+
+.column-center .column-header .label, .column-center .label {
+	-fx-alignment: CENTER;
 	-fx-background-color: transparent;
 }
 

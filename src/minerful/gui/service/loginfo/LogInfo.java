@@ -1,11 +1,10 @@
 package minerful.gui.service.loginfo;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Map;
 
+import minerful.concept.ProcessModel;
 import minerful.logparser.LogParser;
-import minerful.logparser.LogTraceParser;
 
 public class LogInfo {
 	
@@ -13,12 +12,14 @@ public class LogInfo {
 	private String path;
 	private Date date;
 	private Map<String,Integer> taskArchive;
+	private ProcessModel processModel;
 	
-	public LogInfo(LogParser logParser, String path, Date date) {
+	public LogInfo(LogParser logParser, String path, Date date, ProcessModel processModel) {
 		super();
 		this.logParser = logParser;
 		this.path = path;
 		this.date = date;
+		this.processModel = processModel;
 	}
 	
 	public LogParser getLogParser() {
@@ -47,4 +48,12 @@ public class LogInfo {
 		this.taskArchive = taskArchive;
 	}
 
+	public ProcessModel getProcessModel() {
+		return processModel;
+	}
+
+	public void setProcessModel(ProcessModel processModel) {
+		this.processModel = processModel;
+	}
+	
 }

@@ -161,13 +161,13 @@
         			<Label styleClass="section-header2" text="Constraints"/>
         			<TableView fx:id="constraintsTable" styleClass="table">
 						<columns>
-						   <TableColumn styleClass="column-left" text="Constraint"> 
+						   <TableColumn styleClass="column-left" text="Constraint" fx:id="constraintColumn"> 
 						   </TableColumn>
-						   <TableColumn styleClass="right-left" text="Support" prefWidth="100.0" minWidth="100.0" maxWidth="100.0"> 
+						   <TableColumn text="Support" prefWidth="100.0" minWidth="100.0" maxWidth="100.0" fx:id="supportColumn"> 
 						   </TableColumn>
-						   <TableColumn styleClass="right-left" text="Confidence" prefWidth="100.0" minWidth="100.0" maxWidth="100.0"> 
+						   <TableColumn text="Confidence" prefWidth="100.0" minWidth="100.0" maxWidth="100.0" fx:id="confidenceColumn"> 
 						   </TableColumn>
-						   <TableColumn styleClass="right-left" text="Interest Factor" prefWidth="100.0" minWidth="100.0" maxWidth="100.0"> 
+						   <TableColumn text="Interest Factor" prefWidth="100.0" minWidth="100.0" maxWidth="100.0" fx:id="interestColumn"> 
 						   </TableColumn>
 						</columns>
 						<columnResizePolicy>

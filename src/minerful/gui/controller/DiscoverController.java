@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -30,8 +31,10 @@ import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import minerful.concept.ProcessModel;
 import minerful.concept.TaskChar;
 import minerful.concept.TaskCharArchive;
+import minerful.concept.constraint.Constraint;
 import minerful.gui.common.GuiConstants;
 import minerful.gui.common.ProgressForm;
 import minerful.gui.common.ValidationEngine;
@@ -53,6 +56,9 @@ public class DiscoverController implements Initializable {
 	private final ObservableList<EventFilter> eventInfos =
 	        FXCollections.observableArrayList();
 	
+	private final ObservableList<Constraint> discoveredConstraints =
+	        FXCollections.observableArrayList();
+	
 	@FXML
 	TableView<LogInfo> eventLogTable;
 	
@@ -60,7 +66,7 @@ public class DiscoverController implements Initializable {
 	TableView<EventFilter> eventsTable;
 	
 	@FXML
-	TableView<EventFilter> constraintsTable;
+	TableView<Constraint> constraintsTable;
 	
 	@FXML
 	ListView<String> logInfoList;
@@ -81,6 +87,18 @@ public class DiscoverController implements Initializable {
 	TableColumn<EventFilter, Boolean> filterColumn;
 	
 	@FXML
+	TableColumn<Constraint, String> constraintColumn;
+	
+	@FXML
+	TableColumn<Constraint, Double> supportColumn;
+	
+	@FXML
+	TableColumn<Constraint, Double> confidenceColumn;
+	
+	@FXML
+	TableColumn<Constraint, Double> interestColumn;
+	
+	@FXML
 	TextField startAtTrace;
 	
 	@FXML
@@ -95,6 +113,20 @@ public class DiscoverController implements Initializable {
 		
 		startAtTrace.setTextFormatter(ValidationEngine.getNumericFilter());
 		stopAtTrace.setTextFormatter(ValidationEngine.getNumericFilter());
+		
+		constraintColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().toString()));
+		
+		supportColumn.setCellValueFactory(
+                new PropertyValueFactory<Constraint, Double>("support"));
+		supportColumn.setCellFactory(col -> ValidationEngine.cellConstraintFormat());
+		
+		confidenceColumn.setCellValueFactory(
+                new PropertyValueFactory<Constraint, Double>("confidence"));
+		confidenceColumn.setCellFactory(col -> ValidationEngine.cellConstraintFormat());
+		
+		interestColumn.setCellValueFactory(
+                new PropertyValueFactory<Constraint, Double>("interestFactor"));
+		interestColumn.setCellFactory(col -> ValidationEngine.cellConstraintFormat());
 
 		// define eventLogTable
 		filenameColumn.setCellValueFactory(
@@ -155,8 +187,8 @@ public class DiscoverController implements Initializable {
         });
 		
 		eventLogTable.setItems(loadedLogFiles);
-		
 		eventsTable.setItems(eventInfos);
+		constraintsTable.setItems(discoveredConstraints);
 		
 		// define eventTable
 		eventNameColumn.setCellValueFactory(
@@ -216,6 +248,7 @@ public class DiscoverController implements Initializable {
 			try {
 				loadedLogFiles.add(parseLog.get());
 				updateLogInfo(parseLog.get());
+				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -239,6 +272,9 @@ public class DiscoverController implements Initializable {
 		for(TaskChar taskChar : taskSet) {
 			eventInfos.add(new EventFilter(taskChar.getName(), false));
 		}
+		
+		ProcessModel processModel = logInfo.getProcessModel();
+		discoveredConstraints.addAll(processModel.getAllConstraints());
 		
 		logInfos.add(GuiConstants.FILENAME+new File(logInfo.getPath()).getName());
 		logInfos.add(GuiConstants.NUMBER_OF_EVENTS+logInfo.getLogParser().numberOfEvents());

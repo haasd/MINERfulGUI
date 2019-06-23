@@ -2,20 +2,20 @@ package minerful.gui.service.logparser;
 
 import java.io.File;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
 import javafx.concurrent.Task;
 import minerful.MinerFulMinerLauncher;
+import minerful.concept.ProcessModel;
 import minerful.gui.service.loginfo.LogInfo;
 import minerful.logparser.LogParser;
-import minerful.logparser.LogTraceParser;
 import minerful.miner.params.MinerFulCmdParameters;
 import minerful.params.InputLogCmdParameters;
 import minerful.params.InputLogCmdParameters.InputEncoding;
+import minerful.params.SystemCmdParameters;
+import minerful.postprocessing.params.PostProcessingCmdParameters;
 
 public class LogParserServiceImpl implements LogParserService  {
 	
@@ -36,17 +36,32 @@ public class LogParserServiceImpl implements LogParserService  {
 						new InputLogCmdParameters();
 				MinerFulCmdParameters minerFulParams =
 						new MinerFulCmdParameters();
+				SystemCmdParameters systemParams =
+						new SystemCmdParameters();
+				PostProcessingCmdParameters postParams =
+						new PostProcessingCmdParameters();
 
 				inputParams.inputLogFile = new File(path);
 				inputParams.inputLanguage = determineEncoding(path);
 
+				logger.info("Start parsing Log-File");
+				long start = System.currentTimeMillis();
 				LogParser logParser = MinerFulMinerLauncher.deriveLogParserFromLogFile(inputParams, minerFulParams);
-				logger.info("Finished parsing Log-File");
-				logger.info("Found traces: " + logParser.length());
+				long time = System.currentTimeMillis() - start;
+				logger.info("Finished parsing Log-File!");
+				logger.info("Parsing Time: "+ TimeUnit.MILLISECONDS.toSeconds(time) + " Found traces: " + logParser.length());
+
 				
+				logger.info("Start mine Process-Model");
+				start = System.currentTimeMillis();
+				MinerFulMinerLauncher miFuMiLa = new MinerFulMinerLauncher(inputParams, minerFulParams, postParams, systemParams);
+				ProcessModel processModel = miFuMiLa.mine();
+				time = System.currentTimeMillis() - start;
+				logger.info("Finished mine Process-Model");
+				logger.info("Mining Time: "+ TimeUnit.MILLISECONDS.toSeconds(time));
 				updateProgress(100, 100);
 		   
-		        return new LogInfo(logParser,path,new Date());
+		        return new LogInfo(logParser,path,new Date(),processModel);
 		    }
 		};
 		
