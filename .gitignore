@@ -6,7 +6,7 @@ count-constraints.sh
 print-regexps.sh
 .classpath
 .project
-*target*
+target/
 .settings
 models
 /exec-logs/
@@ -25,3 +25,4 @@ models
 /run-MINERful-unstable.sh
 /convincialessio/
 /wollendorfer_h1452804_bachelorThesis/
+build/
