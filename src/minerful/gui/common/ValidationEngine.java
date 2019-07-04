@@ -1,11 +1,13 @@
 package minerful.gui.common;
 
 import java.util.function.UnaryOperator;
+import java.util.regex.Pattern;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
+import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import minerful.concept.constraint.Constraint;
 
@@ -23,6 +25,20 @@ public class ValidationEngine {
 		    return null;
 		};
 		return new TextFormatter<Integer>(new IntegerStringConverter(), 0, filter);
+	}
+	
+	// only allow numeric input
+	public static TextFormatter<Double> getDoubleFilter() {
+
+		Pattern validDoubleText = Pattern.compile("(([0-1]{0,1})|(\\d+\\.\\d{0,3}))");
+		
+		return new TextFormatter<Double>(new DoubleStringConverter(), 0.0, 
+	            change -> {
+	                String newText = change.getControlNewText() ;
+	                if (validDoubleText.matcher(newText).matches()) {
+	                    return change;
+	                } else return null ;
+	            });
 	}
 	
 	/**

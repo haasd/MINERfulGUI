@@ -15,33 +15,46 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import minerful.MinerFulMinerLauncher;
 import minerful.concept.ProcessModel;
 import minerful.concept.TaskChar;
 import minerful.concept.TaskCharArchive;
 import minerful.concept.constraint.Constraint;
 import minerful.gui.common.GuiConstants;
+import minerful.gui.common.MinerfulGuiUtil;
 import minerful.gui.common.ProgressForm;
 import minerful.gui.common.ValidationEngine;
 import minerful.gui.service.loginfo.EventFilter;
 import minerful.gui.service.loginfo.LogInfo;
 import minerful.gui.service.logparser.LogParserService;
 import minerful.gui.service.logparser.LogParserServiceImpl;
+import minerful.miner.params.MinerFulCmdParameters;
+import minerful.params.InputLogCmdParameters;
+import minerful.params.SystemCmdParameters;
+import minerful.postprocessing.params.PostProcessingCmdParameters;
 
 public class DiscoverController implements Initializable {
 
@@ -99,10 +112,32 @@ public class DiscoverController implements Initializable {
 	TableColumn<Constraint, Double> interestColumn;
 	
 	@FXML
+	TextField supportThresholdField;
+	
+	@FXML
+	Slider supportThresholdSlider;
+	
+	@FXML
+	TextField confidenceThresholdField;
+	
+	@FXML
+	Slider confidenceThresholdSlider;
+	
+	@FXML
+	TextField interestThresholdField;
+	
+	@FXML
+	Slider interestThresholdSlider;
+	
+	@FXML
 	TextField startAtTrace;
 	
 	@FXML
 	TextField stopAtTrace;
+	
+	private ProcessModel processModel; 
+	
+	private LogInfo currentEventLog;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -113,6 +148,24 @@ public class DiscoverController implements Initializable {
 		
 		startAtTrace.setTextFormatter(ValidationEngine.getNumericFilter());
 		stopAtTrace.setTextFormatter(ValidationEngine.getNumericFilter());
+		
+		supportThresholdField.setTextFormatter(ValidationEngine.getDoubleFilter());
+		supportThresholdField.textProperty().addListener(getTextFieldChangeListener(supportThresholdSlider));
+		supportThresholdField.setOnKeyPressed(onEnterPressed());
+		supportThresholdSlider.valueProperty().addListener(getSliderChangeListener(supportThresholdField));
+		supportThresholdSlider.setOnMouseReleased(onMouseReleaseSlider());
+		
+		confidenceThresholdField.setTextFormatter(ValidationEngine.getDoubleFilter());
+		confidenceThresholdField.textProperty().addListener(getTextFieldChangeListener(confidenceThresholdSlider));
+		confidenceThresholdField.setOnKeyPressed(onEnterPressed());
+		confidenceThresholdSlider.valueProperty().addListener(getSliderChangeListener(confidenceThresholdField));
+		confidenceThresholdSlider.setOnMouseReleased(onMouseReleaseSlider());
+		
+		interestThresholdField.setTextFormatter(ValidationEngine.getDoubleFilter());
+		interestThresholdField.textProperty().addListener(getTextFieldChangeListener(interestThresholdSlider));
+		interestThresholdField.setOnKeyPressed(onEnterPressed());
+		interestThresholdSlider.valueProperty().addListener(getSliderChangeListener(interestThresholdField));
+		interestThresholdSlider.setOnMouseReleased(onMouseReleaseSlider());
 		
 		constraintColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().toString()));
 		
@@ -248,6 +301,7 @@ public class DiscoverController implements Initializable {
 			try {
 				loadedLogFiles.add(parseLog.get());
 				updateLogInfo(parseLog.get());
+				currentEventLog = parseLog.get();
 				
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
@@ -273,7 +327,7 @@ public class DiscoverController implements Initializable {
 			eventInfos.add(new EventFilter(taskChar.getName(), false));
 		}
 		
-		ProcessModel processModel = logInfo.getProcessModel();
+		processModel = logInfo.getProcessModel();
 		discoveredConstraints.addAll(processModel.getAllConstraints());
 		
 		logInfos.add(GuiConstants.FILENAME+new File(logInfo.getPath()).getName());
@@ -285,12 +339,83 @@ public class DiscoverController implements Initializable {
 		logInfoList.setItems(logInfos);
 	}
 	
+	private void updateModel() {
+		if(processModel != null) {
+			logger.info("Update Parameters: " + supportThresholdField.getText() + " " + confidenceThresholdField.getText() + " " + interestThresholdField.getText());
+			
+			InputLogCmdParameters inputParams = new InputLogCmdParameters();
+			inputParams.inputLogFile = new File(currentEventLog.getPath());
+			inputParams.inputLanguage = MinerfulGuiUtil.determineEncoding(currentEventLog.getPath());
+			MinerFulCmdParameters minerFulParams = new MinerFulCmdParameters();
+			SystemCmdParameters systemParams = new SystemCmdParameters();
+			PostProcessingCmdParameters postParams = new PostProcessingCmdParameters();
+			postParams.supportThreshold = Double.parseDouble(supportThresholdField.getText());
+			postParams.confidenceThreshold = Double.parseDouble(confidenceThresholdField.getText());
+			postParams.interestFactorThreshold = Double.parseDouble(interestThresholdField.getText());
+			postParams.cropRedundantAndInconsistentConstraints = true;
+			MinerFulMinerLauncher miFuMiLa = new MinerFulMinerLauncher(inputParams, minerFulParams, postParams, systemParams);
+			processModel = miFuMiLa.mine();
+			discoveredConstraints.clear();
+			discoveredConstraints.addAll(processModel.getAllConstraints());
+		}
+	}
+	
+	private ChangeListener<String> getTextFieldChangeListener(Slider slider) {
+		return new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable,
+					String oldValue, String newValue) {
+
+					if(newValue != null && !newValue.isEmpty()) {
+						slider.setValue(Double.parseDouble(newValue));
+					}
+			}
+		};
+	}
+	
+	private ChangeListener<Number> getSliderChangeListener(TextField textField) {
+		return new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				// TODO Auto-generated method stub
+				String doubleValue = String.format("%.3f", newValue.doubleValue());
+				doubleValue = doubleValue.replace(",", ".");
+				textField.setText(doubleValue);
+			}
+			
+		};
+	}
+	
 	private void setHeight(Control tableView, Integer height) {
 		DoubleBinding heightBinding = new SimpleDoubleProperty().add(height);
 		
 		tableView.minHeightProperty().bind(heightBinding);
 		tableView.prefHeightProperty().bind(heightBinding);
 		tableView.maxHeightProperty().bind(heightBinding);
+	}
+	
+	private EventHandler<KeyEvent> onEnterPressed() {
+		return new EventHandler<KeyEvent>() {
+	        @Override
+	        public void handle(KeyEvent ke)
+	        {
+	            if (ke.getCode().equals(KeyCode.ENTER))
+	            {
+	                updateModel();
+	            }
+	        }
+	    };
+	}
+	
+	private EventHandler<Event> onMouseReleaseSlider() {
+		return new EventHandler<Event>() {
+
+			@Override
+			public void handle(Event event) {
+				updateModel();
+			}
+		};
 	}
 
 }

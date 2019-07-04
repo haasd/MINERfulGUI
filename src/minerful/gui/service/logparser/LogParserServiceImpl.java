@@ -9,11 +9,11 @@ import org.apache.log4j.Logger;
 import javafx.concurrent.Task;
 import minerful.MinerFulMinerLauncher;
 import minerful.concept.ProcessModel;
+import minerful.gui.common.MinerfulGuiUtil;
 import minerful.gui.service.loginfo.LogInfo;
 import minerful.logparser.LogParser;
 import minerful.miner.params.MinerFulCmdParameters;
 import minerful.params.InputLogCmdParameters;
-import minerful.params.InputLogCmdParameters.InputEncoding;
 import minerful.params.SystemCmdParameters;
 import minerful.postprocessing.params.PostProcessingCmdParameters;
 
@@ -42,7 +42,7 @@ public class LogParserServiceImpl implements LogParserService  {
 						new PostProcessingCmdParameters();
 
 				inputParams.inputLogFile = new File(path);
-				inputParams.inputLanguage = determineEncoding(path);
+				inputParams.inputLanguage = MinerfulGuiUtil.determineEncoding(path);
 
 				logger.info("Start parsing Log-File");
 				long start = System.currentTimeMillis();
@@ -66,16 +66,6 @@ public class LogParserServiceImpl implements LogParserService  {
 		};
 		
 		return task;
-	}
-	
-	
-	// determine File encoding
-	private InputEncoding determineEncoding(String path) {
-		switch(path) {
-			case "txt": return InputEncoding.strings;
-			case "mxml": return InputEncoding.mxml;
-			default: return InputEncoding.xes;
-		}
 	}
 
 }

@@ -125,7 +125,7 @@
                				</graphic>
          				</Label>
          				<TextField fx:id="supportThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="1" ></TextField>
-         				<Slider showTickLabels="true" showTickMarks="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         				<Slider fx:id="supportThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="1">
          				</Slider>
          				
          				<!-- Display Confidence-Threshold interface -->
@@ -135,7 +135,7 @@
                				</graphic>
          				</Label>
          				<TextField fx:id="confidenceThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="3" ></TextField>
-         				<Slider showTickLabels="true" showTickMarks="true" GridPane.columnIndex="1" GridPane.rowIndex="3">
+         				<Slider fx:id="confidenceThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="3">
          				</Slider>
          				
          				<!-- Display Interest Factor-Threshold interface -->
@@ -145,7 +145,7 @@
                				</graphic>
          				</Label>
          				<TextField fx:id="interestThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="5" ></TextField>
-         				<Slider showTickLabels="true" showTickMarks="true" GridPane.columnIndex="1" GridPane.rowIndex="5">
+         				<Slider fx:id="interestThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="5">
          				</Slider>
          				
         				</children>
