@@ -92,7 +92,10 @@
 	-fx-background-color: transparent;
 }
 
-.column-center .column-header .label, .column-center .label {
+.column-center .column-header .label, 
+.column-center.table-column, 
+.column-center .label, 
+.column-center .table-cell {
 	-fx-alignment: CENTER;
 	-fx-background-color: transparent;
 }

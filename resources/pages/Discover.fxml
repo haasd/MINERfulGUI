@@ -70,7 +70,7 @@
     			<Label styleClass="section-header2" text="Event-Filter" />
     			<TableView fx:id="eventsTable" styleClass="table">
 					 <columns>
-					 	<TableColumn prefWidth="50.0" minWidth="50.0" maxWidth="50.0" text="" fx:id="filterColumn"> 
+					 	<TableColumn styleClass="column-center" prefWidth="50.0" minWidth="50.0" maxWidth="50.0" text="" fx:id="filterColumn"> 
 					    	<graphic>
                   				<FontIcon iconLiteral="typ-filter" iconSize="24" />
                				</graphic>

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -32,7 +33,6 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -268,10 +268,9 @@ public class DiscoverController implements Initializable {
         });
 		
 		// define eventTable
-		filterColumn.setCellValueFactory(
-                new PropertyValueFactory<EventFilter, Boolean>("filterActive"));
-		filterColumn.setCellFactory(column -> new CheckBoxTableCell<EventFilter,Boolean>());
-	}
+		filterColumn.setCellValueFactory(new PropertyValueFactory<EventFilter, Boolean>("selected"));
+		}
+		
 	
 	@FXML
     private void openFile() throws IOException {
@@ -324,7 +323,15 @@ public class DiscoverController implements Initializable {
 		
 		Set<TaskChar> taskSet = taskArchive.getCopyOfTaskChars();
 		for(TaskChar taskChar : taskSet) {
-			eventInfos.add(new EventFilter(taskChar.getName(), false));
+			EventFilter filter = new EventFilter(taskChar.getName(), true);
+			filter.getSelected().selectedProperty().addListener(new ChangeListener<Boolean>() {
+			    @Override
+			    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+			        updateModel();
+			    }
+			});
+			
+			eventInfos.add(filter);
 		}
 		
 		processModel = logInfo.getProcessModel();
@@ -353,6 +360,15 @@ public class DiscoverController implements Initializable {
 			postParams.confidenceThreshold = Double.parseDouble(confidenceThresholdField.getText());
 			postParams.interestFactorThreshold = Double.parseDouble(interestThresholdField.getText());
 			postParams.cropRedundantAndInconsistentConstraints = true;
+			minerFulParams.activitiesToExcludeFromResult = new ArrayList<>();
+			
+			// exclude all events that aren't marked
+			for(EventFilter filter : eventInfos) {
+				if(!filter.getSelected().isSelected()) {
+					minerFulParams.activitiesToExcludeFromResult.add(filter.getEventName());
+				}
+			}
+			
 			MinerFulMinerLauncher miFuMiLa = new MinerFulMinerLauncher(inputParams, minerFulParams, postParams, systemParams);
 			processModel = miFuMiLa.mine();
 			discoveredConstraints.clear();

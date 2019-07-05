@@ -1,14 +1,19 @@
 package minerful.gui.service.loginfo;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.geometry.Pos;
+import javafx.scene.control.CheckBox;
+
 public class EventFilter {
 	
 	private String eventName;
-	private Boolean filterActive;
+	private CheckBox selected;
 
-	public EventFilter(String eventName, Boolean filterActive) {
+	public EventFilter(String eventName, boolean selected) {
 		super();
 		this.eventName = eventName;
-		this.filterActive = filterActive;
+		this.selected = new CheckBox();
+		this.selected.setSelected(selected);
 	}
 	
 	public String getEventName() {
@@ -17,11 +22,12 @@ public class EventFilter {
 	public void setEventName(String eventName) {
 		this.eventName = eventName;
 	}
-	public Boolean getFilterActive() {
-		return filterActive;
+	
+	public CheckBox getSelected() {
+		return selected;
 	}
-	public void setFilterActive(Boolean filterActive) {
-		this.filterActive = filterActive;
+	
+	public void setSelected(CheckBox selected) {
+		this.selected = selected;
 	}
-
 }
