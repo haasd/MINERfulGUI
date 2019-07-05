@@ -147,7 +147,9 @@ public class DiscoverController implements Initializable {
 		eventsTable.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
 		
 		startAtTrace.setTextFormatter(ValidationEngine.getNumericFilter());
+		startAtTrace.setOnKeyPressed(onEnterPressed());
 		stopAtTrace.setTextFormatter(ValidationEngine.getNumericFilter());
+		stopAtTrace.setOnKeyPressed(onEnterPressed());
 		
 		supportThresholdField.setTextFormatter(ValidationEngine.getDoubleFilter());
 		supportThresholdField.textProperty().addListener(getTextFieldChangeListener(supportThresholdSlider));
@@ -320,6 +322,7 @@ public class DiscoverController implements Initializable {
 		logInfos.clear();
 		
 		TaskCharArchive taskArchive = logInfo.getLogParser().getTaskCharArchive();
+		stopAtTrace.setText(String.valueOf(logInfo.getLogParser().length()));
 		
 		Set<TaskChar> taskSet = taskArchive.getCopyOfTaskChars();
 		for(TaskChar taskChar : taskSet) {
@@ -361,6 +364,26 @@ public class DiscoverController implements Initializable {
 			postParams.interestFactorThreshold = Double.parseDouble(interestThresholdField.getText());
 			postParams.cropRedundantAndInconsistentConstraints = true;
 			minerFulParams.activitiesToExcludeFromResult = new ArrayList<>();
+			
+			if(startAtTrace != null && startAtTrace.getText() != "" && stopAtTrace != null && stopAtTrace.getText() != "") {
+				if(Integer.parseInt(startAtTrace.getText()) > Integer.parseInt(stopAtTrace.getText()) || Integer.parseInt(startAtTrace.getText()) > currentEventLog.getLogParser().length()) {
+					startAtTrace.setText(String.valueOf(0));
+					inputParams.startFromTrace = 0;
+					startAtTrace.setStyle("-fx-focus-color: red ");
+				} else {
+					inputParams.startFromTrace = Integer.parseInt(startAtTrace.getText());
+				}
+				
+				if(Integer.parseInt(stopAtTrace.getText()) > currentEventLog.getLogParser().length()) {
+					stopAtTrace.setText(String.valueOf(currentEventLog.getLogParser().length()));
+					inputParams.subLogLength = currentEventLog.getLogParser().length() - 1;
+				} else {
+					inputParams.subLogLength = Integer.parseInt(stopAtTrace.getText()) - 1;
+				}
+			} else {
+				inputParams.startFromTrace = 0;
+				inputParams.subLogLength = currentEventLog.getLogParser().length() - 1;
+			}	
 			
 			// exclude all events that aren't marked
 			for(EventFilter filter : eventInfos) {
