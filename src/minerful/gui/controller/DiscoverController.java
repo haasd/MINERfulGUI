@@ -25,6 +25,8 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -36,9 +38,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import minerful.MinerFulMinerLauncher;
+import minerful.MinerFulOutputManagementLauncher;
 import minerful.concept.ProcessModel;
 import minerful.concept.TaskChar;
 import minerful.concept.TaskCharArchive;
@@ -51,9 +56,11 @@ import minerful.gui.service.loginfo.EventFilter;
 import minerful.gui.service.loginfo.LogInfo;
 import minerful.gui.service.logparser.LogParserService;
 import minerful.gui.service.logparser.LogParserServiceImpl;
+import minerful.io.params.OutputModelParameters;
 import minerful.miner.params.MinerFulCmdParameters;
 import minerful.params.InputLogCmdParameters;
 import minerful.params.SystemCmdParameters;
+import minerful.params.ViewCmdParameters;
 import minerful.postprocessing.params.PostProcessingCmdParameters;
 
 public class DiscoverController implements Initializable {
@@ -135,13 +142,33 @@ public class DiscoverController implements Initializable {
 	@FXML
 	TextField stopAtTrace;
 	
+	@FXML
+	Canvas modelCanvas;
+	
+	@FXML
+	HBox canvasBox;
+	
 	private ProcessModel processModel; 
 	
 	private LogInfo currentEventLog;
+	
+	private GraphicsContext gc ;
+	
+	private void drawArea(GraphicsContext gc) {
+		gc.setFill(Color.RED);
+		gc.fillRect(100, 100, 200, 200);
+	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
+		gc = modelCanvas.getGraphicsContext2D();
+		modelCanvas.widthProperty().bind(canvasBox.widthProperty());
+		modelCanvas.heightProperty().bind(canvasBox.heightProperty());
+		
+		modelCanvas.widthProperty().addListener((obs, oldWidth, newWidth) -> drawArea(gc));
+		modelCanvas.heightProperty().addListener((obs, oldHeight, newHeight) -> drawArea(gc));
+
 		eventLogTable.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
 		logInfoList.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
 		eventsTable.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
@@ -363,6 +390,7 @@ public class DiscoverController implements Initializable {
 			postParams.confidenceThreshold = Double.parseDouble(confidenceThresholdField.getText());
 			postParams.interestFactorThreshold = Double.parseDouble(interestThresholdField.getText());
 			postParams.cropRedundantAndInconsistentConstraints = true;
+			
 			minerFulParams.activitiesToExcludeFromResult = new ArrayList<>();
 			
 			if(startAtTrace != null && startAtTrace.getText() != "" && stopAtTrace != null && stopAtTrace.getText() != "") {
@@ -396,6 +424,16 @@ public class DiscoverController implements Initializable {
 			processModel = miFuMiLa.mine();
 			discoveredConstraints.clear();
 			discoveredConstraints.addAll(processModel.getAllConstraints());
+			
+			
+			ViewCmdParameters viewParams =
+					new ViewCmdParameters();
+			OutputModelParameters outParams =
+					new OutputModelParameters();
+			
+			outParams.fileToSaveAsConDec = new File("BPIC2012-disco-declaremap.xml");
+			MinerFulOutputManagementLauncher outputMgt = new MinerFulOutputManagementLauncher();
+			outputMgt.manageOutput(processModel, viewParams, outParams, systemParams);
 		}
 	}
 	

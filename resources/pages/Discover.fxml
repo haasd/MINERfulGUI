@@ -98,9 +98,8 @@
 		         			<Button styleClass="btn-default, btn-save" text="Save" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 		         			<Button styleClass="btn-default" text="Export" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
 		         		</HBox>
-	         			<HBox styleClass="model-canvas" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
-		         			<Canvas>
-		         			</Canvas>
+	         			<HBox fx:id="canvasBox" styleClass="model-canvas" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
+		         			<Canvas fx:id="modelCanvas" />
 	         			</HBox>
 	         		</children>
 	         		<columnConstraints>
