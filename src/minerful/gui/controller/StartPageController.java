@@ -1,27 +1,24 @@
 package minerful.gui.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 
-import javafx.animation.TranslateTransition;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.stage.FileChooser;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-import minerful.gui.common.ProgressForm;
-import minerful.gui.service.logparser.LogParserService;
-import minerful.gui.service.logparser.LogParserServiceImpl;
+import minerful.gui.common.GuiConstants;
 
 public class StartPageController implements Initializable {
 	
@@ -40,10 +37,48 @@ public class StartPageController implements Initializable {
 	@FXML
 	private FlowPane helpIconPane;
 	
+	@FXML
+	private GridPane infoDiscover;
+	
+	@FXML
+	private GridPane infoSimulate;
+	
+	@FXML
+	private GridPane infoSimplify;
+	
+	@FXML
+	private GridPane infoGenerateAutomata;
+	
+	@FXML
+	private GridPane infoPerformCheck;
+	
+	private WebView browser = new WebView();
+	private Scene infoScene = new Scene(browser);
+	private Stage infoStage = new Stage();
+	
 	@Override
-    public void initialize(URL location, ResourceBundle resources) {	
-		
+    public void initialize(URL location, ResourceBundle resources) {
+		infoStage.setScene(infoScene);
+		infoDiscover.setOnMouseClicked(e -> openDocumentation(GuiConstants.DISCOVER));
+		infoSimulate.setOnMouseClicked(e -> openDocumentation(GuiConstants.SIMULATE));
+		infoSimplify.setOnMouseClicked(e -> openDocumentation(GuiConstants.SIMPLIFY));
+		infoGenerateAutomata.setOnMouseClicked(e -> openDocumentation(GuiConstants.GENERATE_AUTOMATA));
+		infoPerformCheck.setOnMouseClicked(e -> openDocumentation(GuiConstants.PERFORM_CHECK));
     }
+	
+	private void openDocumentation(String area) {
+		try {
+			infoStage.setMaximized(true);
+			infoStage.show();
+			browser.setVisible(true);
+			WebEngine webEngine = browser.getEngine();
+			String path = getClass().getClassLoader().getResource("documentation/index.html").toExternalForm();
+			webEngine.load(path + (area != null ? "#"+area : ""));
+			infoStage.requestFocus();
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	    }
+	}
     
     @FXML
     private void openDiscovery(ActionEvent event) {
