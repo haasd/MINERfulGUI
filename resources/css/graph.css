@@ -1,0 +1,67 @@
+graph {
+
+}
+
+node {
+	size: 100px, 100px;
+	shape: circle;
+	fill-color: #c4e8f7;
+	text-color: #7eaad3;
+	stroke-mode: plain;
+	stroke-color: #7eaad3;
+	text-alignment: center;
+}
+
+node.Init {
+	fill-color: #c0c0c0;
+}
+
+node.End {
+	fill-color: #ff0000;
+}
+
+node.AtMostOne {
+	stroke-color: #800080;
+}
+
+node.Participation {
+	stroke-color: #ff8040;
+}
+
+node:clicked {
+	fill-color: #7eaad3;
+	stroke-color: #c4e8f7;
+	text-color: #c4e8f7;
+}
+
+edge {
+	fill-color: #7eaad3;
+}
+
+edge.AlternateSuccession {
+	fill-color: #ff8040;
+}
+
+edge.AlternatePrecedence {
+	fill-color: #ff8080;
+}
+
+edge.NotChainSuccession {
+	fill-color: #ffff80;
+}
+
+edge.CoExistence {
+	fill-color: #80ff80;
+}
+
+edge.NotSuccession {
+	fill-color: #80ffff;
+}
+
+edge.ChainPrecedence {
+	fill-color: #0080ff;
+}
+
+edge.AlternateResponse {
+	fill-color: #400040;
+}

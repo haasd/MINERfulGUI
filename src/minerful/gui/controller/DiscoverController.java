@@ -11,6 +11,12 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.log4j.Logger;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.fx_viewer.FxViewPanel;
+import org.graphstream.ui.fx_viewer.FxViewer;
+import org.graphstream.ui.view.Viewer;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
@@ -25,7 +31,6 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
@@ -38,8 +43,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import minerful.MinerFulMinerLauncher;
@@ -52,6 +56,7 @@ import minerful.gui.common.GuiConstants;
 import minerful.gui.common.MinerfulGuiUtil;
 import minerful.gui.common.ProgressForm;
 import minerful.gui.common.ValidationEngine;
+import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.service.loginfo.EventFilter;
 import minerful.gui.service.loginfo.LogInfo;
 import minerful.gui.service.logparser.LogParserService;
@@ -143,10 +148,7 @@ public class DiscoverController implements Initializable {
 	TextField stopAtTrace;
 	
 	@FXML
-	Canvas modelCanvas;
-	
-	@FXML
-	HBox canvasBox;
+	VBox canvasBox;
 	
 	private ProcessModel processModel; 
 	
@@ -155,19 +157,11 @@ public class DiscoverController implements Initializable {
 	private GraphicsContext gc ;
 	
 	private void drawArea(GraphicsContext gc) {
-		gc.setFill(Color.RED);
-		gc.fillRect(100, 100, 200, 200);
+
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
-		gc = modelCanvas.getGraphicsContext2D();
-		modelCanvas.widthProperty().bind(canvasBox.widthProperty());
-		modelCanvas.heightProperty().bind(canvasBox.heightProperty());
-		
-		modelCanvas.widthProperty().addListener((obs, oldWidth, newWidth) -> drawArea(gc));
-		modelCanvas.heightProperty().addListener((obs, oldHeight, newHeight) -> drawArea(gc));
 
 		eventLogTable.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
 		logInfoList.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
@@ -367,6 +361,13 @@ public class DiscoverController implements Initializable {
 		processModel = logInfo.getProcessModel();
 		discoveredConstraints.addAll(processModel.getAllConstraints());
 		
+		Graph graph = GraphUtil.drawGraph(processModel);
+		
+		Viewer viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD );
+		FxViewPanel view1 = (FxViewPanel) viewer.addDefaultView(true);
+		viewer.enableAutoLayout();
+		canvasBox.getChildren().add(view1);
+		
 		logInfos.add(GuiConstants.FILENAME+new File(logInfo.getPath()).getName());
 		logInfos.add(GuiConstants.NUMBER_OF_EVENTS+logInfo.getLogParser().numberOfEvents());
 		logInfos.add(GuiConstants.NUMBER_OF_TRACES+logInfo.getLogParser().length());
@@ -425,15 +426,24 @@ public class DiscoverController implements Initializable {
 			discoveredConstraints.clear();
 			discoveredConstraints.addAll(processModel.getAllConstraints());
 			
+			Graph graph = GraphUtil.drawGraph(processModel);
 			
-			ViewCmdParameters viewParams =
-					new ViewCmdParameters();
-			OutputModelParameters outParams =
-					new OutputModelParameters();
+			Viewer viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD );
+			FxViewPanel view1 = (FxViewPanel) viewer.addDefaultView(true);
+			viewer.enableAutoLayout();
+			canvasBox.getChildren().clear();
+			canvasBox.getChildren().add(view1);
 			
-			outParams.fileToSaveAsConDec = new File("BPIC2012-disco-declaremap.xml");
-			MinerFulOutputManagementLauncher outputMgt = new MinerFulOutputManagementLauncher();
-			outputMgt.manageOutput(processModel, viewParams, outParams, systemParams);
+//			ViewCmdParameters viewParams =
+//					new ViewCmdParameters();
+//			OutputModelParameters outParams =
+//					new OutputModelParameters();
+//			
+//			outParams.fileToSaveAsConDec = new File("ConDec.xml");
+//			outParams.fileToSaveAsJSON = new File("JSON.json");
+//			outParams.fileToSaveAsXML = new File("XML.xml");
+//			MinerFulOutputManagementLauncher outputMgt = new MinerFulOutputManagementLauncher();
+//			outputMgt.manageOutput(processModel, viewParams, outParams, systemParams);
 		}
 	}
 	
