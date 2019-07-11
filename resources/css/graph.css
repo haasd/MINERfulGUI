@@ -10,14 +10,27 @@ node {
 	stroke-mode: plain;
 	stroke-color: #7eaad3;
 	text-alignment: center;
+	text-offset: 10px, 0px;
+}
+
+sprite {
+	size: 20px, 20px;
+	shape: circle;
+	fill-color: #c4e8f7;
+	text-color: #7eaad3;
+	stroke-mode: plain;
+	stroke-color: #7eaad3;
+	text-alignment: center;
+	text-size: 20px;
+	text-offset: 0px, 5px;
 }
 
 node.Init {
-	fill-color: #c0c0c0;
+
 }
 
 node.End {
-	fill-color: #ff0000;
+
 }
 
 node.AtMostOne {
@@ -36,32 +49,30 @@ node:clicked {
 
 edge {
 	fill-color: #7eaad3;
+	shape: line;
 }
 
 edge.AlternateSuccession {
-	fill-color: #ff8040;
 }
 
 edge.AlternatePrecedence {
-	fill-color: #ff8080;
 }
 
 edge.NotChainSuccession {
-	fill-color: #ffff80;
 }
 
 edge.CoExistence {
-	fill-color: #80ff80;
+
 }
 
 edge.NotSuccession {
-	fill-color: #80ffff;
+
 }
 
 edge.ChainPrecedence {
-	fill-color: #0080ff;
+
 }
 
 edge.AlternateResponse {
-	fill-color: #400040;
+
 }

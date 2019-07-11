@@ -4,6 +4,8 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.ui.spriteManager.Sprite;
+import org.graphstream.ui.spriteManager.SpriteManager;
 
 import minerful.concept.ProcessModel;
 import minerful.concept.TaskChar;
@@ -13,6 +15,9 @@ public class GraphUtil {
 	
 	public static Graph drawGraph(ProcessModel processModel) {
 		Graph graph = new MultiGraph("Tutorial 1");
+		graph.setAttribute("layout.quality", 3);
+		graph.setAttribute("layout.gravity", 0.01);
+		SpriteManager sm = new SpriteManager(graph);
 		graph.setAttribute("ui.stylesheet", "url("+GraphUtil.class.getClassLoader().getResource("css/graph.css").toExternalForm()+")");
 		
 		for(TaskChar task : processModel.getTasks()) {
@@ -27,8 +32,12 @@ public class GraphUtil {
 				node.setAttribute("ui.class", constraint.type);
 			} else {
 				id++;
+				Sprite a = sm.addSprite(String.valueOf(id));
+				a.setAttribute("ui.label", "*");
+				a.setPosition(0.5);
 				Edge edge = graph.addEdge(String.valueOf(id), constraint.getBase().getJoinedStringOfIdentifiers(), constraint.getImplied().getJoinedStringOfIdentifiers());
 				edge.setAttribute("ui.class", constraint.type);
+				a.attachToEdge(String.valueOf(id));
 			}
 			
 		}
