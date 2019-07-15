@@ -6,17 +6,19 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.SingleGraph;
 import org.graphstream.ui.fx_viewer.FxViewPanel;
 import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.view.Viewer;
+import org.graphstream.ui.view.ViewerListener;
+import org.graphstream.ui.view.ViewerPipe;
+import org.graphstream.ui.view.util.InteractiveElement;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
@@ -31,7 +33,6 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -47,7 +48,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import minerful.MinerFulMinerLauncher;
-import minerful.MinerFulOutputManagementLauncher;
 import minerful.concept.ProcessModel;
 import minerful.concept.TaskChar;
 import minerful.concept.TaskCharArchive;
@@ -56,16 +56,15 @@ import minerful.gui.common.GuiConstants;
 import minerful.gui.common.MinerfulGuiUtil;
 import minerful.gui.common.ProgressForm;
 import minerful.gui.common.ValidationEngine;
+import minerful.gui.graph.util.GraphMouseManager;
 import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.service.loginfo.EventFilter;
 import minerful.gui.service.loginfo.LogInfo;
 import minerful.gui.service.logparser.LogParserService;
 import minerful.gui.service.logparser.LogParserServiceImpl;
-import minerful.io.params.OutputModelParameters;
 import minerful.miner.params.MinerFulCmdParameters;
 import minerful.params.InputLogCmdParameters;
 import minerful.params.SystemCmdParameters;
-import minerful.params.ViewCmdParameters;
 import minerful.postprocessing.params.PostProcessingCmdParameters;
 
 public class DiscoverController implements Initializable {
@@ -154,14 +153,11 @@ public class DiscoverController implements Initializable {
 	
 	private LogInfo currentEventLog;
 	
-	private GraphicsContext gc ;
-	
-	private void drawArea(GraphicsContext gc) {
 
-	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		System.setProperty("org.graphstream.ui", "org.graphstream.ui.javafx.util.Display");
 
 		eventLogTable.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
 		logInfoList.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
@@ -360,11 +356,10 @@ public class DiscoverController implements Initializable {
 		
 		processModel = logInfo.getProcessModel();
 		discoveredConstraints.addAll(processModel.getAllConstraints());
-		
 		Graph graph = GraphUtil.drawGraph(processModel);
-		
 		Viewer viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD );
 		FxViewPanel view1 = (FxViewPanel) viewer.addDefaultView(true);
+		view1.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, new Stage()));
 		viewer.enableAutoLayout();
 		canvasBox.getChildren().add(view1);
 		
@@ -427,9 +422,9 @@ public class DiscoverController implements Initializable {
 			discoveredConstraints.addAll(processModel.getAllConstraints());
 			
 			Graph graph = GraphUtil.drawGraph(processModel);
-			
 			Viewer viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD );
 			FxViewPanel view1 = (FxViewPanel) viewer.addDefaultView(true);
+			view1.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, new Stage()));
 			viewer.enableAutoLayout();
 			canvasBox.getChildren().clear();
 			canvasBox.getChildren().add(view1);

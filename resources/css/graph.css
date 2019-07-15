@@ -14,15 +14,20 @@ node {
 }
 
 sprite {
-	size: 20px, 20px;
-	shape: circle;
-	fill-color: #c4e8f7;
-	text-color: #7eaad3;
+	size: 0px;
+	shape: box;
+	fill-color: rgba(0,0,0,0);
 	stroke-mode: plain;
-	stroke-color: #7eaad3;
+	stroke-color: rgba(0,0,0,0);
 	text-alignment: center;
-	text-size: 20px;
-	text-offset: 0px, 5px;
+	text-size: 13px;
+}
+
+node:selected {
+	size: 125px;
+	fill-color: #ffc9ae;
+	text-color: #ff8000;
+	stroke-color: #ff8000;
 }
 
 node.Init {
@@ -41,15 +46,13 @@ node.Participation {
 	stroke-color: #ff8040;
 }
 
-node:clicked {
-	fill-color: #7eaad3;
-	stroke-color: #c4e8f7;
-	text-color: #c4e8f7;
-}
-
 edge {
 	fill-color: #7eaad3;
 	shape: line;
+}
+
+edge:selected {
+	fill-color: #ff8000;
 }
 
 edge.AlternateSuccession {
