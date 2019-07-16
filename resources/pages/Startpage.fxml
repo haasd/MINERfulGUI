@@ -87,9 +87,9 @@
       </GridPane>
       <AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-background-color: linear-gradient(#fffdf7,#FFFDF5);">
          <children>
-            <ImageView fitHeight="100.0" fitWidth="133.3" layoutX="80.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView styleClass="clickable" fitHeight="100.0" fitWidth="133.3" layoutX="80.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true" onMousePressed='#openStartPage'>
                <image>
-                  <Image url="@../images/minerful-logo-standard.png" />
+                  <Image url="@../images/minerful-logo-standard.png"/>
                </image>
             </ImageView>
             <AnchorPane prefWidth="56.0" style="-fx-background-color: #323232;" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0">

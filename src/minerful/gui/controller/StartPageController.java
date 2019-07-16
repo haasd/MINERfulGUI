@@ -12,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
@@ -103,6 +104,16 @@ public class StartPageController implements Initializable {
 			e.printStackTrace();
 			logger.error(String.format("Cannot load %s!",pathToFxml));
 		}
+    }
+    
+    
+    @FXML
+    private void openStartPage(MouseEvent me) {
+    	if(currentView != "startpage") {
+    		logger.info("Open Startpage");
+    		loadContent("pages/Startpage.fxml");
+    		currentView = "startpage";
+    	}
     }
     
     @FXML

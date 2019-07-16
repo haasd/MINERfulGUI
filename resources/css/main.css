@@ -5,6 +5,10 @@
 	-fx-font-family: open sans; 
 }
 
+.clickable {
+	-fx-cursor: hand;
+}
+
 .menu-button {
 	-fx-background-color: transparent;
 	-fx-text-fill: "#292928";
