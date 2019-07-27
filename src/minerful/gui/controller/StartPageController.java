@@ -10,13 +10,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import minerful.gui.common.GuiConstants;
 
@@ -52,13 +50,11 @@ public class StartPageController implements Initializable {
 	@FXML
 	private GridPane infoPerformCheck;
 	
-	private WebView browser = new WebView();
-	private Scene infoScene = new Scene(browser);
 	private Stage infoStage = new Stage();
 	
 	@Override
     public void initialize(URL location, ResourceBundle resources) {
-		infoStage.setScene(infoScene);
+		initDocumentation();
 		infoDiscover.setOnMouseClicked(e -> openDocumentation(GuiConstants.DISCOVER));
 		infoSimulate.setOnMouseClicked(e -> openDocumentation(GuiConstants.SIMULATE));
 		infoSimplify.setOnMouseClicked(e -> openDocumentation(GuiConstants.SIMPLIFY));
@@ -66,14 +62,20 @@ public class StartPageController implements Initializable {
 		infoPerformCheck.setOnMouseClicked(e -> openDocumentation(GuiConstants.PERFORM_CHECK));
     }
 	
+	private void initDocumentation() {
+		try {
+	        Scene scene = new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("pages/Documentation.fxml")), 600, 400);
+	        infoStage.setTitle("Documentation");
+	        infoStage.setScene(scene);
+	    } catch (IOException e) {
+	    	e.printStackTrace();
+	    }
+	}
+	
 	private void openDocumentation(String area) {
 		try {
 			infoStage.setMaximized(true);
 			infoStage.show();
-			browser.setVisible(true);
-			WebEngine webEngine = browser.getEngine();
-			String path = getClass().getClassLoader().getResource("documentation/index.html").toExternalForm();
-			webEngine.load(path + (area != null ? "#"+area : ""));
 			infoStage.requestFocus();
 	    } catch(Exception e) {
 	        e.printStackTrace();
