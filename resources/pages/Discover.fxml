@@ -14,181 +14,30 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Slider?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tab?>
 
 <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="minerful.gui.controller.DiscoverController">
 	<children>
 		<!-- Area-Header -->
 		<AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" >
 			<Label styleClass="area-header" text="Discover" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
+			<Button styleClass="btn-default, btn-header" text="Open Log" onAction="#openFile" AnchorPane.leftAnchor="210.0" AnchorPane.topAnchor="20.0" >
+				<graphic>
+           			<FontIcon iconColor="#393939" iconLiteral="typ-document-text" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+            	</graphic>
+			</Button>
 		</AnchorPane>
 		
-		<!-- Event-Log  -->
-		<VBox styleClass="section, section-menu" GridPane.columnIndex="0" GridPane.rowIndex="1" style="-fx-background-color: white;" >
-         	<children>
-         		
-         		<!-- Event-Log -->
-				<Label styleClass="section-header1" text="Event-Log">
-					<graphic>
-						<Button styleClass="btn-default, btn-round" onAction="#openFile">
-							<graphic>
-              					<FontIcon iconColor="WHITE" iconLiteral="typ-document-text" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
-               				</graphic>
-						</Button>
-					</graphic>
-				</Label>
-				<TableView fx:id="eventLogTable" styleClass="table">
-					 <columns>
-					    <TableColumn styleClass="column-left" text="Filename" fx:id="filenameColumn">
-					    </TableColumn>
-					    <TableColumn styleClass="column-left" prefWidth="150.0" minWidth="150.0" maxWidth="150.0" text="Date" fx:id="dateColumn"> 
-					    </TableColumn>
-					 </columns>
-					 <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
-    			</TableView>
-
-				<!-- Meta-Information -->
-    			<Label styleClass="section-header2" text="Meta-Information" />
-    			<ListView styleClass="log-infos" fx:id="logInfoList" prefWidth="200.0">
-    			</ListView>
-    			
-    			<!-- Trace-Filter -->
-    			<Label styleClass="section-header2" text="Trace-Filter" />
-				<GridPane vgap="10">
-					<children>
-						<Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Start from Trace:" />
-						<TextField fx:id="startAtTrace" GridPane.columnIndex="1" GridPane.rowIndex="0" ></TextField> 
-						<Label GridPane.columnIndex="0" GridPane.rowIndex="1" text="Stop at Trace:" />
-						<TextField fx:id="stopAtTrace" GridPane.columnIndex="1" GridPane.rowIndex="1" ></TextField>
-					</children>
-					<columnConstraints>
-				        <ColumnConstraints percentWidth="60.0" />
-				        <ColumnConstraints percentWidth="40.0" />
-					</columnConstraints>
-				</GridPane>
-				
-				<!-- Event-Filter -->
-    			<Label styleClass="section-header2" text="Event-Filter" />
-    			<TableView fx:id="eventsTable" styleClass="table">
-					 <columns>
-					 	<TableColumn styleClass="column-center" prefWidth="50.0" minWidth="50.0" maxWidth="50.0" text="" fx:id="filterColumn"> 
-					    	<graphic>
-                  				<FontIcon iconLiteral="typ-filter" iconSize="24" />
-               				</graphic>
-					    </TableColumn>
-					    <TableColumn styleClass="column-left" text="Eventname" fx:id="eventNameColumn"> 
-					    </TableColumn>
-					 </columns>
-					 <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
-    			</TableView>
-    			<Label styleClass="section-header2" text="Filter-Result" />
-    			<ListView  fx:id="resultList" styleClass="log-infos" prefWidth="200.0">
-    			</ListView>
-         	</children>
-		</VBox>
-		
-		<!-- Model -->
-		<GridPane styleClass="section" GridPane.columnIndex="1" GridPane.rowIndex="1" hgap="30">
-         	<children>
-         	
-         		<!-- Canvas -->
-	         	<GridPane styleClass="area-content" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2">
-	         		<children>
-	         			<HBox style="-fx-spacing: 10; -fx-padding: 10px;">
-		         			<Label styleClass="section-header1" text="Model" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-		         			<Button styleClass="btn-default, btn-save" text="Save" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-		         			<Button styleClass="btn-default" text="Export" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
-		         		</HBox>
-	         			<VBox fx:id="canvasBox" styleClass="model-canvas" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
-	         			</VBox>
-	         		</children>
-	         		<columnConstraints>
-				        <ColumnConstraints hgrow="ALWAYS" />
-					</columnConstraints>
-					<rowConstraints>
-					   <RowConstraints />
-					   <RowConstraints vgrow="ALWAYS" />
-					</rowConstraints>
-	         	</GridPane>
-	         	
-       			<!-- Mining-Parameter interface -->
-       			<VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
-        			<Label styleClass="section-header2" text="Mining-Parameter" style="-fx-padding: 0 0 30px 0"/>
-        			<GridPane vgap="5" hgap="10">
-        				<children>
-        				
-        					<!-- Display Support-Threshold interface -->
-         				<Label text="Support-Threshold" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" style="-fx-content-display: right">
-         					<graphic>
-              					<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
-               				</graphic>
-         				</Label>
-         				<TextField fx:id="supportThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="1" ></TextField>
-         				<Slider fx:id="supportThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="1">
-         				</Slider>
-         				
-         				<!-- Display Confidence-Threshold interface -->
-         				<Label text="Confidence-Threshold" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2" style="-fx-content-display: right">
-         					<graphic>
-              					<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
-               				</graphic>
-         				</Label>
-         				<TextField fx:id="confidenceThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="3" ></TextField>
-         				<Slider fx:id="confidenceThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="3">
-         				</Slider>
-         				
-         				<!-- Display Interest Factor-Threshold interface -->
-         				<Label text="Interest Factor-Threshold" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2" style="-fx-content-display: right">
-         					<graphic>
-              					<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
-               				</graphic>
-         				</Label>
-         				<TextField fx:id="interestThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="5" ></TextField>
-         				<Slider fx:id="interestThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="5">
-         				</Slider>
-         				
-        				</children>
-        				<columnConstraints>
-					        <ColumnConstraints percentWidth="20.0" />
-					        <ColumnConstraints percentWidth="80.0" />
-						</columnConstraints>
-        			</GridPane>
-       			</VBox>
-       			
-       			<!-- Constraints -->
-       			<VBox styleClass="constraints-table" GridPane.columnIndex="1" GridPane.rowIndex="1">
-        			<Label styleClass="section-header2" text="Constraints"/>
-        			<TableView fx:id="constraintsTable" styleClass="table">
-						<columns>
-						   <TableColumn styleClass="column-left" text="Constraint" fx:id="constraintColumn"> 
-						   </TableColumn>
-						   <TableColumn text="Support" prefWidth="100.0" minWidth="100.0" maxWidth="100.0" fx:id="supportColumn"> 
-						   </TableColumn>
-						   <TableColumn text="Confidence" prefWidth="100.0" minWidth="100.0" maxWidth="100.0" fx:id="confidenceColumn"> 
-						   </TableColumn>
-						   <TableColumn text="Interest Factor" prefWidth="100.0" minWidth="100.0" maxWidth="100.0" fx:id="interestColumn"> 
-						   </TableColumn>
-						</columns>
-						<columnResizePolicy>
-							<TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-						</columnResizePolicy>
-  					</TableView>
- 				</VBox>
-         	</children>
-			<rowConstraints>
-			   <RowConstraints vgrow="ALWAYS" />
-			</rowConstraints>
-			<columnConstraints>
-				<ColumnConstraints percentWidth="30.0" />
-				<ColumnConstraints percentWidth="70.0" />
-			</columnConstraints>
-        </GridPane>
+		<!-- TabPane -->
+		<TabPane fx:id="discoverTabPane" GridPane.columnIndex="0" GridPane.rowIndex="1">
+        </TabPane> 
 	</children>
-	<columnConstraints>
-	        <ColumnConstraints percentWidth="20.0" />
-	        <ColumnConstraints percentWidth="80.0" />
-	</columnConstraints>
 	<rowConstraints>
-	   <RowConstraints />
-	   <RowConstraints vgrow="ALWAYS" />
+		<RowConstraints/>
+	  	<RowConstraints vgrow="ALWAYS" />
 	</rowConstraints>
+	<columnConstraints>
+		<ColumnConstraints percentWidth="100.0" />
+	</columnConstraints>
 </GridPane>

@@ -46,8 +46,8 @@
 .area-header {
 	-fx-padding: 20px 0px 5px 30px;
 	-fx-font-size: 36px;
-	-fx-border-color: "#393939";
-	-fx-border-width: 0 0 1px 0;
+	-fx-background-color: #292929;
+	-fx-text-fill: white;
 	-fx-font-weight: bold;
 }
 
@@ -180,7 +180,8 @@
 	-fx-font-weight: bold;
 	-fx-background-color: #393939;
 	-fx-text-fill: white;
-	-fx-background-radius: 0px;
+	-fx-background-radius: 5px;
+	-fx-border-radius: 5px;
 	-fx-cursor: hand;
 }
 
@@ -191,6 +192,12 @@
     -fx-min-height: 40px;
     -fx-max-width: 40px;
     -fx-max-height: 40px;
+}
+
+.btn-header {
+	-fx-background-color: white;
+	-fx-text-fill: #393939;
+	-fx-border-color: white;
 }
 
 .btn-default:hover {

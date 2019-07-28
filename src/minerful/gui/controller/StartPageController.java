@@ -6,6 +6,8 @@ import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,11 +20,15 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import minerful.gui.common.GuiConstants;
+import minerful.gui.service.loginfo.LogInfo;
 
 public class StartPageController implements Initializable {
 	
 	Logger logger = Logger.getLogger(StartPageController.class);
 	String currentView ="";
+	
+	private final ObservableList<LogInfo> loadedLogFiles =
+	        FXCollections.observableArrayList();
 	
 	@FXML
 	private GridPane rootPane;
@@ -94,7 +100,13 @@ public class StartPageController implements Initializable {
     
     private void loadContent(String pathToFxml) {
     	try {
-    		GridPane gridPane = FXMLLoader.load(getClass().getClassLoader().getResource(pathToFxml));
+    		FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(pathToFxml));
+    		GridPane gridPane = loader.load(); 
+    		
+    		//GridPane gridPane = FXMLLoader.load(getClass().getClassLoader().getResource(pathToFxml));
+    		
+    		AbstractController abstractController = loader.getController();
+    		abstractController.setMainController(this);
     		
     		// replace context pane
 			rootPane.getChildren().set(0, gridPane);
@@ -104,6 +116,8 @@ public class StartPageController implements Initializable {
 			e.printStackTrace();
 			logger.error(String.format("Cannot load %s!",pathToFxml));
 		}
+    	
+    	
     }
     
     
@@ -138,6 +152,14 @@ public class StartPageController implements Initializable {
     @FXML
     private void openFitnessCheck() {
     	logger.info("Open Fitness-Check");
+    }
+
+	public ObservableList<LogInfo> getLoadedLogFiles() {
+		return loadedLogFiles;
+	}
+    
+    public void addLoadedLogFile(LogInfo logInfo) {
+    	loadedLogFiles.add(logInfo);
     }
     
 }
