@@ -1,7 +1,6 @@
 package minerful.gui.controller;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Graph;
@@ -26,7 +24,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -43,7 +40,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import minerful.MinerFulMinerLauncher;
 import minerful.concept.ProcessModel;
@@ -52,14 +48,11 @@ import minerful.concept.TaskCharArchive;
 import minerful.concept.constraint.Constraint;
 import minerful.gui.common.GuiConstants;
 import minerful.gui.common.MinerfulGuiUtil;
-import minerful.gui.common.ProgressForm;
 import minerful.gui.common.ValidationEngine;
 import minerful.gui.graph.util.GraphMouseManager;
 import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.service.loginfo.EventFilter;
 import minerful.gui.service.loginfo.LogInfo;
-import minerful.gui.service.logparser.LogParserService;
-import minerful.gui.service.logparser.LogParserServiceImpl;
 import minerful.miner.params.MinerFulCmdParameters;
 import minerful.params.InputLogCmdParameters;
 import minerful.params.SystemCmdParameters;
@@ -307,11 +300,12 @@ public class DiscoverTabController implements Initializable {
 		discoveredConstraints.addAll(processModel.getAllConstraints());
 		Graph graph = GraphUtil.drawGraph(processModel);
 		Viewer viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD );
-		FxViewPanel view1 = (FxViewPanel) viewer.addDefaultView(true);
-		view1.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, new Stage()));
+		FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
+		view.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, new Stage()));
 		viewer.enableAutoLayout();
-		canvasBox.getChildren().add(view1);
+		canvasBox.getChildren().add(view);
 		
+
 		logInfos.add(GuiConstants.FILENAME+new File(currentEventLog.getPath()).getName());
 		logInfos.add(GuiConstants.NUMBER_OF_EVENTS+currentEventLog.getLogParser().numberOfEvents());
 		logInfos.add(GuiConstants.NUMBER_OF_TRACES+currentEventLog.getLogParser().length());

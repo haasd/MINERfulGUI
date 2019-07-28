@@ -10,12 +10,10 @@ import org.graphstream.ui.view.util.InteractiveElement;
 import org.graphstream.ui.view.util.MouseManager;
 
 import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
@@ -62,10 +60,10 @@ public class GraphMouseManager implements MouseManager {
 		view.addListener(MouseEvent.MOUSE_PRESSED, mousePressed);
 		view.addListener(MouseEvent.MOUSE_DRAGGED, mouseDragged);
 		view.addListener(MouseEvent.MOUSE_RELEASED, mouseRelease);
+		view.addListener(ScrollEvent.SCROLL, mouseScroll);
 	}
 	
 	// Command
-
 	protected void mouseButtonPress(MouseEvent event) {
 		view.requireFocus();
 	
@@ -150,6 +148,18 @@ public class GraphMouseManager implements MouseManager {
 			} else {
 				view.selectionGrowsAt(event.getX(), event.getY());
 			}
+		}
+	};	
+	
+	EventHandler<ScrollEvent> mouseScroll = new EventHandler<ScrollEvent>() {
+		@Override
+		public void handle(ScrollEvent event) {
+			if(event.getDeltaY() < 0) {
+				view.getCamera().setViewPercent(view.getCamera().getViewPercent() - 0.1);
+			} else {
+				view.getCamera().setViewPercent(view.getCamera().getViewPercent() + 0.1);
+			}
+			
 		}
 	};	
 	
