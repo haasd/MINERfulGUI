@@ -174,6 +174,12 @@
 	-fx-border-width: 0 0 0 0;
 }
 
+.lightbox {
+	-fx-background-color: rgba(255, 255, 255, 1);
+    -fx-effect: dropshadow(gaussian, grey, 10, 0, 0, 0);
+    -fx-background-insets: 10;
+}
+
 .btn-default {
 	-fx-border-width: 2px;
 	-fx-border-color: #393939;
@@ -203,6 +209,12 @@
 .btn-default:hover {
 	-fx-border-color: #232323;
 	-fx-background-color: #232323;
+}
+
+.btn-header:hover {
+	-fx-background-color: grey;
+	-fx-text-fill: #393939;
+	-fx-border-color: grey;
 }
 
 .btn-save {

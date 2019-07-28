@@ -48,12 +48,8 @@ public class GraphMouseManager implements MouseManager {
         stage.initModality(Modality.WINDOW_MODAL);
         
         StackPane stackPane = new StackPane();
-
-        stackPane.setStyle(
-            "-fx-background-color: rgba(255, 255, 255, 1);" +
-            "-fx-effect: dropshadow(gaussian, red, 10, 0, 0, 0);" +
-            "-fx-background-insets: 10;"
-        );
+        stackPane.getStylesheets().add(getClass().getClassLoader().getResource("css/main.css").toExternalForm());
+        stackPane.getStyleClass().add("lightbox");
         
         Scene scene = new Scene(stackPane, 200.0, 200.0);
         scene.setFill(Color.TRANSPARENT);
@@ -95,7 +91,11 @@ public class GraphMouseManager implements MouseManager {
 		view.freezeElement(element, true);
 		unselectAllElements();
 		if (event.getButton() == MouseButton.SECONDARY) {
-			element.setAttribute("ui.clicked");
+			element.setAttribute("ui.selected");
+			GraphicNode node = (GraphicNode) element;
+			node.leavingEdges().forEach(edge -> {edge.setAttribute("ui.selected");});
+			stage.setX(event.getSceneX()- 200);
+			stage.setY(event.getSceneY());
 			stage.show();
 			stage.toFront();
 		} else {

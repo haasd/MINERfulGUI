@@ -6,12 +6,13 @@ import org.apache.log4j.Logger;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javafx.application.Application;
-import javafx.fxml.FXML;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * MINERful GUI Starter
@@ -31,6 +32,15 @@ public class MinerFulGuiStarter extends Application {
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
+        
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                Platform.exit();
+                System.exit(0);
+                logger.info("Close Application!");
+            }
+        });
     }
 
     public static void setRoot(String fxml) throws IOException {
