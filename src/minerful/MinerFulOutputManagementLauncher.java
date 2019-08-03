@@ -11,10 +11,6 @@ import java.util.NavigableMap;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.PropertyException;
 
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 import javassist.convert.Transformer;
 import minerful.concept.ProcessModel;
 import minerful.concept.constraint.Constraint;
