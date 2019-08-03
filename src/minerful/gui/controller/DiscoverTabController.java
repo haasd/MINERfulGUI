@@ -1,6 +1,7 @@
 package minerful.gui.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,6 +10,8 @@ import java.util.EnumSet;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.CharSet;
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Graph;
 import org.graphstream.ui.fx_viewer.FxViewPanel;
@@ -40,6 +43,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import minerful.MinerFulMinerLauncher;
 import minerful.concept.ProcessModel;
@@ -303,8 +307,8 @@ public class DiscoverTabController implements Initializable {
 		FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
 		view.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, new Stage()));
 		viewer.enableAutoLayout();
-		canvasBox.getChildren().add(view);
 		
+		canvasBox.getChildren().add(view);
 
 		logInfos.add(GuiConstants.FILENAME+new File(currentEventLog.getPath()).getName());
 		logInfos.add(GuiConstants.NUMBER_OF_EVENTS+currentEventLog.getLogParser().numberOfEvents());
@@ -431,6 +435,36 @@ public class DiscoverTabController implements Initializable {
 				updateModel();
 			}
 		};
+	}
+	
+	@FXML
+	private void exportFile() {
+		File htmlTemplateFile = new File(getClass().getClassLoader().getResource("templates/export.html").getFile());
+		
+		// init FileChooser and set extension-filter
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Export Model");
+		FileChooser.ExtensionFilter extFilter = 
+	             new FileChooser.ExtensionFilter("html/model", "*.html", "*.model");
+	    fileChooser.getExtensionFilters().add(extFilter);
+	    
+	    // open FileChooser and handle response
+		File selectedFile = fileChooser.showSaveDialog(new Stage());
+		
+		if(selectedFile != null) {
+
+			try {
+				String htmlString = FileUtils.readFileToString(htmlTemplateFile,"UTF-8");
+				String title = "New Page";
+				htmlString = htmlString.replace("$title", title);
+				File newHtmlFile = new File(selectedFile.getAbsolutePath());
+				FileUtils.writeStringToFile(newHtmlFile, htmlString, "UTF-8");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 	}
 
 

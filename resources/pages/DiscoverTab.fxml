@@ -88,7 +88,7 @@
 	         			<HBox style="-fx-spacing: 10; -fx-padding: 10px;">
 		         			<Label styleClass="section-header1" text="Model" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
 		         			<Button styleClass="btn-default, btn-save" text="Save" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-		         			<Button styleClass="btn-default" text="Export" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+		         			<Button styleClass="btn-default" text="Export" onAction="#exportFile" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
 		         		</HBox>
 	         			<VBox fx:id="canvasBox" styleClass="model-canvas" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
 	         			</VBox>
