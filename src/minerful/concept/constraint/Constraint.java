@@ -4,10 +4,10 @@
  */
 package minerful.concept.constraint;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -25,7 +25,6 @@ import javax.xml.bind.annotation.XmlTransient;
 import minerful.automaton.concept.relevance.VacuityAwareWildcardAutomaton;
 import minerful.concept.TaskChar;
 import minerful.concept.TaskCharSet;
-import minerful.concept.constraint.ConstraintChange.ChangedProperty;
 import minerful.concept.constraint.ConstraintFamily.ConstraintSubFamily;
 import minerful.concept.constraint.existence.ExistenceConstraint;
 import minerful.concept.constraint.relation.RelationConstraint;
@@ -34,7 +33,11 @@ import minerful.io.encdec.TaskCharEncoderDecoder;
 @XmlRootElement(name="constraint")
 @XmlSeeAlso({RelationConstraint.class,ExistenceConstraint.class})
 @XmlAccessorType(XmlAccessType.FIELD)
-public abstract class Constraint extends Observable implements Comparable<Constraint> {
+public abstract class Constraint implements Comparable<Constraint> {
+	
+	@XmlTransient
+	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	
 	@XmlTransient
     public static final double MIN_SUPPORT = 0;
 	@XmlTransient
@@ -228,7 +231,7 @@ public abstract class Constraint extends Observable implements Comparable<Constr
     }
     
     protected int compareParameters(List<TaskCharSet> othersParameters) {
-    	int	result = new Integer(this.parameters.size()).compareTo(othersParameters.size());
+		int	result = Integer.valueOf(this.parameters.size()).compareTo(othersParameters.size());
     	if (result == 0) {
     		for (int i = 0; i < this.parameters.size() && result == 0; i++) {
     			result = this.parameters.get(i).compareTo(othersParameters.get(i));
@@ -248,8 +251,10 @@ public abstract class Constraint extends Observable implements Comparable<Constr
 	}
 	public void setBelowSupportThreshold(boolean belowSupportThreshold) {
 		if (belowSupportThreshold != this.belowSupportThreshold) {
+			boolean oldbelowSupportThreshold = this.belowSupportThreshold;
 			this.belowSupportThreshold = belowSupportThreshold;
-			this.notifyObservers(ChangedProperty.BELOW_SUPPORT_THRESHOLD, belowSupportThreshold);
+			pcs.firePropertyChange(ConstraintChange.ChangedProperty.BELOW_SUPPORT_THRESHOLD.toString(), oldbelowSupportThreshold, belowSupportThreshold);
+			
 		}
 	}
 
@@ -258,8 +263,9 @@ public abstract class Constraint extends Observable implements Comparable<Constr
 	}
 	public void setBelowConfidenceThreshold(boolean belowConfidenceThreshold) {
 		if (belowConfidenceThreshold != this.belowConfidenceThreshold) {
+			boolean oldbelowConfidenceThreshold = this.belowConfidenceThreshold;
 			this.belowConfidenceThreshold = belowConfidenceThreshold;
-			this.notifyObservers(ChangedProperty.BELOW_CONFIDENCE_THRESHOLD, belowConfidenceThreshold);
+			pcs.firePropertyChange(ConstraintChange.ChangedProperty.BELOW_CONFIDENCE_THRESHOLD.toString(), oldbelowConfidenceThreshold, belowConfidenceThreshold);
 		}
 	}
 
@@ -268,8 +274,10 @@ public abstract class Constraint extends Observable implements Comparable<Constr
 	}
 	public void setBelowInterestFactorThreshold(boolean belowInterestFactorThreshold) {
 		if (belowInterestFactorThreshold != this.belowInterestFactorThreshold) {
-			this.belowInterestFactorThreshold = belowInterestFactorThreshold;
-			this.notifyObservers(ChangedProperty.BELOW_INTEREST_FACTOR_THRESHOLD, belowInterestFactorThreshold);
+			boolean oldbelowInterestFactorThreshold = this.belowInterestFactorThreshold;
+			this.belowInterestFactorThreshold = belowInterestFactorThreshold;			
+			pcs.firePropertyChange(ConstraintChange.ChangedProperty.BELOW_INTEREST_FACTOR_THRESHOLD.toString(), oldbelowInterestFactorThreshold, belowInterestFactorThreshold);
+
 		}
 	}
 
@@ -278,22 +286,25 @@ public abstract class Constraint extends Observable implements Comparable<Constr
 	}
 	public void setBelowFitnessThreshold(boolean belowFitnessThreshold) {
 		if (belowFitnessThreshold != this.belowSupportThreshold) {
+			boolean oldbelowFitnessThreshold = this.belowFitnessThreshold;
 			this.belowFitnessThreshold = belowFitnessThreshold;
-			this.notifyObservers(ChangedProperty.BELOW_FITNESS_THRESHOLD, belowFitnessThreshold);
+			pcs.firePropertyChange(ConstraintChange.ChangedProperty.BELOW_FITNESS_THRESHOLD.toString(), oldbelowFitnessThreshold, belowFitnessThreshold);
 		}
 	}
 
-	public void setRedundant(boolean redundant) {
+	public void setRedundant(boolean redundant) {		
 		if (this.redundant != redundant) {
+			boolean oldredundant = this.redundant;
 			this.redundant = redundant;
-			this.notifyObservers(ConstraintChange.ChangedProperty.REDUNDANT, redundant);
+			pcs.firePropertyChange(ConstraintChange.ChangedProperty.REDUNDANT.toString(), oldredundant, redundant);
 		}
 	}
 
 	public void setConflicting(boolean conflicting) {
 		if (this.conflicting != conflicting) {
+			boolean oldconflicting = this.conflicting;			
 			this.conflicting = conflicting;
-			this.notifyObservers(ConstraintChange.ChangedProperty.CONFLICTING, conflicting);
+			pcs.firePropertyChange(ConstraintChange.ChangedProperty.CONFLICTING.toString(), oldconflicting, conflicting);
 		}
 	}
 	
@@ -303,8 +314,10 @@ public abstract class Constraint extends Observable implements Comparable<Constr
 	public void setSupport(double support) {
 		if (this.support != support) {
 			this.checkSupport(support);
+			double oldSupport = this.support;
 			this.support = support;
-			this.notifyObservers(ConstraintChange.ChangedProperty.SUPPORT, support);
+			pcs.firePropertyChange("support", oldSupport, support);
+
 		}
 	}
 
@@ -314,8 +327,9 @@ public abstract class Constraint extends Observable implements Comparable<Constr
 	public void setConfidence(double confidence) {
 		if (this.confidence != confidence) {
 			this.checkConfidence(confidence);
+			double oldConfidence = this.confidence;
 			this.confidence = confidence;
-			this.notifyObservers(ConstraintChange.ChangedProperty.CONFIDENCE, confidence);
+			pcs.firePropertyChange(ConstraintChange.ChangedProperty.CONFIDENCE.toString(), oldConfidence, confidence);
 		}
 	}
 
@@ -325,8 +339,9 @@ public abstract class Constraint extends Observable implements Comparable<Constr
 	public void setInterestFactor(double interestFactor) {
 		if (this.interestFactor != interestFactor) {
 			this.checkInterestFactor(interestFactor);
+			double oldInterestFactor = this.interestFactor;
 			this.interestFactor = interestFactor;
-			this.notifyObservers(ConstraintChange.ChangedProperty.INTEREST_FACTOR, interestFactor);
+			pcs.firePropertyChange(ConstraintChange.ChangedProperty.INTEREST_FACTOR.toString(), oldInterestFactor, interestFactor);
 		}
 	}
 
@@ -336,8 +351,9 @@ public abstract class Constraint extends Observable implements Comparable<Constr
 	public void setFitness(double fitness) {
 		if (this.fitness == null || this.fitness != fitness) {
 			this.checkFitness(fitness);
+			double oldFitness = this.fitness;
 			this.fitness = fitness;
-			this.notifyObservers(ConstraintChange.ChangedProperty.FITNESS, interestFactor);
+			pcs.firePropertyChange(ConstraintChange.ChangedProperty.FITNESS.toString(), oldFitness, fitness);
 		}
 	}
 
@@ -346,8 +362,10 @@ public abstract class Constraint extends Observable implements Comparable<Constr
 	}
 	public void setEvaluatedOnLog(boolean evaluatedOnLog) {
 		if (this.evaluatedOnLog != evaluatedOnLog) {
+			boolean oldEvaluatedOnLog = this.evaluatedOnLog;
 			this.evaluatedOnLog = evaluatedOnLog;
-			this.notifyObservers(ConstraintChange.ChangedProperty.EVALUATED_ON_LOG, evaluatedOnLog);
+			pcs.firePropertyChange(ConstraintChange.ChangedProperty.EVALUATED_ON_LOG.toString(), oldEvaluatedOnLog, evaluatedOnLog);
+
 		}
 	}
 
@@ -465,7 +483,7 @@ public abstract class Constraint extends Observable implements Comparable<Constr
     public boolean isMoreInformativeThanGeneric() {
         if (!this.hasConstraintToBaseUpon())
             return true;
-        Integer moreReliableThanGeneric = new Double(this.support).compareTo(constraintWhichThisIsBasedUpon.support);
+        Integer moreReliableThanGeneric = Double.valueOf(this.support).compareTo(constraintWhichThisIsBasedUpon.support);
         if (moreReliableThanGeneric == 0)
         	return constraintWhichThisIsBasedUpon.isMoreInformativeThanGeneric();
         return (moreReliableThanGeneric > 0);
@@ -591,27 +609,14 @@ public abstract class Constraint extends Observable implements Comparable<Constr
 		this.conflicting = false;
 		this.redundant = false;
 	}
-
-	private void notifyObservers(ChangedProperty type, Object value) {
-		if (!this.isSilentToObservers()) {
-			ConstraintChange coCha = new ConstraintChange(this, type, value);
-			this.setChanged();
-			this.notifyObservers(coCha);
-			super.clearChanged();
-		}
-	}
-
-	@Override
-	public void notifyObservers(Object arg) {
-		// Should you add debug lines, do it here
-		super.notifyObservers(arg);
-	}
-
-	@Override
-	public synchronized void addObserver(Observer o) {
-		// TODO Auto-generated method stub
-		super.addObserver(o);
-	}
+	
+	public void addPropertyChangeListener(PropertyChangeListener pcl) {
+        pcs.addPropertyChangeListener(pcl);
+    }
+ 
+    public void removePropertyChangeListener(PropertyChangeListener pcl) {
+        pcs.removePropertyChangeListener(pcl);
+    }
 
 	public boolean isSilentToObservers() {
 		return silentToObservers;

@@ -1,25 +1,24 @@
 package minerful.concept.constraint;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NavigableSet;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import minerful.concept.TaskChar;
 import minerful.concept.TaskCharSet;
 import minerful.concept.constraint.xmlenc.ConstraintsBagAdapter;
-
-import org.apache.log4j.Logger;
 
 /**
  * The class managing the set of constraints of a declarative process model.
@@ -28,9 +27,13 @@ import org.apache.log4j.Logger;
 @XmlRootElement
 @XmlJavaTypeAdapter(ConstraintsBagAdapter.class)
 //@XmlAccessorType(XmlAccessType.FIELD)
-public class ConstraintsBag extends Observable implements Cloneable, Observer {
+public class ConstraintsBag implements Cloneable, PropertyChangeListener {
+	
+	@XmlTransient
+	private PropertyChangeSupport pcs;
+	
 //	@XmlTransient
-	private static Logger logger = Logger.getLogger(ConstraintsBag.class.getCanonicalName());
+	//private static Logger logger = Logger.getLogger(ConstraintsBag.class.getCanonicalName());
 	
 	@XmlElementRef
     private Map<TaskChar, TreeSet<Constraint>> bag;
@@ -57,6 +60,7 @@ public class ConstraintsBag extends Observable implements Cloneable, Observer {
     
 	private void initBag() {
 		this.bag = new TreeMap<TaskChar, TreeSet<Constraint>>();
+		this.pcs = new PropertyChangeSupport(this);
 	}
 	
 	public boolean add(Constraint c) {
@@ -72,7 +76,7 @@ public class ConstraintsBag extends Observable implements Cloneable, Observer {
             this.taskChars.add(tCh);
         }
     	if (this.bag.get(tCh).add(c)) {
-    		c.addObserver(this);
+    		c.addPropertyChangeListener(this);
     		return true;
     	}
     	return false;
@@ -94,7 +98,7 @@ public class ConstraintsBag extends Observable implements Cloneable, Observer {
         	return false;
         }
         if (this.bag.get(character).remove(c)) {
-        	c.deleteObserver(this);
+        	c.removePropertyChangeListener(this);
         	return true;
         }
         return false;
@@ -122,7 +126,7 @@ public class ConstraintsBag extends Observable implements Cloneable, Observer {
 		int constraintsRemoved = 0;
 		if (this.bag.containsKey(taskChar)) {
 			for (Constraint c : this.getConstraintsOf(taskChar)) {
-				c.deleteObserver(this);
+				c.removePropertyChangeListener(this);
 				constraintsRemoved++;
 			}
 			this.bag.put(taskChar, new TreeSet<Constraint>());
@@ -156,7 +160,7 @@ public class ConstraintsBag extends Observable implements Cloneable, Observer {
     	Set<Constraint> existingConSet = this.bag.get(tCh);
     	for (Constraint c : cs) {
     		if (!existingConSet.contains(c)) {
-    			c.addObserver(this);
+    			c.removePropertyChangeListener(this);
     		}
     	}
         return this.bag.get(tCh).addAll(cs);
@@ -372,13 +376,17 @@ public class ConstraintsBag extends Observable implements Cloneable, Observer {
 		}
 		return clone;
 	}
+	
+	public void addPropertyChangeListener(PropertyChangeListener pcl) {
+        pcs.addPropertyChangeListener(pcl);
+    }
+ 
+    public void removePropertyChangeListener(PropertyChangeListener pcl) {
+        pcs.removePropertyChangeListener(pcl);
+    }
 
 	@Override
-	public void update(Observable o, Object arg) {
-		if (Constraint.class.isAssignableFrom(o.getClass())) {
-			this.setChanged();
-			this.notifyObservers(arg);
-			this.clearChanged();
-		}
+	public void propertyChange(PropertyChangeEvent evt) {
+		pcs.firePropertyChange(evt);
 	}
 }
