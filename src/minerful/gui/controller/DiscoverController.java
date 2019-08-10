@@ -9,9 +9,11 @@ import java.util.concurrent.ExecutionException;
 import org.apache.log4j.Logger;
 
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
@@ -35,7 +37,7 @@ public class DiscoverController extends AbstractController implements Initializa
 	}	
 	
 	@FXML
-    private void openFile() throws IOException {
+    private void openFile(ActionEvent event) throws IOException {
     	
     	// init FileChooser and set extension-filter
 		FileChooser fileChooser = new FileChooser();
@@ -65,6 +67,7 @@ public class DiscoverController extends AbstractController implements Initializa
 				FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/discover/DiscoverTab.fxml"));
 	    		GridPane gridPane = loader.load();
 				DiscoverTabController controller = loader.getController();
+				controller.setStage((Stage)((Node) event.getSource()).getScene().getWindow());
 				controller.setCurrentEventLog(parseLog.get());
 				controller.updateLogInfo();
 	    		

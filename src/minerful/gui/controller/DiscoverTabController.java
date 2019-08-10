@@ -43,6 +43,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -64,7 +65,7 @@ import minerful.params.InputLogCmdParameters;
 import minerful.params.SystemCmdParameters;
 import minerful.postprocessing.params.PostProcessingCmdParameters;
 
-public class DiscoverTabController implements Initializable, PropertyChangeListener {
+public class DiscoverTabController extends AbstractController implements Initializable, PropertyChangeListener {
 	
 	Logger logger = Logger.getLogger(DiscoverTabController.class);
 	
@@ -311,7 +312,7 @@ public class DiscoverTabController implements Initializable, PropertyChangeListe
 		Graph graph = GraphUtil.drawGraph(processModel);
 		Viewer viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
 		FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
-		view.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, new Stage()));
+		view.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, this.getStage()));
 		viewer.enableAutoLayout();
 		canvasBox.getChildren().add(view);
 
@@ -382,7 +383,7 @@ public class DiscoverTabController implements Initializable, PropertyChangeListe
 			Graph graph = GraphUtil.drawGraph(processModel);
 			Viewer viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD );
 			FxViewPanel view1 = (FxViewPanel) viewer.addDefaultView(true);
-			view1.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, new Stage()));
+			view1.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, this.getStage()));
 			viewer.enableAutoLayout();
 			canvasBox.getChildren().clear();
 			canvasBox.getChildren().add(view1);

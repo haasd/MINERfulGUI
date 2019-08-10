@@ -34,16 +34,17 @@ public class GraphMouseManager implements MouseManager {
 	
 	private ProcessModel processModel;
 	
-	private Stage stage;
+	private Stage stage = new Stage();
 
 	final private EnumSet<InteractiveElement> types;
 
 	public GraphMouseManager(EnumSet<InteractiveElement> types, ProcessModel processModel, Stage stage) {
 		this.types = types;
 		this.processModel = processModel;
-		this.stage = stage;
-		stage.initStyle(StageStyle.TRANSPARENT);
-        stage.initModality(Modality.WINDOW_MODAL);
+		
+		this.stage.initStyle(StageStyle.TRANSPARENT);
+        this.stage.initModality(Modality.NONE);
+        this.stage.initOwner(stage);
         
         StackPane stackPane = new StackPane();
         stackPane.getStylesheets().add(getClass().getClassLoader().getResource("css/main.css").toExternalForm());
@@ -51,7 +52,7 @@ public class GraphMouseManager implements MouseManager {
         
         Scene scene = new Scene(stackPane, 200.0, 200.0);
         scene.setFill(Color.TRANSPARENT);
-        stage.setScene(scene);
+        this.stage.setScene(scene);
 	}
 
 	public void init(GraphicGraph graph, View view) {
