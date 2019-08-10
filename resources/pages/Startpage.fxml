@@ -101,35 +101,30 @@
 	              		<FontIcon iconColor="WHITE" iconLiteral="typ-lightbulb" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
 	               	</graphic>
                   </Button>
-                  <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="6.0" layoutY="54.0" mnemonicParsing="false" prefHeight="54.0" text="Generate/Modify Model" styleClass="menu-button" onAction="#openGenerator">
+                  <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="6.0" layoutY="54.0" mnemonicParsing="false" prefHeight="54.0" text="Generate/Modify Model" styleClass="menu-button" onAction="#openModelGenerator">
 	                  <graphic>
 	                  	<FontIcon iconColor="WHITE" iconLiteral="typ-edit" iconSize="30" layoutX="20.0" layoutY="37.0" textAlignment="CENTER" wrappingWidth="26.0" />
                       </graphic>
                   </Button>
-                  <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutY="108.0" mnemonicParsing="false" prefHeight="54.0" text="Simplify Model" styleClass="menu-button">
+                  <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutY="108.0" mnemonicParsing="false" prefHeight="54.0" text="Simplify Model" styleClass="menu-button" onAction="#openSimplifier">
 	                  <graphic>
 	                  		<FontIcon iconColor="WHITE" iconLiteral="typ-puzzle" iconSize="30" layoutX="20.0" layoutY="307.0" textAlignment="CENTER" wrappingWidth="26.0" />
                       </graphic>
                   </Button>
-                  <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="7.0" layoutY="162.0" mnemonicParsing="false" prefHeight="54.0" text="Create Event-Log" styleClass="menu-button" >
+                  <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="7.0" layoutY="162.0" mnemonicParsing="false" prefHeight="54.0" text="Create Event-Log" styleClass="menu-button" onAction="#openEventLogGenerator">
 	                  <graphic>
 	                  		<FontIcon iconColor="WHITE" iconLiteral="typ-book" iconSize="30" layoutX="20.0" layoutY="145.0" textAlignment="CENTER" wrappingWidth="26.0" />
               	      </graphic>
                   </Button>
-                  <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="5.0" layoutY="216.0" mnemonicParsing="false" prefHeight="54.0" text="Generate Automata" styleClass="menu-button">
+                  <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="5.0" layoutY="216.0" mnemonicParsing="false" prefHeight="54.0" text="Generate Automata" styleClass="menu-button" onAction="#openAutomataGenerator">
 	                  <graphic>
 	                  		<FontIcon iconColor="WHITE" iconLiteral="typ-flash" iconSize="30" layoutX="20.0" layoutY="199.0" textAlignment="CENTER" wrappingWidth="26.0" />
 	                  </graphic>
                   </Button>
-                  <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="7.0" layoutY="270.0" mnemonicParsing="false" prefHeight="54.0" text="Perform Fitness-Check" styleClass="menu-button">
+                  <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="7.0" layoutY="270.0" mnemonicParsing="false" prefHeight="54.0" text="Perform Fitness-Check" styleClass="menu-button" onAction="#openFitnessChecker">
 	                  <graphic>
 	                  		<FontIcon iconColor="WHITE" iconLiteral="typ-tick" iconSize="30" layoutX="20.0" layoutY="253.0" textAlignment="CENTER" wrappingWidth="26.0" />
                   	  </graphic>
-                  </Button>
-                  <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="5.0" layoutY="324.0" mnemonicParsing="false" prefHeight="54.0" text="Export File" styleClass="menu-button" >
-	                  <graphic>
-	                  		<FontIcon iconColor="WHITE" iconLiteral="typ-export" iconSize="30" layoutX="20.0" layoutY="361.0" textAlignment="CENTER" wrappingWidth="26.0" />
-	                  </graphic>
                   </Button>
                	</children>
             </AnchorPane>

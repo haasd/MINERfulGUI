@@ -93,7 +93,7 @@ public class StartPageController implements Initializable {
     private void openDiscovery(ActionEvent event) {
     	if(currentView != "discover") {
         	logger.info("Open Discovery");
-        	loadContent("pages/Discover.fxml");
+        	loadContent("pages/discover/Discover.fxml");
         	currentView = "discover";
     	} 
     }
@@ -117,7 +117,6 @@ public class StartPageController implements Initializable {
 			logger.error(String.format("Cannot load %s!",pathToFxml));
 		}
     	
-    	
     }
     
     
@@ -131,27 +130,48 @@ public class StartPageController implements Initializable {
     }
     
     @FXML
-    private void openGenerator() {
-    	if(currentView != "generator") {
-    		logger.info("Open Generator");
-        	loadContent("pages/Generator.fxml");
-        	currentView = "generator";
+    private void openModelGenerator() {
+    	if(currentView != "modelgenerator") {
+    		logger.info("Open Model Generator");
+        	loadContent("pages/modelgenerator/ModelGenerator.fxml");
+        	currentView = "modelgenerator";
     	}
     }
     
     @FXML
-    private void openSimplification() {
-    	logger.info("Open Simplification");
+    private void openEventLogGenerator() {
+    	if(currentView != "eventloggenerator") {
+    		logger.info("Open EventLog Generator");
+        	loadContent("pages/eventloggenerator/EventLogGenerator.fxml");
+        	currentView = "eventloggenerator";
+    	}
     }
     
     @FXML
-    private void openAutomata() {
-    	logger.info("Open Automata");
+    private void openSimplifier() {
+    	if(currentView != "simplifier") {
+        	logger.info("Open Simplification");
+        	loadContent("pages/simplifier/Simplifier.fxml");
+        	currentView = "simplifier";
+    	}
     }
     
     @FXML
-    private void openFitnessCheck() {
-    	logger.info("Open Fitness-Check");
+    private void openAutomataGenerator() {
+    	if(currentView != "automatagenerator") {
+        	logger.info("Open Automata Generator");
+        	loadContent("pages/automatagenerator/AutomataGenerator.fxml");
+        	currentView = "automatagenerator";
+    	}
+    }
+    
+    @FXML
+    private void openFitnessChecker() {
+    	if(currentView != "fitnesschecker") {
+        	logger.info("Open Fitness-Check");
+        	loadContent("pages/fitnesschecker/FitnessChecker.fxml");
+        	currentView = "fitnesschecker";
+    	}
     }
 
 	public ObservableList<LogInfo> getLoadedLogFiles() {

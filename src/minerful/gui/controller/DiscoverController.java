@@ -62,7 +62,7 @@ public class DiscoverController extends AbstractController implements Initializa
 			try {
 				getMainController().addLoadedLogFile(parseLog.get());
 				Tab tab = new Tab();
-				FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/DiscoverTab.fxml"));
+				FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/discover/DiscoverTab.fxml"));
 	    		GridPane gridPane = loader.load();
 				DiscoverTabController controller = loader.getController();
 				controller.setCurrentEventLog(parseLog.get());
