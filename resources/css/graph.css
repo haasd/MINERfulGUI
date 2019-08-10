@@ -1,9 +1,9 @@
 graph {
-
+	padding: 60px, 60px;
 }
 
 node {
-	size: 100px, 100px;
+	size: 100px;
 	shape: circle;
 	fill-color: #c4e8f7;
 	text-color: #7eaad3;

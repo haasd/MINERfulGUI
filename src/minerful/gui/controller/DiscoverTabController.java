@@ -1,5 +1,7 @@
 package minerful.gui.controller;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -11,7 +13,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.CharSet;
 import org.apache.log4j.Logger;
 import org.graphstream.graph.Graph;
 import org.graphstream.ui.fx_viewer.FxViewPanel;
@@ -46,6 +47,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import minerful.MinerFulMinerLauncher;
+import minerful.MinerFulSimplificationLauncher;
 import minerful.concept.ProcessModel;
 import minerful.concept.TaskChar;
 import minerful.concept.TaskCharArchive;
@@ -62,7 +64,7 @@ import minerful.params.InputLogCmdParameters;
 import minerful.params.SystemCmdParameters;
 import minerful.postprocessing.params.PostProcessingCmdParameters;
 
-public class DiscoverTabController implements Initializable {
+public class DiscoverTabController implements Initializable, PropertyChangeListener {
 	
 	Logger logger = Logger.getLogger(DiscoverTabController.class);
 	
@@ -145,9 +147,11 @@ public class DiscoverTabController implements Initializable {
 	
 	private LogInfo currentEventLog;
 	
+	private Boolean activitySelectionChanged = false;
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		System.setProperty("org.graphstream.ui", "org.graphstream.ui.javafx.util.Display");
+		System.setProperty("gs.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 
 		eventLogTable.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
 		logInfoList.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
@@ -293,6 +297,7 @@ public class DiscoverTabController implements Initializable {
 			filter.getSelected().selectedProperty().addListener(new ChangeListener<Boolean>() {
 			    @Override
 			    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+			    	activitySelectionChanged = true;
 			        updateModel();
 			    }
 			});
@@ -301,13 +306,13 @@ public class DiscoverTabController implements Initializable {
 		}
 		
 		processModel = currentEventLog.getProcessModel();
+		processModel.addPropertyChangeListener(this);
 		discoveredConstraints.addAll(processModel.getAllConstraints());
 		Graph graph = GraphUtil.drawGraph(processModel);
-		Viewer viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD );
+		Viewer viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
 		FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
 		view.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, new Stage()));
 		viewer.enableAutoLayout();
-		
 		canvasBox.getChildren().add(view);
 
 		logInfos.add(GuiConstants.FILENAME+new File(currentEventLog.getPath()).getName());
@@ -363,8 +368,14 @@ public class DiscoverTabController implements Initializable {
 				}
 			}
 			
-			MinerFulMinerLauncher miFuMiLa = new MinerFulMinerLauncher(inputParams, minerFulParams, postParams, systemParams);
-			processModel = miFuMiLa.mine();
+			if(!activitySelectionChanged) {
+				MinerFulSimplificationLauncher miFuSiLa = new MinerFulSimplificationLauncher(processModel, postParams);
+				miFuSiLa.simplify();
+			} else {
+				MinerFulMinerLauncher miFuMiLa = new MinerFulMinerLauncher(inputParams, minerFulParams, postParams, systemParams);
+				processModel = miFuMiLa.mine();				
+			}
+
 			discoveredConstraints.clear();
 			discoveredConstraints.addAll(processModel.getAllConstraints());
 			
@@ -476,7 +487,11 @@ public class DiscoverTabController implements Initializable {
 	public void setCurrentEventLog(LogInfo currentEventLog) {
 		this.currentEventLog = currentEventLog;
 	}
-	
-	
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

@@ -85,7 +85,7 @@
          		<!-- Canvas -->
 	         	<GridPane styleClass="area-content" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2">
 	         		<children>
-	         			<HBox style="-fx-spacing: 10; -fx-padding: 10px;">
+	         			<HBox style="-fx-spacing: 10; -fx-padding: 5px;">
 		         			<Label styleClass="section-header1" text="Model" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
 		         			<Button styleClass="btn-default, btn-save" text="Save" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 		         			<Button styleClass="btn-default" text="Export" onAction="#exportFile" GridPane.columnIndex="2" GridPane.rowIndex="0"/>

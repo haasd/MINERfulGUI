@@ -11,7 +11,6 @@ import minerful.MinerFulOutputManagementLauncher;
 import minerful.MinerFulSimplificationLauncher;
 import minerful.concept.ProcessModel;
 import minerful.concept.constraint.Constraint;
-import minerful.concept.constraint.ConstraintChange;
 import minerful.io.params.OutputModelParameters;
 import minerful.miner.params.MinerFulCmdParameters;
 import minerful.params.InputLogCmdParameters;

@@ -22,7 +22,7 @@
 		<!-- Area-Header -->
 		<AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" >
 			<Label styleClass="area-header" text="Discover" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
-			<Button styleClass="btn-default, btn-header" text="Open Log" onAction="#openFile" AnchorPane.leftAnchor="210.0" AnchorPane.topAnchor="20.0" >
+			<Button styleClass="btn-default, btn-header" text="Open Log" onAction="#openFile" AnchorPane.leftAnchor="150.0" AnchorPane.topAnchor="10.0" >
 				<graphic>
            			<FontIcon iconColor="#393939" iconLiteral="typ-document-text" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
             	</graphic>
