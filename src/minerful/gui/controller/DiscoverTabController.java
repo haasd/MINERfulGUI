@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -28,6 +29,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -40,14 +42,15 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import minerful.MinerFulMinerLauncher;
+import minerful.MinerFulOutputManagementLauncher;
 import minerful.MinerFulSimplificationLauncher;
 import minerful.concept.ProcessModel;
 import minerful.concept.TaskChar;
@@ -55,11 +58,13 @@ import minerful.concept.TaskCharArchive;
 import minerful.concept.constraint.Constraint;
 import minerful.gui.common.GuiConstants;
 import minerful.gui.common.MinerfulGuiUtil;
+import minerful.gui.common.ModelInfo;
 import minerful.gui.common.ValidationEngine;
 import minerful.gui.graph.util.GraphMouseManager;
 import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.service.loginfo.EventFilter;
 import minerful.gui.service.loginfo.LogInfo;
+import minerful.io.params.OutputModelParameters;
 import minerful.miner.params.MinerFulCmdParameters;
 import minerful.params.InputLogCmdParameters;
 import minerful.params.SystemCmdParameters;
@@ -451,31 +456,66 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	@FXML
 	private void exportFile() {
-		File htmlTemplateFile = new File(getClass().getClassLoader().getResource("templates/export.html").getFile());
 		
 		// init FileChooser and set extension-filter
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Export Model");
-		FileChooser.ExtensionFilter extFilter = 
-	             new FileChooser.ExtensionFilter("html/model", "*.html", "*.model");
-	    fileChooser.getExtensionFilters().add(extFilter);
-	    
-	    // open FileChooser and handle response
-		File selectedFile = fileChooser.showSaveDialog(new Stage());
-		
-		if(selectedFile != null) {
+				FileChooser fileChooser = new FileChooser();
+				fileChooser.setTitle("Open Event-Log");
+				FileChooser.ExtensionFilter extFilter = 
+			             new FileChooser.ExtensionFilter("XML/JSON/CSV/HTML", "*.xml", "*.json", "*.csv", "*.html");
+			    fileChooser.getExtensionFilters().add(extFilter);
+			    
+			    // open FileChooser and handle response
+				File saveFile = fileChooser.showSaveDialog(new Stage());
+				if(saveFile != null) {
+					
+					OutputModelParameters outParams = new OutputModelParameters();
+					String path = saveFile.getAbsolutePath();
+					File outputFile = new File(path);
 
-			try {
-				String htmlString = FileUtils.readFileToString(htmlTemplateFile,"UTF-8");
-				String title = "New Page";
-				htmlString = htmlString.replace("$title", title);
-				File newHtmlFile = new File(selectedFile.getAbsolutePath());
-				FileUtils.writeStringToFile(newHtmlFile, htmlString, "UTF-8");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+					logger.info("Save as File: " + path);
+					
+					String fileName = saveFile.getName();           
+					String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1, saveFile.getName().length());
+					
+					logger.info("Saving...");
+					
+					switch(fileExtension.toLowerCase()) {
+						case "xml": 
+							//outParams.fileToSaveAsXML = new File(saveFile.getAbsolutePath());
+							outParams.fileToSaveAsConDec = outputFile;		
+							break;
+						case "json":
+							outParams.fileToSaveAsJSON = outputFile;
+							break;
+						case "csv":
+							outParams.fileToSaveConstraintsAsCSV = outputFile;
+							break;
+						case "html":
+							File htmlTemplateFile = new File(getClass().getClassLoader().getResource("templates/export.html").getFile());
+							
+							try {
+								String htmlString = FileUtils.readFileToString(htmlTemplateFile,"UTF-8");
+								String title = "New Page";
+								htmlString = htmlString.replace("$title", title);
+								File newHtmlFile = new File(saveFile.getAbsolutePath());
+								FileUtils.writeStringToFile(newHtmlFile, htmlString, "UTF-8");
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							return;
+					}
+					
+					MinerFulOutputManagementLauncher outputMgt = new MinerFulOutputManagementLauncher();
+					outputMgt.manageOutput(processModel, outParams);
+					
+					ModelInfo modelInfo = new ModelInfo(processModel,new Date(),outputFile.getName());
+					
+					getMainController().addSavedProcessModels(modelInfo);
+
+				} else {
+					logger.info("Modelsaving canceled!"); 
+				}
 
 	}
 
@@ -493,6 +533,32 @@ public class DiscoverTabController extends AbstractController implements Initial
 	public void propertyChange(PropertyChangeEvent evt) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@FXML
+	public void saveModel(ActionEvent event) {
+		logger.info("Save Model");
+		
+		TextInputDialog dialog = new TextInputDialog(new File(currentEventLog.getPath()).getName());
+		dialog.setTitle("Save Model");
+		dialog.setHeaderText("Save Model as");
+		dialog.setContentText("Modelname:");
+		dialog.getDialogPane().setMinWidth(500.0);
+		
+		
+		ModelInfo modelInfo = new ModelInfo();
+		Optional<String> result = dialog.showAndWait();
+		if (result.isPresent()){
+			modelInfo.setSaveName(result.get());
+		} else {
+			modelInfo.setSaveName(new File(currentEventLog.getPath()).getName());
+		}
+		
+		modelInfo.setProcessModel(processModel);
+		modelInfo.setSaveDate(new Date());
+		
+		getMainController().addSavedProcessModels(modelInfo);
+
 	}
 
 }

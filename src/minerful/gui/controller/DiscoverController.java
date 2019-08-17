@@ -3,6 +3,7 @@ package minerful.gui.controller;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 
@@ -19,6 +20,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import minerful.gui.common.ModelInfo;
 import minerful.gui.common.ProgressForm;
 import minerful.gui.service.loginfo.LogInfo;
 import minerful.gui.service.logparser.LogParserService;
@@ -63,11 +65,14 @@ public class DiscoverController extends AbstractController implements Initializa
 			
 			try {
 				getMainController().addLoadedLogFile(parseLog.get());
+				getMainController().addSavedProcessModels(new ModelInfo(parseLog.get().getProcessModel(), new Date(), new File(parseLog.get().getPath()).getName()));
+				
 				Tab tab = new Tab();
 				FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/discover/DiscoverTab.fxml"));
 	    		GridPane gridPane = loader.load();
 				DiscoverTabController controller = loader.getController();
 				controller.setStage((Stage)((Node) event.getSource()).getScene().getWindow());
+				controller.setMainController(getMainController());
 				controller.setCurrentEventLog(parseLog.get());
 				controller.updateLogInfo();
 	    		
