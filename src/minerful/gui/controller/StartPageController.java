@@ -2,6 +2,8 @@ package minerful.gui.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
@@ -17,9 +19,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import minerful.gui.common.GuiConstants;
+import minerful.gui.common.ModelInfo;
 import minerful.gui.service.loginfo.LogInfo;
 
 public class StartPageController implements Initializable {
@@ -30,6 +32,9 @@ public class StartPageController implements Initializable {
 	private final ObservableList<LogInfo> loadedLogFiles =
 	        FXCollections.observableArrayList();
 	
+	private final ObservableList<ModelInfo> savedProcessModels =
+	        FXCollections.observableArrayList();
+
 	@FXML
 	private GridPane rootPane;
 	
@@ -58,6 +63,8 @@ public class StartPageController implements Initializable {
 	private GridPane infoPerformCheck;
 	
 	private Stage infoStage = new Stage();
+	
+	private Map<String,GridPane> gridPanes = new HashMap<>();
 	
 	@Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -93,12 +100,14 @@ public class StartPageController implements Initializable {
     private void openDiscovery(ActionEvent event) {
     	if(currentView != "discover") {
         	logger.info("Open Discovery");
-        	loadContent("pages/discover/Discover.fxml");
+        	
+        	handlePane("discover", "pages/discover/Discover.fxml");
+ 
         	currentView = "discover";
     	} 
     }
     
-    private void loadContent(String pathToFxml) {
+    private GridPane loadContent(String pathToFxml) {
     	try {
     		FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(pathToFxml));
     		GridPane gridPane = loader.load(); 
@@ -111,12 +120,15 @@ public class StartPageController implements Initializable {
     		// replace context pane
 			rootPane.getChildren().set(0, gridPane);
 			
+			return gridPane;
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			logger.error(String.format("Cannot load %s!",pathToFxml));
 		}
     	
+    	return null;
     }
     
     
@@ -133,7 +145,9 @@ public class StartPageController implements Initializable {
     private void openModelGenerator() {
     	if(currentView != "modelgenerator") {
     		logger.info("Open Model Generator");
-        	loadContent("pages/modelgenerator/ModelGenerator.fxml");
+    		
+    		handlePane("modelgenerator", "pages/modelgenerator/ModelGenerator.fxml");
+    		
         	currentView = "modelgenerator";
     	}
     }
@@ -142,7 +156,9 @@ public class StartPageController implements Initializable {
     private void openEventLogGenerator() {
     	if(currentView != "eventloggenerator") {
     		logger.info("Open EventLog Generator");
-        	loadContent("pages/eventloggenerator/EventLogGenerator.fxml");
+    		
+    		handlePane("eventloggenerator", "pages/eventloggenerator/EventLogGenerator.fxml");
+    		
         	currentView = "eventloggenerator";
     	}
     }
@@ -151,7 +167,9 @@ public class StartPageController implements Initializable {
     private void openSimplifier() {
     	if(currentView != "simplifier") {
         	logger.info("Open Simplification");
-        	loadContent("pages/simplifier/Simplifier.fxml");
+        	
+        	handlePane("simplifier", "pages/simplifier/Simplifier.fxml");
+        	
         	currentView = "simplifier";
     	}
     }
@@ -160,7 +178,9 @@ public class StartPageController implements Initializable {
     private void openAutomataGenerator() {
     	if(currentView != "automatagenerator") {
         	logger.info("Open Automata Generator");
-        	loadContent("pages/automatagenerator/AutomataGenerator.fxml");
+        	
+        	handlePane("automatagenerator", "pages/automatagenerator/AutomataGenerator.fxml");
+
         	currentView = "automatagenerator";
     	}
     }
@@ -169,7 +189,9 @@ public class StartPageController implements Initializable {
     private void openFitnessChecker() {
     	if(currentView != "fitnesschecker") {
         	logger.info("Open Fitness-Check");
-        	loadContent("pages/fitnesschecker/FitnessChecker.fxml");
+        	
+        	handlePane("fitnesschecker", "pages/fitnesschecker/FitnessChecker.fxml");
+
         	currentView = "fitnesschecker";
     	}
     }
@@ -180,6 +202,24 @@ public class StartPageController implements Initializable {
     
     public void addLoadedLogFile(LogInfo logInfo) {
     	loadedLogFiles.add(logInfo);
+    }
+    
+	public ObservableList<ModelInfo> getSavedProcessModels() {
+		return savedProcessModels;
+	}
+	
+    public void addSavedProcessModels(ModelInfo processModel) {
+    	savedProcessModels.add(processModel);
+    }
+    
+    private void handlePane(String paneName, String path) {
+    	
+    	if(gridPanes.get(paneName) == null) {
+			gridPanes.put(paneName, loadContent(path));
+		} else {
+			rootPane.getChildren().set(0, gridPanes.get(paneName));
+		}
+    
     }
     
 }

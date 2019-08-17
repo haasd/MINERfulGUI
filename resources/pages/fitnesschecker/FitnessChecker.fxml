@@ -24,11 +24,21 @@
 			<Label styleClass="area-header" text="Perform Fitness-Check" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
 		</AnchorPane>
 		
+		<!-- Selector -->
+		<HBox GridPane.columnIndex="0" GridPane.rowIndex="1" alignment="CENTER" GridPane.columnSpan="2" style="-fx-spacing: 15; -fx-padding: 15px;">
+			<Button styleClass="btn-default" text="Select Process-Model" onAction="#selectModel"/>
+			<Label text="Please select process-model" fx:id="selectedModel" />
+			<Button styleClass="btn-default" text="Select Event-Log" onAction="#selectEventLog"/>
+			<Label text="Please select event-log" fx:id="selectedEventLog" />
+			<Button styleClass="btn-default, btn-important" text="Perform Check" onAction="#performFitnessCheck"/>
+		</HBox>
+		
 		<!-- TabPane -->
-		<TabPane fx:id="fitnessCheckerTabPane" GridPane.columnIndex="0" GridPane.rowIndex="1">
+		<TabPane fx:id="fitnessCheckerTabPane" GridPane.columnIndex="0" GridPane.rowIndex="2">
         </TabPane> 
 	</children>
 	<rowConstraints>
+		<RowConstraints/>
 		<RowConstraints/>
 	  	<RowConstraints vgrow="ALWAYS" />
 	</rowConstraints>

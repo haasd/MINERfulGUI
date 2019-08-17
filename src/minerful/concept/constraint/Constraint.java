@@ -351,7 +351,7 @@ public abstract class Constraint implements Comparable<Constraint> {
 	public void setFitness(double fitness) {
 		if (this.fitness == null || this.fitness != fitness) {
 			this.checkFitness(fitness);
-			double oldFitness = this.fitness;
+			Double oldFitness = this.fitness;
 			this.fitness = fitness;
 			pcs.firePropertyChange(ConstraintChange.ChangedProperty.FITNESS.toString(), oldFitness, fitness);
 		}

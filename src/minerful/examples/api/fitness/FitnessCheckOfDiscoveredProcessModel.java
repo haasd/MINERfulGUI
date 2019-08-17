@@ -1,11 +1,13 @@
 package minerful.examples.api.fitness;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 import minerful.MinerFulFitnessCheckLauncher;
 import minerful.MinerFulMinerLauncher;
 import minerful.checking.params.CheckingCmdParameters;
 import minerful.concept.ProcessModel;
+import minerful.examples.api.discovery.MinerFulObserverInvokerOnXesFile;
 import minerful.logparser.LogParser;
 import minerful.miner.params.MinerFulCmdParameters;
 import minerful.params.InputLogCmdParameters;
@@ -15,10 +17,11 @@ import minerful.postprocessing.params.PostProcessingCmdParameters;
 import minerful.postprocessing.params.PostProcessingCmdParameters.PostProcessingAnalysisType;
 
 public class FitnessCheckOfDiscoveredProcessModel {
-	private static final String EXAMPLE_LOG_FILE_1 = "/home/claudio/Code/MINERful/logs/BPIC2017/BPI-Challenge-2017-sample1.xes";
-	private static final String EXAMPLE_LOG_FILE_2 = "/home/claudio/Code/MINERful/logs/BPIC2017/BPI-Challenge-2017-sample2.xes";
-	private static final String EXAMPLE_LOG_TEST_OUT_CSV_FILE = "/home/claudio/Temp/fitness-log-test-example.csv";
-	private static final String EXAMPLE_TRACE_TEST_OUT_CSV_FILE = "/home/claudio/Temp/fitness-trace-test-example.csv";
+	private static final String EXAMPLE_LOG_FILE_1 = FitnessCheckOfDiscoveredProcessModel.class.getClassLoader().getResource("examples/running-example.xes").getPath();
+	private static final String EXAMPLE_LOG_FILE_2 = FitnessCheckOfDiscoveredProcessModel.class.getClassLoader().getResource("examples/running-example_sample2.xes").getPath();
+	
+	private static final String EXAMPLE_LOG_TEST_OUT_CSV_FILE = "/fitness-log-test-example.csv";
+	private static final String EXAMPLE_TRACE_TEST_OUT_CSV_FILE = "/fitness-trace-test-example.csv";
 
 	public static void main(String[] args) {
 //////////////////////////////////////////////////////////////////
@@ -49,6 +52,9 @@ public class FitnessCheckOfDiscoveredProcessModel {
 		ProcessModel processModel = miFuMiLa.mine();
 		
 		System.out.println("...Done");
+		
+		String pathToExampleOutput = Paths.get("").toAbsolutePath().getParent().toString() + "/example-output";
+		new File(Paths.get("").toAbsolutePath().getParent().toString() + "/example-output").mkdirs();
 
 //////////////////////////////////////////////////////////////////
 //Evaluation phase on an entire log
@@ -56,7 +62,7 @@ public class FitnessCheckOfDiscoveredProcessModel {
 		CheckingCmdParameters chkParams = new CheckingCmdParameters();
 		
 		inputLogParams.inputLogFile = new File(EXAMPLE_LOG_FILE_2);
-		chkParams.fileToSaveResultsAsCSV = new File(EXAMPLE_LOG_TEST_OUT_CSV_FILE);
+		chkParams.fileToSaveResultsAsCSV = new File(pathToExampleOutput + EXAMPLE_LOG_TEST_OUT_CSV_FILE);
 		
 		LogParser loPar = MinerFulMinerLauncher.deriveLogParserFromLogFile(inputLogParams);
 		
@@ -69,7 +75,7 @@ public class FitnessCheckOfDiscoveredProcessModel {
 //Evaluation phase specifically on a single trace of a log
 //////////////////////////////////////////////////////////////////
 				
-		chkParams.fileToSaveResultsAsCSV = new File(EXAMPLE_TRACE_TEST_OUT_CSV_FILE);
+		chkParams.fileToSaveResultsAsCSV = new File(pathToExampleOutput + EXAMPLE_TRACE_TEST_OUT_CSV_FILE);
 		
 		// Check the process model extracted from EXAMPLE_LOG_FILE_1 against the first trace of EXAMPLE_LOG_FILE_2
 		miFuCheLa.check(loPar.traceIterator().next());		
