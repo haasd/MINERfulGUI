@@ -5,6 +5,7 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
@@ -16,30 +17,28 @@ import javafx.stage.Stage;
 public class ProgressForm {
 	
 	private Stage dialogStage;
-	private ProgressBar progressBar;
 	private ProgressIndicator progressIndicator;
+	private String progressText;
 	
-	public ProgressForm() {
+	public ProgressForm(String progressText) {
+		this.progressText = progressText;
 		dialogStage = new Stage();
 		dialogStage.setResizable(false);
 		dialogStage.setHeight(100);
 		dialogStage.setWidth(250);
-		progressBar = new ProgressBar(0);
 		progressIndicator = new ProgressIndicator(0);
 		
 		final HBox hBox = new HBox();
 	    hBox.setSpacing(5);
 	    hBox.setAlignment(Pos.CENTER);
-	    progressBar.prefWidthProperty().bind(hBox.widthProperty().subtract(50));
-	    hBox.getChildren().addAll(progressBar, progressIndicator);
+	    hBox.getChildren().addAll(new Label(progressText), progressIndicator);
 
 	    Scene scene = new Scene(hBox);
 	    dialogStage.setScene(scene);
 	    
 	}
 	
-	public void activateProgressBar(final Task<?> task)  {
-        progressBar.progressProperty().bind(task.progressProperty());
+	public void activateProgress(final Task<?> task)  {
         progressIndicator.progressProperty().bind(task.progressProperty());
         dialogStage.show();
         

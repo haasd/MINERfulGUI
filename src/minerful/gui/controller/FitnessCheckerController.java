@@ -124,9 +124,6 @@ public class FitnessCheckerController extends AbstractController implements Init
 
 	@FXML
 	public void performFitnessCheck(ActionEvent event) {
-		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle("Missing Selection");
-		alert.setHeaderText("Missing Selection");
 		if((selectedModelInfo == null) && (selectedEventLogInfo == null)) {
 			MinerfulGuiUtil.displayAlert("Missing Selection", "Missing Selection", "Please select a model and an event-log!");
 		} else if (selectedModelInfo == null) {

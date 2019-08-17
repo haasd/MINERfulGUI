@@ -1,23 +1,53 @@
 package minerful.gui.common;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Logger;
+import org.deckfour.xes.model.XLog;
+
+import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import minerful.MinerFulMinerLauncher;
 import minerful.checking.relevance.dao.ModelFitnessEvaluation;
+import minerful.concept.ProcessModel;
 import minerful.concept.constraint.Constraint;
+import minerful.gui.controller.EventLogGeneratorController;
+import minerful.gui.service.loginfo.LogInfo;
+import minerful.logmaker.MinerFulLogMaker;
+import minerful.logmaker.params.LogMakerParameters.Encoding;
+import minerful.logparser.LogParser;
+import minerful.miner.params.MinerFulCmdParameters;
+import minerful.params.InputLogCmdParameters;
+import minerful.params.SystemCmdParameters;
 import minerful.params.InputLogCmdParameters.InputEncoding;
+import minerful.postprocessing.params.PostProcessingCmdParameters;
 
 public class MinerfulGuiUtil {
 	
+		public static Logger logger = Logger.getLogger(MinerfulGuiUtil.class);
+	
 		// determine File encoding
-		public static InputEncoding determineEncoding(String path) {
-			switch(path) {
+		public static InputEncoding determineInputEncoding(String extension) {
+			switch(extension) {
 				case "txt": return InputEncoding.strings;
 				case "mxml": return InputEncoding.mxml;
 				default: return InputEncoding.xes;
+			}
+		}
+		
+		// determine File encoding
+		public static Encoding determineEncoding(String extension) {
+			switch(extension) {
+				case "txt": return Encoding.strings;
+				case "mxml": return Encoding.mxml;
+				case "xes": return Encoding.xes;
+				default: return null;
 			}
 		}
 		
@@ -49,6 +79,25 @@ public class MinerfulGuiUtil {
 			
 			
 			return fciList;
+		}
+		
+		public static Task<XLog> generateLog(MinerFulLogMaker logMak, ProcessModel processModel) {
+			Task<XLog> task = new Task<XLog>() {
+			    @Override public XLog call() {
+
+					logger.info("Start creating Log");
+					long start = System.currentTimeMillis();
+					XLog log = logMak.createLog(processModel);
+					updateProgress(100, 100);
+					long time = System.currentTimeMillis() - start;
+					logger.info("Finished creating Log!");
+					logger.info("Creation Time: "+ TimeUnit.MILLISECONDS.toSeconds(time));
+
+			        return log;
+			    }
+			};
+			
+			return task;
 		}
 
 }

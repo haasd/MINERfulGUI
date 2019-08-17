@@ -112,10 +112,10 @@ public class StartPageController implements Initializable {
     		FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(pathToFxml));
     		GridPane gridPane = loader.load(); 
     		
-    		//GridPane gridPane = FXMLLoader.load(getClass().getClassLoader().getResource(pathToFxml));
-    		
     		AbstractController abstractController = loader.getController();
     		abstractController.setMainController(this);
+    		
+    		abstractController.performAfterInit();
     		
     		// replace context pane
 			rootPane.getChildren().set(0, gridPane);

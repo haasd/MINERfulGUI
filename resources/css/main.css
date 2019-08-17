@@ -44,11 +44,14 @@
 }
 
 .area-header {
-	-fx-padding: 20px 0px 5px 30px;
-	-fx-font-size: 24px;
 	-fx-background-color: #292929;
+}
+
+.area-header-label {
+	-fx-font-size: 24px;
 	-fx-text-fill: white;
 	-fx-font-weight: bold;
+	-fx-padding: 20px 10px;
 }
 
 .section-header1, .section-header2 {

@@ -55,12 +55,12 @@ public class DiscoverController extends AbstractController implements Initializa
 			logger.info("Process File: " + selectedFile.getAbsolutePath());
 			
 			// set up ProgressForm
-			ProgressForm progressForm = new ProgressForm();
+			ProgressForm progressForm = new ProgressForm("Load Log-File!");
 			
 			// create Task bind it to ProgressForm and start
 			LogParserService logParser = new LogParserServiceImpl(selectedFile.getAbsolutePath());
 			Task<LogInfo> parseLog = logParser.parseLog();
-			progressForm.activateProgressBar(parseLog);
+			progressForm.activateProgress(parseLog);
 			new Thread(parseLog).start();
 			
 			try {

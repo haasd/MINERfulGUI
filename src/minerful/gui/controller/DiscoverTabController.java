@@ -336,7 +336,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 			
 			InputLogCmdParameters inputParams = new InputLogCmdParameters();
 			inputParams.inputLogFile = new File(currentEventLog.getPath());
-			inputParams.inputLanguage = MinerfulGuiUtil.determineEncoding(currentEventLog.getPath());
+			inputParams.inputLanguage = MinerfulGuiUtil.determineInputEncoding(currentEventLog.getPath());
 			MinerFulCmdParameters minerFulParams = new MinerFulCmdParameters();
 			SystemCmdParameters systemParams = new SystemCmdParameters();
 			PostProcessingCmdParameters postParams = new PostProcessingCmdParameters();
@@ -458,64 +458,64 @@ public class DiscoverTabController extends AbstractController implements Initial
 	private void exportFile() {
 		
 		// init FileChooser and set extension-filter
-				FileChooser fileChooser = new FileChooser();
-				fileChooser.setTitle("Open Event-Log");
-				FileChooser.ExtensionFilter extFilter = 
-			             new FileChooser.ExtensionFilter("XML/JSON/CSV/HTML", "*.xml", "*.json", "*.csv", "*.html");
-			    fileChooser.getExtensionFilters().add(extFilter);
-			    
-			    // open FileChooser and handle response
-				File saveFile = fileChooser.showSaveDialog(new Stage());
-				if(saveFile != null) {
-					
-					OutputModelParameters outParams = new OutputModelParameters();
-					String path = saveFile.getAbsolutePath();
-					File outputFile = new File(path);
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Open Event-Log");
+		FileChooser.ExtensionFilter extFilter = 
+	             new FileChooser.ExtensionFilter("XML/JSON/CSV/HTML", "*.xml", "*.json", "*.csv", "*.html");
+	    fileChooser.getExtensionFilters().add(extFilter);
+	    
+	    // open FileChooser and handle response
+		File saveFile = fileChooser.showSaveDialog(new Stage());
+		if(saveFile != null) {
+			
+			OutputModelParameters outParams = new OutputModelParameters();
+			String path = saveFile.getAbsolutePath();
+			File outputFile = new File(path);
 
-					logger.info("Save as File: " + path);
+			logger.info("Save as File: " + path);
+			
+			String fileName = saveFile.getName();           
+			String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1, saveFile.getName().length());
+			
+			logger.info("Saving...");
+			
+			switch(fileExtension.toLowerCase()) {
+				case "xml": 
+					//outParams.fileToSaveAsXML = new File(saveFile.getAbsolutePath());
+					outParams.fileToSaveAsConDec = outputFile;		
+					break;
+				case "json":
+					outParams.fileToSaveAsJSON = outputFile;
+					break;
+				case "csv":
+					outParams.fileToSaveConstraintsAsCSV = outputFile;
+					break;
+				case "html":
+					File htmlTemplateFile = new File(getClass().getClassLoader().getResource("templates/export.html").getFile());
 					
-					String fileName = saveFile.getName();           
-					String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1, saveFile.getName().length());
-					
-					logger.info("Saving...");
-					
-					switch(fileExtension.toLowerCase()) {
-						case "xml": 
-							//outParams.fileToSaveAsXML = new File(saveFile.getAbsolutePath());
-							outParams.fileToSaveAsConDec = outputFile;		
-							break;
-						case "json":
-							outParams.fileToSaveAsJSON = outputFile;
-							break;
-						case "csv":
-							outParams.fileToSaveConstraintsAsCSV = outputFile;
-							break;
-						case "html":
-							File htmlTemplateFile = new File(getClass().getClassLoader().getResource("templates/export.html").getFile());
-							
-							try {
-								String htmlString = FileUtils.readFileToString(htmlTemplateFile,"UTF-8");
-								String title = "New Page";
-								htmlString = htmlString.replace("$title", title);
-								File newHtmlFile = new File(saveFile.getAbsolutePath());
-								FileUtils.writeStringToFile(newHtmlFile, htmlString, "UTF-8");
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							return;
+					try {
+						String htmlString = FileUtils.readFileToString(htmlTemplateFile,"UTF-8");
+						String title = "New Page";
+						htmlString = htmlString.replace("$title", title);
+						File newHtmlFile = new File(saveFile.getAbsolutePath());
+						FileUtils.writeStringToFile(newHtmlFile, htmlString, "UTF-8");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-					
-					MinerFulOutputManagementLauncher outputMgt = new MinerFulOutputManagementLauncher();
-					outputMgt.manageOutput(processModel, outParams);
-					
-					ModelInfo modelInfo = new ModelInfo(processModel,new Date(),outputFile.getName());
-					
-					getMainController().addSavedProcessModels(modelInfo);
+					return;
+			}
+			
+			MinerFulOutputManagementLauncher outputMgt = new MinerFulOutputManagementLauncher();
+			outputMgt.manageOutput(processModel, outParams);
+			
+			ModelInfo modelInfo = new ModelInfo(processModel,new Date(),outputFile.getName());
+			
+			getMainController().addSavedProcessModels(modelInfo);
 
-				} else {
-					logger.info("Modelsaving canceled!"); 
-				}
+		} else {
+			logger.info("Modelsaving canceled!"); 
+		}
 
 	}
 

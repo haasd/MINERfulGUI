@@ -22,7 +22,7 @@
 		<!-- Area-Header -->
 		<HBox styleClass="area-header" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" >
 			<Label styleClass="area-header-label" text="Create Event-Log" />
-			<Button styleClass="btn-default, btn-header" text="Select Process Model">
+			<Button styleClass="btn-default, btn-header" text="Select Process Model" onAction="#selectModel">
 				<graphic>
            			<FontIcon iconColor="#393939" iconLiteral="typ-document-text" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
             	</graphic>

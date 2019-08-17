@@ -8,6 +8,10 @@ public abstract class AbstractController {
 	
 	private Stage stage;
 	
+	public void performAfterInit() {
+		
+	}
+	
 	public Stage getStage() {
 		return stage;
 	}
