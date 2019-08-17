@@ -17,12 +17,17 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.Tab?>
 
-<GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="minerful.gui.controller.EventLogGeneratorController">
+<GridPane fx:id="eventLogGeneratorPane" GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="minerful.gui.controller.EventLogGeneratorController">
 	<children>
 		<!-- Area-Header -->
-		<AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" >
-			<Label styleClass="area-header" text="Create Event-Log" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
-		</AnchorPane>
+		<HBox styleClass="area-header" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" >
+			<Label styleClass="area-header-label" text="Create Event-Log" />
+			<Button styleClass="btn-default, btn-header" text="Select Process Model">
+				<graphic>
+           			<FontIcon iconColor="#393939" iconLiteral="typ-document-text" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+            	</graphic>
+			</Button>
+		</HBox>
 		
 		<!-- TabPane -->
 		<TabPane fx:id="eventLogGeneratorTabPane" GridPane.columnIndex="0" GridPane.rowIndex="1">

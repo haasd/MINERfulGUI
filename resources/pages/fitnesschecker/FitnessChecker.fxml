@@ -19,10 +19,11 @@
 
 <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="minerful.gui.controller.FitnessCheckerController">
 	<children>
+		
 		<!-- Area-Header -->
-		<AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" >
-			<Label styleClass="area-header" text="Perform Fitness-Check" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
-		</AnchorPane>
+		<HBox styleClass="area-header" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" >
+			<Label styleClass="area-header-label" text="Perform Fitness-Check" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
+		</HBox>
 		
 		<!-- Selector -->
 		<HBox GridPane.columnIndex="0" GridPane.rowIndex="1" alignment="CENTER" GridPane.columnSpan="2" style="-fx-spacing: 15; -fx-padding: 15px;">
