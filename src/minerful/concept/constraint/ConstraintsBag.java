@@ -160,7 +160,7 @@ public class ConstraintsBag implements Cloneable, PropertyChangeListener {
     	Set<Constraint> existingConSet = this.bag.get(tCh);
     	for (Constraint c : cs) {
     		if (!existingConSet.contains(c)) {
-    			c.removePropertyChangeListener(this);
+    			c.addPropertyChangeListener(this);
     		}
     	}
         return this.bag.get(tCh).addAll(cs);
@@ -387,6 +387,8 @@ public class ConstraintsBag implements Cloneable, PropertyChangeListener {
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+		Constraint con = (Constraint) evt.getSource();
+		System.out.println( con + " " + con.isMarkedForExclusion());
 		pcs.firePropertyChange(evt);
 	}
 }

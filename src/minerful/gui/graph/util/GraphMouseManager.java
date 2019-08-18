@@ -95,6 +95,7 @@ public class GraphMouseManager implements MouseManager {
 		unselectAllElements();
 		if (event.getButton() == MouseButton.SECONDARY) {
 			element.setAttribute("ui.selected");
+			
 			GraphicNode node = (GraphicNode) element;
 			
 			VBox vbox = new VBox();
@@ -113,16 +114,24 @@ public class GraphMouseManager implements MouseManager {
 			stackPane.getChildren().clear();
 			stackPane.getChildren().add(vbox);
 			
-			node.edges().forEach(edge -> {edge.setAttribute("ui.selected");});
+			
+			
+			if(node.getDegree() != 0) {
+				node.edges().forEach(edge -> {edge.setAttribute("ui.selected");});
+			}
+			
 			stage.setX(event.getSceneX()- 600);
 			stage.setY(event.getSceneY());
 			stage.show();
 			stage.toFront();
+			
 		} else {
 			element.setAttribute("ui.selected");
 			if(element.getClass() == GraphicNode.class) {
 				GraphicNode node = (GraphicNode) element;
-				node.edges().forEach(edge -> {edge.setAttribute("ui.selected");});		
+				if(node.getDegree() != 0) {
+					node.edges().forEach(edge -> {edge.setAttribute("ui.selected");});
+				}		
 			}
 			
 		}

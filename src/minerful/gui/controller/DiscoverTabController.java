@@ -164,7 +164,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	private Boolean reminingRequired = false;
 	
-	private PostProcessingAnalysisType postProcessingType = PostProcessingAnalysisType.NONE;
+	private PostProcessingAnalysisType postProcessingType = PostProcessingAnalysisType.HIERARCHY;
 	
 	private Boolean cropRedundantAndInconsistentConstraints = false;
 	
@@ -305,11 +305,11 @@ public class DiscoverTabController extends AbstractController implements Initial
 		RadioButton typeNone = new RadioButton("None");
 		typeNone.setToggleGroup(togglePostAnalysisGroup);
 		typeNone.setUserData(PostProcessingAnalysisType.NONE);
-		typeNone.setSelected(true);
+		typeNone.setSelected(false);
 		RadioButton typeHierarchy = new RadioButton("Hierarchy");
 		typeHierarchy.setToggleGroup(togglePostAnalysisGroup);
 		typeHierarchy.setUserData(PostProcessingAnalysisType.HIERARCHY);
-		typeHierarchy.setSelected(false);
+		typeHierarchy.setSelected(true);
 		RadioButton typeHierarchyConflict = new RadioButton("HierarchyConflict");
 		typeHierarchyConflict.setToggleGroup(togglePostAnalysisGroup);
 		typeHierarchyConflict.setUserData(PostProcessingAnalysisType.HIERARCHYCONFLICT);
@@ -396,7 +396,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	private void updateModel() {
 		if(processModel != null) {
-			logger.info("Update Parameters: " + supportThresholdField.getText() + " " + confidenceThresholdField.getText() + " " + interestThresholdField.getText());
+			logger.info("Update Parameters: " + supportThresholdField.getText() + " " + confidenceThresholdField.getText() + " " + interestThresholdField.getText() + " " + postProcessingType);
 			
 			InputLogCmdParameters inputParams = new InputLogCmdParameters();
 			inputParams.inputLogFile = new File(currentEventLog.getPath());
@@ -442,10 +442,12 @@ public class DiscoverTabController extends AbstractController implements Initial
 			if(!reminingRequired) {
 				MinerFulSimplificationLauncher miFuSiLa = new MinerFulSimplificationLauncher(processModel, postParams);
 				processModel = miFuSiLa.simplify();
+				processModel.addPropertyChangeListener(this);
 			} else {
 				reminingRequired = false;
 				MinerFulMinerLauncher miFuMiLa = new MinerFulMinerLauncher(inputParams, minerFulParams, postParams, systemParams);
-				processModel = miFuMiLa.mine();				
+				processModel = miFuMiLa.mine();
+				processModel.addPropertyChangeListener(this);
 			}
 
 			discoveredConstraints.clear();
@@ -596,7 +598,6 @@ public class DiscoverTabController extends AbstractController implements Initial
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		// TODO Auto-generated method stub
 	}
 	
 	@FXML

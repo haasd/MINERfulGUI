@@ -14,11 +14,10 @@ import org.graphstream.graph.implementations.MultiGraph;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.ColumnConstraints;
 import minerful.concept.ProcessModel;
 import minerful.concept.TaskChar;
 import minerful.concept.constraint.Constraint;
@@ -39,7 +38,7 @@ public class GraphUtil {
 			node.setAttribute("ui.label", task.getName());
 		}
 		
-		for(Constraint constraint : processModel.getAllConstraints()) {
+		for(Constraint constraint : processModel.getAllUnmarkedConstraints()) {
 			if(constraint.getImplied() == null) {
 				Node node = graph.getNode(constraint.getBase().getJoinedStringOfIdentifiers());
 				node.setAttribute("ui.class", constraint.type);
@@ -65,7 +64,6 @@ public class GraphUtil {
 					} else if (graph.getEdge(backwardEdge) != null) {
 						Edge edge = graph.getEdge(backwardEdge);
 						edge.setAttribute(constraint.toString(), constraint);
-						System.out.println(edge.getAttribute(constraint.toString()).toString());
 					}
 				}
 				
@@ -119,9 +117,11 @@ public class GraphUtil {
 		List<Constraint> conList = new ArrayList<>();
 		
 		if(outgoing) {
-			conList = processModel.getAllConstraints().stream().filter(con -> (con.getBase().getJoinedStringOfIdentifiers().equals(activity))).collect(Collectors.toList());
+			constraints.setPlaceholder(new Label("No outgoing constraints!"));
+			conList = processModel.getAllUnmarkedConstraints().stream().filter(con -> (con.getBase().getJoinedStringOfIdentifiers().equals(activity))).collect(Collectors.toList());
 		} else {
-			conList = processModel.getAllConstraints().stream().filter(con -> ((con.getImplied() != null) && con.getImplied().getJoinedStringOfIdentifiers().equals(activity))).collect(Collectors.toList());
+			constraints.setPlaceholder(new Label("No incoming constraints!"));
+			conList = processModel.getAllUnmarkedConstraints().stream().filter(con -> ((con.getImplied() != null) && con.getImplied().getJoinedStringOfIdentifiers().equals(activity))).collect(Collectors.toList());
 		}
 		
 		for(Constraint con : conList) {
