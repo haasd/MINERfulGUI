@@ -60,7 +60,7 @@ public class ModelGeneratorController extends AbstractController implements Init
 		    if(modelController.getSelectedRow() != null) {
 		    	logger.info("User selected " + modelController.getSelectedRow().getSaveName());
 		    	Tab tab = new Tab();
-				loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/eventloggenerator/ModelGeneratorTab.fxml"));
+				loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/modelgenerator/ModelGeneratorTab.fxml"));
 	    		GridPane gridPane = loader.load();
 				ModelGeneratorTabController controller = loader.getController();
 				controller.setStage((Stage)((Node) event.getSource()).getScene().getWindow());
@@ -72,6 +72,28 @@ public class ModelGeneratorController extends AbstractController implements Init
 				modelGeneratorTabPane.getTabs().add(tab);
 				
 		    }
+			
+		} catch (IOException e) {
+			logger.info("Problem occured during selection!");
+			e.printStackTrace();
+		}
+	}
+	
+	@FXML
+	public void createModel(ActionEvent event) {
+		logger.info("Create Model!");
+		try {
+
+	    	Tab tab = new Tab();
+			FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/modelgenerator/ModelGeneratorTab.fxml"));
+    		GridPane gridPane = loader.load();
+			ModelGeneratorTabController controller = loader.getController();
+			controller.setStage((Stage)((Node) event.getSource()).getScene().getWindow());
+			controller.setMainController(getMainController());
+    		
+			tab.setContent(gridPane);
+			tab.setText("New Model");
+			modelGeneratorTabPane.getTabs().add(tab);	
 			
 		} catch (IOException e) {
 			logger.info("Problem occured during selection!");

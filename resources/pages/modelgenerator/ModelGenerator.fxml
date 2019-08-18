@@ -27,7 +27,7 @@
            			<FontIcon iconColor="#393939" iconLiteral="typ-flow-switch" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
             	</graphic>
 			</Button>
-			<Button styleClass="btn-default, btn-header" text="New Process Model">
+			<Button styleClass="btn-default, btn-header" text="New Process Model" onAction="#createModel">
 				<graphic>
            			<FontIcon iconColor="#393939" iconLiteral="typ-flow-children" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
             	</graphic>
