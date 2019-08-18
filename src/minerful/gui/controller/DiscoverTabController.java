@@ -15,6 +15,7 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.controlsfx.control.ToggleSwitch;
 import org.graphstream.graph.Graph;
 import org.graphstream.ui.fx_viewer.FxViewPanel;
 import org.graphstream.ui.fx_viewer.FxViewer;
@@ -37,12 +38,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -69,6 +74,7 @@ import minerful.miner.params.MinerFulCmdParameters;
 import minerful.params.InputLogCmdParameters;
 import minerful.params.SystemCmdParameters;
 import minerful.postprocessing.params.PostProcessingCmdParameters;
+import minerful.postprocessing.params.PostProcessingCmdParameters.PostProcessingAnalysisType;
 
 public class DiscoverTabController extends AbstractController implements Initializable, PropertyChangeListener {
 	
@@ -94,9 +100,6 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	@FXML
 	ListView<String> logInfoList;
-	
-	@FXML
-	ListView<String> resultList;
 	
 	@FXML
 	TableColumn<LogInfo, String> filenameColumn;
@@ -147,13 +150,23 @@ public class DiscoverTabController extends AbstractController implements Initial
 	TextField stopAtTrace;
 	
 	@FXML
+	VBox processingType;
+	
+	@FXML
+	VBox cropType;
+	
+	@FXML
 	VBox canvasBox;
 	
 	private ProcessModel processModel; 
 	
 	private LogInfo currentEventLog;
 	
-	private Boolean activitySelectionChanged = false;
+	private Boolean reminingRequired = false;
+	
+	private PostProcessingAnalysisType postProcessingType = PostProcessingAnalysisType.NONE;
+	
+	private Boolean cropRedundantAndInconsistentConstraints = false;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -230,7 +243,6 @@ public class DiscoverTabController extends AbstractController implements Initial
 	    eventLogTable.visibleProperty().bind(Bindings.isEmpty(eventLogTable.getItems()).not());
 	    
 	    setHeight(logInfoList, 125);
-	    setHeight(resultList, 125);  
 	    setHeight(eventsTable, 250);
 	    setHeight(constraintsTable, 250);
 		
@@ -288,7 +300,59 @@ public class DiscoverTabController extends AbstractController implements Initial
 		// define eventTable
 		filterColumn.setCellValueFactory(new PropertyValueFactory<EventFilter, Boolean>("selected"));
 		
-		}
+		// define Post Analysis Type
+		ToggleGroup togglePostAnalysisGroup = new ToggleGroup();
+		RadioButton typeNone = new RadioButton("None");
+		typeNone.setToggleGroup(togglePostAnalysisGroup);
+		typeNone.setUserData(PostProcessingAnalysisType.NONE);
+		typeNone.setSelected(true);
+		RadioButton typeHierarchy = new RadioButton("Hierarchy");
+		typeHierarchy.setToggleGroup(togglePostAnalysisGroup);
+		typeHierarchy.setUserData(PostProcessingAnalysisType.HIERARCHY);
+		typeHierarchy.setSelected(false);
+		RadioButton typeHierarchyConflict = new RadioButton("HierarchyConflict");
+		typeHierarchyConflict.setToggleGroup(togglePostAnalysisGroup);
+		typeHierarchyConflict.setUserData(PostProcessingAnalysisType.HIERARCHYCONFLICT);
+		typeHierarchyConflict.setSelected(false);
+		RadioButton typeHierarchyConflictRedundancy = new RadioButton("HierarchyConflictRedundancy");
+		typeHierarchyConflictRedundancy.setToggleGroup(togglePostAnalysisGroup);
+		typeHierarchyConflictRedundancy.setUserData(PostProcessingAnalysisType.HIERARCHYCONFLICTREDUNDANCY);
+		typeHierarchyConflictRedundancy.setSelected(false);
+		RadioButton typeHierarchyConflictRedundancyDouble = new RadioButton("HierarchyConflictRedundancyDouble");
+		typeHierarchyConflictRedundancyDouble.setToggleGroup(togglePostAnalysisGroup);
+		typeHierarchyConflictRedundancyDouble.setUserData(PostProcessingAnalysisType.HIERARCHYCONFLICTREDUNDANCYDOUBLE);
+		typeHierarchyConflictRedundancyDouble.setSelected(false);
+		
+		togglePostAnalysisGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>(){
+		    public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle) {
+
+		         if (togglePostAnalysisGroup.getSelectedToggle() != null) {
+		             postProcessingType = (PostProcessingAnalysisType) togglePostAnalysisGroup.getSelectedToggle().getUserData();
+		             reminingRequired = true;
+		             updateModel();
+		         }
+
+		     } 
+		});
+		
+		// define cropRedundantAndInconsistentConstraints
+		ToggleSwitch toggleSwitch = new ToggleSwitch("Off");
+		cropType.getChildren().add(toggleSwitch);
+		
+		toggleSwitch.selectedProperty().addListener(it -> {
+			cropRedundantAndInconsistentConstraints = toggleSwitch.isSelected();
+			if(toggleSwitch.isSelected()) {
+				toggleSwitch.setText("On");
+			} else {
+				toggleSwitch.setText("Off");
+			}
+			reminingRequired = true;
+			updateModel();
+        });
+		
+		processingType.getChildren().addAll(typeNone,typeHierarchy,typeHierarchyConflict,typeHierarchyConflictRedundancy,typeHierarchyConflictRedundancyDouble);
+		
+	}
 	
 	public void updateLogInfo() {
 		logger.info("Update Event-Log Info");
@@ -303,7 +367,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 			filter.getSelected().selectedProperty().addListener(new ChangeListener<Boolean>() {
 			    @Override
 			    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-			    	activitySelectionChanged = true;
+			    	reminingRequired = true;
 			        updateModel();
 			    }
 			});
@@ -313,7 +377,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		
 		processModel = currentEventLog.getProcessModel();
 		processModel.addPropertyChangeListener(this);
-		discoveredConstraints.addAll(processModel.getAllConstraints());
+		discoveredConstraints.addAll(processModel.getAllUnmarkedConstraints());
 		Graph graph = GraphUtil.drawGraph(processModel);
 		Viewer viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
 		FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
@@ -343,7 +407,8 @@ public class DiscoverTabController extends AbstractController implements Initial
 			postParams.supportThreshold = Double.parseDouble(supportThresholdField.getText());
 			postParams.confidenceThreshold = Double.parseDouble(confidenceThresholdField.getText());
 			postParams.interestFactorThreshold = Double.parseDouble(interestThresholdField.getText());
-			postParams.cropRedundantAndInconsistentConstraints = true;
+			postParams.cropRedundantAndInconsistentConstraints = cropRedundantAndInconsistentConstraints;
+			postParams.postProcessingAnalysisType = postProcessingType;
 			
 			minerFulParams.activitiesToExcludeFromResult = new ArrayList<>();
 			
@@ -374,16 +439,17 @@ public class DiscoverTabController extends AbstractController implements Initial
 				}
 			}
 			
-			if(!activitySelectionChanged) {
+			if(!reminingRequired) {
 				MinerFulSimplificationLauncher miFuSiLa = new MinerFulSimplificationLauncher(processModel, postParams);
-				miFuSiLa.simplify();
+				processModel = miFuSiLa.simplify();
 			} else {
+				reminingRequired = false;
 				MinerFulMinerLauncher miFuMiLa = new MinerFulMinerLauncher(inputParams, minerFulParams, postParams, systemParams);
 				processModel = miFuMiLa.mine();				
 			}
 
 			discoveredConstraints.clear();
-			discoveredConstraints.addAll(processModel.getAllConstraints());
+			discoveredConstraints.addAll(processModel.getAllUnmarkedConstraints());
 			
 			Graph graph = GraphUtil.drawGraph(processModel);
 			Viewer viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD );
@@ -524,7 +590,6 @@ public class DiscoverTabController extends AbstractController implements Initial
 		return currentEventLog;
 	}
 
-
 	public void setCurrentEventLog(LogInfo currentEventLog) {
 		this.currentEventLog = currentEventLog;
 	}
@@ -532,7 +597,6 @@ public class DiscoverTabController extends AbstractController implements Initial
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		// TODO Auto-generated method stub
-		
 	}
 	
 	@FXML

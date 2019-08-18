@@ -11,15 +11,19 @@ import org.graphstream.ui.view.util.MouseManager;
 
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import minerful.concept.ProcessModel;
+import minerful.concept.constraint.Constraint;
 
 public class GraphMouseManager implements MouseManager {
 	/**
@@ -35,6 +39,8 @@ public class GraphMouseManager implements MouseManager {
 	private ProcessModel processModel;
 	
 	private Stage stage = new Stage();
+	
+	private StackPane stackPane = new StackPane();
 
 	final private EnumSet<InteractiveElement> types;
 
@@ -46,11 +52,10 @@ public class GraphMouseManager implements MouseManager {
         this.stage.initModality(Modality.NONE);
         this.stage.initOwner(stage);
         
-        StackPane stackPane = new StackPane();
         stackPane.getStylesheets().add(getClass().getClassLoader().getResource("css/main.css").toExternalForm());
         stackPane.getStyleClass().add("lightbox");
         
-        Scene scene = new Scene(stackPane, 200.0, 200.0);
+        Scene scene = new Scene(stackPane, 600.0, 400.0);
         scene.setFill(Color.TRANSPARENT);
         this.stage.setScene(scene);
 	}
@@ -80,8 +85,7 @@ public class GraphMouseManager implements MouseManager {
 	protected void mouseButtonRelease(MouseEvent event,
 									  Iterable<GraphicElement> elementsInArea) {
 		for (GraphicElement element : elementsInArea) {
-			if (!element.hasAttribute("ui.selected"))
-			element.setAttribute("ui.selected");
+			
 		}
 	}
 	
@@ -92,8 +96,25 @@ public class GraphMouseManager implements MouseManager {
 		if (event.getButton() == MouseButton.SECONDARY) {
 			element.setAttribute("ui.selected");
 			GraphicNode node = (GraphicNode) element;
-			node.leavingEdges().forEach(edge -> {edge.setAttribute("ui.selected");});
-			stage.setX(event.getSceneX()- 200);
+			
+			VBox vbox = new VBox();
+			Label activityLabel = new Label(node.getLabel());
+			activityLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;"); 
+			Label outgoingLabel = new Label("Outgoing Constraints");
+			outgoingLabel.setStyle("-fx-padding: 10px 0px;");
+			outgoingLabel.getStyleClass().add("section-header2");
+			Label incomingLabel = new Label("Incoming Constraints");
+			incomingLabel.setStyle("-fx-padding: 10px 0px;");
+			incomingLabel.getStyleClass().add("section-header2");
+			TableView<Constraint> outgoingCon = GraphUtil.getConstraintsForActivity(processModel, node.getId(), true);
+			TableView<Constraint> incomingCon = GraphUtil.getConstraintsForActivity(processModel, node.getId(), false);
+			
+			vbox.getChildren().addAll(activityLabel, outgoingLabel, outgoingCon, incomingLabel, incomingCon);
+			stackPane.getChildren().clear();
+			stackPane.getChildren().add(vbox);
+			
+			node.edges().forEach(edge -> {edge.setAttribute("ui.selected");});
+			stage.setX(event.getSceneX()- 600);
 			stage.setY(event.getSceneY());
 			stage.show();
 			stage.toFront();
@@ -101,7 +122,7 @@ public class GraphMouseManager implements MouseManager {
 			element.setAttribute("ui.selected");
 			if(element.getClass() == GraphicNode.class) {
 				GraphicNode node = (GraphicNode) element;
-				node.leavingEdges().forEach(edge -> {edge.setAttribute("ui.selected");});		
+				node.edges().forEach(edge -> {edge.setAttribute("ui.selected");});		
 			}
 			
 		}

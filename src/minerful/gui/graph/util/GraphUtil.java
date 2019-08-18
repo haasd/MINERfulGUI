@@ -4,15 +4,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.ColumnConstraints;
 import minerful.concept.ProcessModel;
 import minerful.concept.TaskChar;
 import minerful.concept.constraint.Constraint;
+import minerful.gui.common.ValidationEngine;
 
 public class GraphUtil {
 	
@@ -68,6 +78,59 @@ public class GraphUtil {
 
 	public static String showInfo(Constraint constraint) {
 		return String.format("%s \nSupport: %4.3f \nConfidence: %4.3f \nInterestFactor: %4.3f",constraint.type, constraint.getSupport(), constraint.getConfidence(), constraint.getInterestFactor());
+	}
+	
+	public static TableView<Constraint> getConstraintsForActivity(ProcessModel processModel, String activity, Boolean outgoing){
+		TableView<Constraint> constraints = new TableView<>();
+		constraints.setStyle("-fx-border-width: 1 0 1 0; -fx-border-color: #A5A39C;"); 
+		constraints.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		TableColumn<Constraint, String> constraintColumn = new TableColumn<>("Constraint");
+		TableColumn<Constraint, Double> supportColumn= new TableColumn<>("Support");
+		TableColumn<Constraint, Double> confidenceColumn= new TableColumn<>("Confidence");
+		TableColumn<Constraint, Double> interestColumn= new TableColumn<>("Interest");
+		
+		constraints.getColumns().add(constraintColumn);
+		constraints.getColumns().add(supportColumn);
+		constraints.getColumns().add(confidenceColumn);
+		constraints.getColumns().add(interestColumn);
+		
+		constraintColumn.getStyleClass().add("column-left");
+		supportColumn.setMaxWidth(75);
+		supportColumn.setMinWidth(75);
+		confidenceColumn.setMaxWidth(75);
+		confidenceColumn.setMinWidth(75);
+		interestColumn.setMaxWidth(75);
+		interestColumn.setMinWidth(75);
+		constraintColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().toString()));
+		
+		supportColumn.setCellValueFactory(
+                new PropertyValueFactory<Constraint, Double>("support"));
+		supportColumn.setCellFactory(col -> ValidationEngine.cellConstraintFormat());
+		
+		confidenceColumn.setCellValueFactory(
+                new PropertyValueFactory<Constraint, Double>("confidence"));
+		confidenceColumn.setCellFactory(col -> ValidationEngine.cellConstraintFormat());
+		
+		interestColumn.setCellValueFactory(
+                new PropertyValueFactory<Constraint, Double>("interestFactor"));
+		interestColumn.setCellFactory(col -> ValidationEngine.cellConstraintFormat());
+		
+		ObservableList<Constraint> discoveredConstraints = FXCollections.observableArrayList();
+		List<Constraint> conList = new ArrayList<>();
+		
+		if(outgoing) {
+			conList = processModel.getAllConstraints().stream().filter(con -> (con.getBase().getJoinedStringOfIdentifiers().equals(activity))).collect(Collectors.toList());
+		} else {
+			conList = processModel.getAllConstraints().stream().filter(con -> ((con.getImplied() != null) && con.getImplied().getJoinedStringOfIdentifiers().equals(activity))).collect(Collectors.toList());
+		}
+		
+		for(Constraint con : conList) {
+			discoveredConstraints.add(con);
+		}
+		
+		constraints.setItems(discoveredConstraints);
+		
+		return constraints;
 	}
 	
 }
