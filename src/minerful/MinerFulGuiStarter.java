@@ -11,6 +11,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -29,6 +30,7 @@ public class MinerFulGuiStarter extends Application {
     	logger.info("Load Application!");
         scene = new Scene(loadFXML("pages/Startpage"));
         scene.getStylesheets().add(getClass().getClassLoader().getResource("css/main.css").toExternalForm());
+        stage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("images/minerful-icon.png")));
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
