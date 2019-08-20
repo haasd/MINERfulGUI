@@ -26,6 +26,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import minerful.MinerFulOutputManagementLauncher;
 import minerful.concept.ProcessModel;
+import minerful.concept.TaskCharFactory;
 import minerful.concept.constraint.ConstraintsBag;
 import minerful.gui.common.MinerfulGuiUtil;
 import minerful.gui.common.ModelInfo;
@@ -47,11 +48,13 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	
 	private Graph graph = new MultiGraph("MINERful");
 	
+	private TaskCharFactory tChFactory = new TaskCharFactory();
+
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		Viewer viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
 		FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
-		view.setMouseManager(new ModelGeneratorGraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, this.getStage()));
+		view.setMouseManager(new ModelGeneratorGraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), this));
 		viewer.enableAutoLayout();
 		canvasBox.getChildren().add(view);
 	}
@@ -153,6 +156,14 @@ public class ModelGeneratorTabController extends AbstractController implements I
 
 	public void setModelInfo(ModelInfo modelInfo) {
 		this.modelInfo = modelInfo;
+	}
+	
+	public TaskCharFactory gettChFactory() {
+		return tChFactory;
+	}
+
+	public void settChFactory(TaskCharFactory tChFactory) {
+		this.tChFactory = tChFactory;
 	}
 
 }

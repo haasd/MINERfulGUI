@@ -1,5 +1,6 @@
 package minerful.gui.graph.util;
 
+import java.io.IOException;
 import java.util.EnumSet;
 
 import org.graphstream.ui.graphicGraph.GraphicElement;
@@ -10,12 +11,13 @@ import org.graphstream.ui.view.util.InteractiveElement;
 import org.graphstream.ui.view.util.MouseManager;
 
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -23,7 +25,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import minerful.concept.ProcessModel;
-import minerful.concept.constraint.Constraint;
+import minerful.gui.controller.AddElementController;
+import minerful.gui.controller.ModelGeneratorTabController;
 
 public class ModelGeneratorGraphMouseManager implements MouseManager {
 	/**
@@ -36,28 +39,16 @@ public class ModelGeneratorGraphMouseManager implements MouseManager {
 	 */
 	protected GraphicGraph graph;
 	
-	private ProcessModel processModel;
+	private ModelGeneratorTabController modelGeneratorTabController;
 	
-	private Stage stage = new Stage();
-	
-	private StackPane stackPane = new StackPane();
+	private Boolean openModal = false;
 
 	final private EnumSet<InteractiveElement> types;
 
-	public ModelGeneratorGraphMouseManager(EnumSet<InteractiveElement> types, ProcessModel processModel, Stage stage) {
+	public ModelGeneratorGraphMouseManager(EnumSet<InteractiveElement> types, ModelGeneratorTabController modelGeneratorTabController) {
 		this.types = types;
-		this.processModel = processModel;
-		
-		this.stage.initStyle(StageStyle.TRANSPARENT);
-        this.stage.initModality(Modality.NONE);
-        this.stage.initOwner(stage);
-        
-        stackPane.getStylesheets().add(getClass().getClassLoader().getResource("css/main.css").toExternalForm());
-        stackPane.getStyleClass().add("lightbox");
-        
-        Scene scene = new Scene(stackPane, 300.0, 400.0);
-        scene.setFill(Color.TRANSPARENT);
-        this.stage.setScene(scene);
+		this.modelGeneratorTabController = modelGeneratorTabController;
+
 	}
 
 	public void init(GraphicGraph graph, View view) {
@@ -73,23 +64,47 @@ public class ModelGeneratorGraphMouseManager implements MouseManager {
 	protected void mouseButtonPress(MouseEvent event) {
 		view.requireFocus();
 		
-		if (event.getButton() == MouseButton.SECONDARY) {
-			VBox vbox = new VBox();
-			Label controlLabel = new Label("Control");
-			controlLabel.getStyleClass().add("section-header2");
-			vbox.getChildren().add(controlLabel);
+		if (event.getButton() == MouseButton.SECONDARY && !openModal) {
+			openModal=true;
+			FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/modelgenerator/AddElement.fxml"));
+			GridPane root;
+			try {
+				root = loader.load();
+				AddElementController controller = loader.getController();
+				
+				root.getStylesheets().add(getClass().getClassLoader().getResource("css/main.css").toExternalForm());
+				
+				Stage stage = new Stage();
+				
+				stage.initModality(Modality.WINDOW_MODAL);
+			    stage.initOwner(((Node)event.getSource()).getScene().getWindow());
+				
+				stage.initStyle(StageStyle.TRANSPARENT);
+		        stage.initModality(Modality.NONE);
+		        stage.initOwner(modelGeneratorTabController.getStage());
+		        
+		        root.getStylesheets().add(getClass().getClassLoader().getResource("css/main.css").toExternalForm());
+		        root.getStyleClass().add("lightbox");
+		        stage.setScene(new Scene(root, 300, 345));
+				
+				stage.setX(event.getSceneX()-40);
+				stage.setY(event.getSceneY()-20);
+				stage.showAndWait();
+				stage.toFront();
+				
+				if(!stage.isShowing()) {
+					openModal = false;
+				}
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 			
-			
-			stackPane.getChildren().clear();
-			stackPane.getChildren().add(vbox);
-			
-			stage.setX(event.getSceneX()- 300);
-			stage.setY(event.getSceneY());
-			stage.show();
-			stage.toFront();
+
 		} else {
 			unselectAllElements();
-			stage.close();
 		}
 		
 	}
@@ -110,18 +125,10 @@ public class ModelGeneratorGraphMouseManager implements MouseManager {
 			
 			GraphicNode node = (GraphicNode) element;
 			
-			VBox vbox = new VBox();
-			stackPane.getChildren().clear();
-			stackPane.getChildren().add(vbox);
 			
 			if(node.getDegree() != 0) {
 				node.edges().forEach(edge -> {edge.setAttribute("ui.selected");});
 			}
-			
-			stage.setX(event.getSceneX()- 600);
-			stage.setY(event.getSceneY());
-			stage.show();
-			stage.toFront();
 			
 		} else {
 			element.setAttribute("ui.selected");
