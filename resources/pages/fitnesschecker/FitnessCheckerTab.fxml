@@ -19,7 +19,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.Tab?>
 
-<GridPane styleClass="area-content" GridPane.columnIndex="0" GridPane.rowIndex="0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="minerful.gui.controller.FitnessCheckerTabController">
+<GridPane styleClass="area-content" GridPane.columnIndex="0" GridPane.rowIndex="0" xmlns:fx="http://javafx.com/fxml" fx:controller="minerful.gui.controller.FitnessCheckerTabController">
 	<children>
      	<HBox style="-fx-spacing: 10; -fx-padding: 5px;" GridPane.columnIndex="0" GridPane.rowIndex="0">
       		<Label styleClass="section-header1" text="FitnessCheck-Result" />

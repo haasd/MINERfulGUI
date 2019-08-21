@@ -66,7 +66,7 @@ public class AddElementController extends AbstractController implements Initiali
 	
 	@FXML
 	public void addActivity(ActionEvent event){
-		if(activityname.getText() != null && activityname.getText().isEmpty()) {
+		if(activityname.getText() != null && !activityname.getText().isEmpty()) {
 			closeStage(event);
 		}
 		

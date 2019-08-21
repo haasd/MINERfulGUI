@@ -17,19 +17,26 @@ import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.util.InteractiveElement;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import minerful.MinerFulOutputManagementLauncher;
 import minerful.concept.ProcessModel;
+import minerful.concept.TaskChar;
+import minerful.concept.TaskCharArchive;
 import minerful.concept.TaskCharFactory;
+import minerful.concept.constraint.Constraint;
 import minerful.concept.constraint.ConstraintsBag;
 import minerful.gui.common.MinerfulGuiUtil;
 import minerful.gui.common.ModelInfo;
+import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.graph.util.ModelGeneratorGraphMouseManager;
 import minerful.io.params.OutputModelParameters;
 
@@ -40,6 +47,9 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	@FXML
 	VBox canvasBox;
 	
+	@FXML
+	ListView<TaskChar> activitiesList;
+	
 	private ModelInfo modelInfo;
 	
 	private ConstraintsBag bag = new ConstraintsBag();
@@ -49,14 +59,22 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	private Graph graph = new MultiGraph("MINERful");
 	
 	private TaskCharFactory tChFactory = new TaskCharFactory();
+	
+	private ObservableList<TaskChar> taskChars = FXCollections.observableArrayList();
+	
+	private Viewer viewer;
+	
+	private ModelGeneratorGraphMouseManager ggmm = new ModelGeneratorGraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), this);
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		Viewer viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+		viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
 		FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
-		view.setMouseManager(new ModelGeneratorGraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), this));
+		view.setMouseManager(ggmm);
 		viewer.enableAutoLayout();
 		canvasBox.getChildren().add(view);
+		
+		activitiesList.setItems(taskChars);
 	}
 	
 	@FXML
@@ -164,6 +182,28 @@ public class ModelGeneratorTabController extends AbstractController implements I
 
 	public void settChFactory(TaskCharFactory tChFactory) {
 		this.tChFactory = tChFactory;
+	}
+	
+	public void createTaskChar(String task) {
+		processModel.getTasks().add(tChFactory.makeTaskChar(task));
+		taskChars.add(tChFactory.makeTaskChar(task));
+		updateGraph();
+	}
+	
+	public void addConstraint(Constraint con) {
+		processModel.getAllConstraints().add(con);
+		updateGraph();
+	}
+	
+	private void updateGraph() {
+		graph = GraphUtil.drawGraph(processModel);
+		
+		viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+		FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
+		view.setMouseManager(ggmm);
+		viewer.enableAutoLayout();
+		canvasBox.getChildren().clear();
+		canvasBox.getChildren().add(view);
 	}
 
 }

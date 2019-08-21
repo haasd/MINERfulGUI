@@ -22,7 +22,7 @@
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.control.ComboBox?>
 
-<GridPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="minerful.gui.controller.AddElementController">
+<GridPane xmlns:fx="http://javafx.com/fxml/" fx:controller="minerful.gui.controller.AddElementController">
 	<children>
 		<VBox style="-fx-padding: 20px;" spacing="10" fx:id="vbox" GridPane.columnIndex="0" GridPane.rowIndex="0">
 			<Label text="Activity: ">

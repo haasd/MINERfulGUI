@@ -20,7 +20,7 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.ToggleGroup?>
 
-<GridPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="minerful.gui.controller.DiscoverTabController">
+<GridPane xmlns:fx="http://javafx.com/fxml/" fx:controller="minerful.gui.controller.DiscoverTabController">
 	<children>
 		<!-- Event-Log  -->
 		<VBox styleClass="section, section-menu"  style="-fx-background-color: white;" GridPane.columnIndex="0" GridPane.rowIndex="0">
@@ -83,7 +83,7 @@
     			</TableView>
     			
     			<!-- Post Processing Analysis Type -->
-    			<Label styleClass="section-header2" text="Post Processing Analysis Type" style="-fx-content-display: right">
+    			<Label styleClass="section-header2" text="Analysis Type" style="-fx-content-display: right">
     				<graphic>
               			<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
                		</graphic>
@@ -175,11 +175,11 @@
 						<columns>
 						   <TableColumn styleClass="column-left" text="Constraint" fx:id="constraintColumn"> 
 						   </TableColumn>
-						   <TableColumn text="Support" prefWidth="100.0" minWidth="100.0" maxWidth="100.0" fx:id="supportColumn"> 
+						   <TableColumn text="Support" prefWidth="150.0" minWidth="150.0" maxWidth="150.0" fx:id="supportColumn"> 
 						   </TableColumn>
-						   <TableColumn text="Confidence" prefWidth="100.0" minWidth="100.0" maxWidth="100.0" fx:id="confidenceColumn"> 
+						   <TableColumn text="Confidence" prefWidth="150.0" minWidth="150.0" maxWidth="150.0" fx:id="confidenceColumn"> 
 						   </TableColumn>
-						   <TableColumn text="Interest Factor" prefWidth="100.0" minWidth="100.0" maxWidth="100.0" fx:id="interestColumn"> 
+						   <TableColumn text="Interest Factor" prefWidth="150.0" minWidth="150.0" maxWidth="150.0" fx:id="interestColumn"> 
 						   </TableColumn>
 						</columns>
 						<columnResizePolicy>

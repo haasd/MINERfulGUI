@@ -17,7 +17,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.Tab?>
 
-<GridPane fx:id="eventLogGeneratorPane" GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="minerful.gui.controller.EventLogGeneratorController">
+<GridPane fx:id="eventLogGeneratorPane" GridPane.columnIndex="1" GridPane.rowIndex="0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="minerful.gui.controller.EventLogGeneratorController">
 	<children>
 		<!-- Area-Header -->
 		<HBox styleClass="area-header" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" >

@@ -20,7 +20,7 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.Pagination?>
 
-<GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="minerful.gui.controller.EventLogGeneratorTabController">
+<GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" xmlns:fx="http://javafx.com/fxml" fx:controller="minerful.gui.controller.EventLogGeneratorTabController">
 	<children>
 		<VBox styleClass="section-menu"  style="-fx-padding: 10px;" GridPane.columnIndex="0" GridPane.rowIndex="0">
 			<Label styleClass="section-header1" text="Parameters" />

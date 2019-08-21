@@ -80,7 +80,6 @@ public class ModelGeneratorGraphMouseManager implements MouseManager {
 			    stage.initOwner(((Node)event.getSource()).getScene().getWindow());
 				
 				stage.initStyle(StageStyle.TRANSPARENT);
-		        stage.initModality(Modality.NONE);
 		        stage.initOwner(modelGeneratorTabController.getStage());
 		        
 		        root.getStylesheets().add(getClass().getClassLoader().getResource("css/main.css").toExternalForm());
@@ -89,11 +88,16 @@ public class ModelGeneratorGraphMouseManager implements MouseManager {
 				
 				stage.setX(event.getSceneX()-40);
 				stage.setY(event.getSceneY()-20);
+				
 				stage.showAndWait();
 				stage.toFront();
 				
 				if(!stage.isShowing()) {
 					openModal = false;
+				}
+				
+				if(controller.getActivityName() != null && !controller.getActivityName().isEmpty()) {
+					modelGeneratorTabController.createTaskChar(controller.getActivityName());
 				}
 				
 			} catch (IOException e) {

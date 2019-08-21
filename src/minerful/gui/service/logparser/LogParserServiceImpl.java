@@ -43,6 +43,8 @@ public class LogParserServiceImpl implements LogParserService  {
 
 				inputParams.inputLogFile = new File(path);
 				inputParams.inputLanguage = MinerfulGuiUtil.determineInputEncoding(path);
+				
+				updateProgress(0, 100);
 
 				logger.info("Start parsing Log-File");
 				long start = System.currentTimeMillis();

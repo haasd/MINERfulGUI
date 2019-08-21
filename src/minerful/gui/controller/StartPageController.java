@@ -24,7 +24,7 @@ import minerful.gui.common.GuiConstants;
 import minerful.gui.common.ModelInfo;
 import minerful.gui.service.loginfo.LogInfo;
 
-public class StartPageController implements Initializable {
+public class StartPageController extends AbstractController implements Initializable {
 	
 	Logger logger = Logger.getLogger(StartPageController.class);
 	String currentView ="";

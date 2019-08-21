@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.FlowPane?>
 
 
-<GridPane fx:id="rootPane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="minerful.gui.controller.StartPageController">
+<GridPane fx:id="rootPane" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="minerful.gui.controller.StartPageController">
    <children>
       <GridPane style="-fx-background-color: white; -fx-alignment: center;" fx:id="contentPane" GridPane.columnIndex="1" GridPane.rowIndex="0" >
       		<children>
