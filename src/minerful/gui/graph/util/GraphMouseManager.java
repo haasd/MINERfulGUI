@@ -92,9 +92,7 @@ public class GraphMouseManager implements MouseManager {
 	protected void mouseButtonPressOnElement(GraphicElement element,
 											 MouseEvent event) {
 		view.freezeElement(element, true);
-		unselectAllElements();
 		if (event.getButton() == MouseButton.SECONDARY) {
-			element.setAttribute("ui.selected");
 			
 			GraphicNode node = (GraphicNode) element;
 			
@@ -114,10 +112,14 @@ public class GraphMouseManager implements MouseManager {
 			stackPane.getChildren().clear();
 			stackPane.getChildren().add(vbox);
 			
+			graph.nodes().filter(n -> n != node).forEach(n -> n.edges().forEach(e -> e.removeAttribute("ui.class")));
 			
+			if(node.getOutDegree() != 0) {
+				node.leavingEdges().forEach(edge -> {edge.setAttribute("ui.class", "outgoing"); });
+			}
 			
-			if(node.getDegree() != 0) {
-				node.edges().forEach(edge -> {edge.setAttribute("ui.selected");});
+			if(node.getInDegree() != 0) {
+				node.enteringEdges().forEach(edge -> {edge.setAttribute("ui.class", "incoming"); });
 			}
 			
 			stage.setX(event.getSceneX()- 600);
@@ -126,12 +128,20 @@ public class GraphMouseManager implements MouseManager {
 			stage.toFront();
 			
 		} else {
-			element.setAttribute("ui.selected");
+
 			if(element.getClass() == GraphicNode.class) {
+				
 				GraphicNode node = (GraphicNode) element;
-				if(node.getDegree() != 0) {
-					node.edges().forEach(edge -> {edge.setAttribute("ui.selected");});
-				}		
+				graph.nodes().filter(n -> n != node).forEach(n -> n.edges().forEach(e -> e.removeAttribute("ui.class")));
+				
+				if(node.getOutDegree() != 0) {
+					node.leavingEdges().forEach(edge -> {edge.setAttribute("ui.class", "outgoing"); });
+				}
+				
+				if(node.getInDegree() != 0) {
+					node.enteringEdges().forEach(edge -> {edge.setAttribute("ui.class", "incoming"); });
+				}
+				element.setAttribute("ui.selected");
 			}
 			
 		}
@@ -237,7 +247,8 @@ public class GraphMouseManager implements MouseManager {
 
 	private void unselectAllElements() {
 		graph.nodes().filter(n -> n.hasAttribute("ui.selected")).forEach(n -> n.removeAttribute("ui.selected"));
-		graph.edges().filter(n -> n.hasAttribute("ui.selected")).forEach(n -> n.removeAttribute("ui.selected"));
+		graph.nodes().forEach(n -> n.edges().forEach(e -> e.removeAttribute("ui.class")));
+		graph.edges().forEach(n -> n.removeAttribute("ui.selected"));
 		graph.sprites().filter(s -> s.hasAttribute("ui.selected")).forEach(s -> s.removeAttribute("ui.selected"));
 	}
 }

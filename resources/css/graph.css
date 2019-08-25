@@ -51,8 +51,14 @@ edge {
 	shape: line;
 }
 
-edge:selected {
+edge.outgoing {
+	fill-color: #008080;
+	size: 4px;
+}
+
+edge.incoming {
 	fill-color: #ff8000;
+	size: 4px;
 }
 
 edge.AlternateSuccession {
