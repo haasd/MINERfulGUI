@@ -601,12 +601,12 @@ public class DiscoverTabController extends AbstractController implements Initial
 	}
 	
 	@FXML
-	public void saveModel(ActionEvent event) {
-		logger.info("Save Model");
+	public void saveSnapshotOfModel(ActionEvent event) {
+		logger.info("Save Snapshot of Model");
 		
 		TextInputDialog dialog = new TextInputDialog(new File(currentEventLog.getPath()).getName());
-		dialog.setTitle("Save Model");
-		dialog.setHeaderText("Save Model as");
+		dialog.setTitle("Take snapshot of Model");
+		dialog.setHeaderText("Save Snapshot of Model as");
 		dialog.setContentText("Modelname:");
 		dialog.getDialogPane().setMinWidth(500.0);
 		
