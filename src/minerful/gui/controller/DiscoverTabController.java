@@ -460,7 +460,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 			viewer.enableAutoLayout();
 			canvasBox.getChildren().clear();
 			canvasBox.getChildren().add(view1);
-			
+			viewer.disableAutoLayout();
 		}
 	}
 	

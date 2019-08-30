@@ -19,6 +19,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import org.controlsfx.control.HiddenSidesPane?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml/" fx:controller="minerful.gui.controller.DiscoverTabController">
 	<children>
@@ -101,75 +102,87 @@
 		</VBox>
 		
 		<!-- Model -->
-		<GridPane styleClass="section" GridPane.columnIndex="1" GridPane.rowIndex="0" hgap="30">
-         	<children>
-         	
-         		<!-- Canvas -->
-	         	<GridPane styleClass="area-content" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2">
-	         		<children>
-	         			<HBox style="-fx-spacing: 10; -fx-padding: 5px;">
-		         			<Label styleClass="section-header1" text="Model" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-		         			<Button styleClass="btn-default, btn-save" text="Take Snapshot" onAction="#saveSnapshotOfModel" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-		         			<Button styleClass="btn-default" text="Export" onAction="#exportFile" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
-		         		</HBox>
-	         			<VBox fx:id="canvasBox" styleClass="model-canvas" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
-	         			</VBox>
-	         		</children>
-	         		<columnConstraints>
-				        <ColumnConstraints hgrow="ALWAYS" />
-					</columnConstraints>
+		<HiddenSidesPane GridPane.columnIndex="1" GridPane.rowIndex="0">
+			<content>
+				<GridPane styleClass="section" hgap="30">
+		         	<children>
+		         	
+		         		<!-- Canvas -->
+			         	<GridPane styleClass="area-content" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2">
+			         		<children>
+			         			<HBox style="-fx-spacing: 10; -fx-padding: 5px;">
+				         			<Label styleClass="section-header1" text="Model" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+				         			<Button styleClass="btn-default, btn-save" text="Take Snapshot" onAction="#saveSnapshotOfModel" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+				         			<Button styleClass="btn-default" text="Export" onAction="#exportFile" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+				         		</HBox>
+			         			<VBox fx:id="canvasBox" styleClass="model-canvas" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
+			         			</VBox>
+			         		</children>
+			         		<columnConstraints>
+						        <ColumnConstraints hgrow="ALWAYS" />
+							</columnConstraints>
+							<rowConstraints>
+							   <RowConstraints />
+							   <RowConstraints vgrow="ALWAYS" />
+							</rowConstraints>
+			         	</GridPane>
+			         	
+		       			<!-- Mining-Parameter interface -->
+		       			<VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
+		        			<Label styleClass="section-header2" text="Mining-Parameter" style="-fx-padding: 0 0 30px 0"/>
+		        			<GridPane vgap="5" hgap="10">
+		        				<children>
+		        				
+		        					<!-- Display Support-Threshold interface -->
+		         				<Label text="Support-Threshold" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" style="-fx-content-display: right">
+		         					<graphic>
+		              					<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+		               				</graphic>
+		         				</Label>
+		         				<TextField fx:id="supportThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="1" ></TextField>
+		         				<Slider fx:id="supportThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="1">
+		         				</Slider>
+		         				
+		         				<!-- Display Confidence-Threshold interface -->
+		         				<Label text="Confidence-Threshold" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2" style="-fx-content-display: right">
+		         					<graphic>
+		              					<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+		               				</graphic>
+		         				</Label>
+		         				<TextField fx:id="confidenceThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="3" ></TextField>
+		         				<Slider fx:id="confidenceThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="3">
+		         				</Slider>
+		         				
+		         				<!-- Display Interest Factor-Threshold interface -->
+		         				<Label text="Interest Factor-Threshold" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2" style="-fx-content-display: right">
+		         					<graphic>
+		              					<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+		               				</graphic>
+		         				</Label>
+		         				<TextField fx:id="interestThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="5" ></TextField>
+		         				<Slider fx:id="interestThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="5">
+		         				</Slider>
+		         				
+		        				</children>
+		        				<columnConstraints>
+							        <ColumnConstraints percentWidth="20.0" />
+							        <ColumnConstraints percentWidth="80.0" />
+								</columnConstraints>
+		        			</GridPane>
+		       			</VBox>
+		         	</children>
 					<rowConstraints>
-					   <RowConstraints />
 					   <RowConstraints vgrow="ALWAYS" />
 					</rowConstraints>
-	         	</GridPane>
-	         	
-       			<!-- Mining-Parameter interface -->
-       			<VBox GridPane.columnIndex="0" GridPane.rowIndex="1">
-        			<Label styleClass="section-header2" text="Mining-Parameter" style="-fx-padding: 0 0 30px 0"/>
-        			<GridPane vgap="5" hgap="10">
-        				<children>
-        				
-        					<!-- Display Support-Threshold interface -->
-         				<Label text="Support-Threshold" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" style="-fx-content-display: right">
-         					<graphic>
-              					<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
-               				</graphic>
-         				</Label>
-         				<TextField fx:id="supportThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="1" ></TextField>
-         				<Slider fx:id="supportThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="1">
-         				</Slider>
-         				
-         				<!-- Display Confidence-Threshold interface -->
-         				<Label text="Confidence-Threshold" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2" style="-fx-content-display: right">
-         					<graphic>
-              					<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
-               				</graphic>
-         				</Label>
-         				<TextField fx:id="confidenceThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="3" ></TextField>
-         				<Slider fx:id="confidenceThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="3">
-         				</Slider>
-         				
-         				<!-- Display Interest Factor-Threshold interface -->
-         				<Label text="Interest Factor-Threshold" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2" style="-fx-content-display: right">
-         					<graphic>
-              					<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
-               				</graphic>
-         				</Label>
-         				<TextField fx:id="interestThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="5" ></TextField>
-         				<Slider fx:id="interestThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="5">
-         				</Slider>
-         				
-        				</children>
-        				<columnConstraints>
-					        <ColumnConstraints percentWidth="20.0" />
-					        <ColumnConstraints percentWidth="80.0" />
-						</columnConstraints>
-        			</GridPane>
-       			</VBox>
-       			
-       			<!-- Constraints -->
-       			<VBox styleClass="constraints-table" GridPane.columnIndex="1" GridPane.rowIndex="1">
+					<columnConstraints>
+						<ColumnConstraints percentWidth="30.0" />
+						<ColumnConstraints percentWidth="70.0" />
+					</columnConstraints>
+		        </GridPane>
+	        </content>
+	        <right>
+	        	<!-- Constraints -->
+      			<VBox styleClass="constraints-table" GridPane.columnIndex="1" GridPane.rowIndex="0">
         			<Label styleClass="section-header2" text="Constraints"/>
         			<TableView fx:id="constraintsTable" styleClass="table">
 						<columns>
@@ -186,23 +199,16 @@
 							<TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
 						</columnResizePolicy>
   					</TableView>
- 				</VBox>
-         	</children>
-			<rowConstraints>
-			   <RowConstraints vgrow="ALWAYS" />
-			</rowConstraints>
-			<columnConstraints>
-				<ColumnConstraints percentWidth="30.0" />
-				<ColumnConstraints percentWidth="70.0" />
-			</columnConstraints>
-        </GridPane>
+				</VBox>
+	        </right>
+        </HiddenSidesPane>
        </children>
        <columnConstraints>
 			<ColumnConstraints percentWidth="20.0" />
 			<ColumnConstraints percentWidth="80.0" />
-	</columnConstraints>
-	<rowConstraints>
-			   <RowConstraints vgrow="ALWAYS" />
-	</rowConstraints>
+		</columnConstraints>
+		<rowConstraints>
+				   <RowConstraints vgrow="ALWAYS" />
+		</rowConstraints>
 </GridPane>
 
