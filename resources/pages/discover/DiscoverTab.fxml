@@ -20,6 +20,9 @@
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import org.controlsfx.control.HiddenSidesPane?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml/" fx:controller="minerful.gui.controller.DiscoverTabController">
 	<children>
@@ -170,6 +173,32 @@
 								</columnConstraints>
 		        			</GridPane>
 		       			</VBox>
+		       			<HBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+		       				<LineChart fx:id="supportChart" title="Support">
+				              <xAxis>
+				                <NumberAxis side="BOTTOM" />
+				              </xAxis>
+				              <yAxis>
+				                <NumberAxis side="LEFT" />
+				              </yAxis>
+            				</LineChart>
+            				<LineChart fx:id="confidenceChart" title="Confidence">
+				              <xAxis>
+				                <NumberAxis side="BOTTOM" />
+				              </xAxis>
+				              <yAxis>
+				                <NumberAxis side="LEFT" />
+				              </yAxis>
+            				</LineChart>
+            				<LineChart fx:id="interestChart" title="Interest">
+				              <xAxis>
+				                <NumberAxis side="BOTTOM" />
+				              </xAxis>
+				              <yAxis>
+				                <NumberAxis side="LEFT" />
+				              </yAxis>
+            				</LineChart>
+		       			</HBox>
 		         	</children>
 					<rowConstraints>
 					   <RowConstraints vgrow="ALWAYS" />
@@ -182,7 +211,7 @@
 	        </content>
 	        <right>
 	        	<!-- Constraints -->
-      			<VBox styleClass="constraints-table" GridPane.columnIndex="1" GridPane.rowIndex="0">
+      			<VBox styleClass="constraints-table">
         			<Label styleClass="section-header2" text="Constraints"/>
         			<TableView fx:id="constraintsTable" styleClass="table">
 						<columns>
