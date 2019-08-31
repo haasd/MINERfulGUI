@@ -94,7 +94,7 @@
             </ImageView>
             <AnchorPane prefWidth="56.0" style="-fx-background-color: #323232;" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0">
             </AnchorPane>
-            <AnchorPane layoutY="256.0" prefHeight="406.0" prefWidth="288.0">
+            <AnchorPane layoutY="256.0" prefHeight="406.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
                   <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="13.0" mnemonicParsing="false" prefHeight="54.0" text="Discover" styleClass="menu-button" onAction="#openDiscovery">
 	              	<graphic>
@@ -127,6 +127,20 @@
                   	  </graphic>
                   </Button>
                	</children>
+            </AnchorPane>
+            <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <children>
+               		<Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="7.0" layoutY="300.0" mnemonicParsing="false" prefHeight="54.0" text="Inventory" styleClass="menu-button" >
+	                  <graphic>
+	                  		<FontIcon iconColor="WHITE" iconLiteral="fa-cube" iconSize="30" layoutX="20.0" layoutY="300.0" textAlignment="CENTER" wrappingWidth="26.0" />
+                  	  </graphic>
+                  	</Button>
+                  	<Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="7.0" layoutY="358.0" mnemonicParsing="false" prefHeight="54.0" text="Settings" styleClass="menu-button" >
+	                  <graphic>
+	                  		<FontIcon iconColor="WHITE" iconLiteral="fa-cog" iconSize="30" layoutX="20.0" layoutY="358.0" textAlignment="CENTER" wrappingWidth="26.0" />
+                  	  </graphic>
+                  	</Button>
+               </children>
             </AnchorPane>
          </children>
       </AnchorPane>

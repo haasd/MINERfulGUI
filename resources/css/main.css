@@ -16,7 +16,7 @@
 	-fx-font-size: 16px;
 	-fx-cursor: hand;
 	-fx-graphic-text-gap: 35px;
-	-fx-padding: 15px 0 15px 15px;
+	-fx-padding: 15px;
 }
 
 .menu-button:hover {
