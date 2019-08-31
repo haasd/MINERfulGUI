@@ -35,6 +35,8 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -46,7 +48,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Toggle;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
@@ -157,6 +158,33 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	@FXML
 	VBox canvasBox;
+	
+	@FXML
+	LineChart<Double, Integer> supportChart;
+	
+	@FXML
+	LineChart<Double, Integer> confidenceChart;
+	
+	@FXML
+	LineChart<Double, Integer> interestChart;
+	
+	@FXML
+	NumberAxis supportXAxis;
+	
+	@FXML
+	NumberAxis supportYAxis;
+	
+	@FXML
+	NumberAxis confidenceXAxis;
+	
+	@FXML
+	NumberAxis confidenceYAxis;
+	
+	@FXML
+	NumberAxis interestXAxis;
+	
+	@FXML
+	NumberAxis interestYAxis;
 	
 	private ProcessModel processModel; 
 	
@@ -351,6 +379,29 @@ public class DiscoverTabController extends AbstractController implements Initial
         });
 		
 		processingType.getChildren().addAll(typeNone,typeHierarchy,typeHierarchyConflict,typeHierarchyConflictRedundancy,typeHierarchyConflictRedundancyDouble);
+		
+		
+		//init Charts
+		supportChart.getXAxis().setLabel("Threshold value");
+		supportChart.getYAxis().setLabel("Number of constraints");
+		supportXAxis.setLowerBound(0.0);
+		supportXAxis.setAutoRanging(false);
+		supportXAxis.setTickUnit(0.2);
+		supportXAxis.setUpperBound(1.0);
+		
+		confidenceChart.getXAxis().setLabel("Threshold value");
+		confidenceChart.getYAxis().setLabel("Number of constraints");
+		confidenceXAxis.setLowerBound(0.0);
+		confidenceXAxis.setAutoRanging(false);
+		confidenceXAxis.setTickUnit(0.2);
+		confidenceXAxis.setUpperBound(1.0);
+		
+		interestChart.getXAxis().setLabel("Threshold value");
+		interestChart.getYAxis().setLabel("Number of constraints");
+		interestXAxis.setLowerBound(0.0);
+		interestXAxis.setAutoRanging(false);
+		interestXAxis.setTickUnit(0.2);
+		interestXAxis.setUpperBound(1.0);
 		
 	}
 	

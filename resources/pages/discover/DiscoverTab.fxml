@@ -176,26 +176,26 @@
 		       			<HBox GridPane.columnIndex="1" GridPane.rowIndex="1">
 		       				<LineChart fx:id="supportChart" title="Support">
 				              <xAxis>
-				                <NumberAxis side="BOTTOM" />
+				                <NumberAxis side="BOTTOM" fx:id="supportXAxis" />
 				              </xAxis>
 				              <yAxis>
-				                <NumberAxis side="LEFT" />
+				                <NumberAxis side="LEFT" fx:id="supportYAxis" />
 				              </yAxis>
             				</LineChart>
             				<LineChart fx:id="confidenceChart" title="Confidence">
 				              <xAxis>
-				                <NumberAxis side="BOTTOM" />
+				                <NumberAxis side="BOTTOM" fx:id="confidenceXAxis"/>
 				              </xAxis>
 				              <yAxis>
-				                <NumberAxis side="LEFT" />
+				                <NumberAxis side="LEFT" fx:id="confidenceYAxis"/>
 				              </yAxis>
             				</LineChart>
             				<LineChart fx:id="interestChart" title="Interest">
 				              <xAxis>
-				                <NumberAxis side="BOTTOM" />
+				                <NumberAxis side="BOTTOM" fx:id="interestXAxis"/>
 				              </xAxis>
 				              <yAxis>
-				                <NumberAxis side="LEFT" />
+				                <NumberAxis side="LEFT" fx:id="interestYAxis"/>
 				              </yAxis>
             				</LineChart>
 		       			</HBox>
