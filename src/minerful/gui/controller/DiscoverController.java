@@ -10,11 +10,14 @@ import java.util.concurrent.ExecutionException;
 import org.apache.log4j.Logger;
 
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
@@ -39,13 +42,16 @@ public class DiscoverController extends AbstractController implements Initializa
 	}	
 	
 	@FXML
-    private void openFile(ActionEvent event) throws IOException {
+    private void openFile(ActionEvent actionEvent) {
     	
     	// init FileChooser and set extension-filter
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open Event-Log");
-		FileChooser.ExtensionFilter extFilter = 
-	             new FileChooser.ExtensionFilter("XES/MXML/txt", "*.xes", "*.mxml","*.txt");
+		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XES", "*.xes");
+	    fileChooser.getExtensionFilters().add(extFilter);
+	    extFilter =  new FileChooser.ExtensionFilter("MXML","*.mxml");
+	    fileChooser.getExtensionFilters().add(extFilter);
+	    extFilter = new FileChooser.ExtensionFilter("txt","*.txt");
 	    fileChooser.getExtensionFilters().add(extFilter);
 	    
 	    // open FileChooser and handle response
@@ -60,33 +66,45 @@ public class DiscoverController extends AbstractController implements Initializa
 			// create Task bind it to ProgressForm and start
 			LogParserService logParser = new LogParserServiceImpl(selectedFile.getAbsolutePath());
 			Task<LogInfo> parseLog = logParser.parseLog();
+
 			progressForm.activateProgress(parseLog);
 			new Thread(parseLog).start();
 			
-			try {
-				getMainController().addLoadedLogFile(parseLog.get());
-				getMainController().addSavedProcessModels(new ModelInfo(parseLog.get().getProcessModel(), new Date(), new File(parseLog.get().getPath()).getName()));
+	        parseLog.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+	            @Override
+	            public void handle(WorkerStateEvent event) {
+	            	try {
+	    				getMainController().addLoadedLogFile(parseLog.get());
+	    				getMainController().addSavedProcessModels(new ModelInfo(parseLog.get().getProcessModel(), new Date(), new File(parseLog.get().getPath()).getName()));
+	    				
+	    				Tab tab = new Tab();
+	    				FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/discover/DiscoverTab.fxml"));
+	    	    		GridPane gridPane = loader.load();
+	    				DiscoverTabController controller = loader.getController();
+	    				controller.setStage((Stage)((Node) actionEvent.getSource()).getScene().getWindow());
+	    				controller.setMainController(getMainController());
+	    				controller.setCurrentEventLog(parseLog.get());
+	    				controller.updateLogInfo();
+	    	    		
+	    				tab.setContent(gridPane);
+	    				tab.setText(new File(parseLog.get().getPath()).getName());
+	    				discoverTabPane.getTabs().add(tab);
+	    				
+	    				progressForm.closeProgressForm();
+	    				
+	    			} catch (InterruptedException e) {
+	    				// TODO Auto-generated catch block
+	    				e.printStackTrace();
+	    			} catch (ExecutionException e) {
+	    				// TODO Auto-generated catch block
+	    				e.printStackTrace();
+	    			} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	            }
+	        });
 				
-				Tab tab = new Tab();
-				FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/discover/DiscoverTab.fxml"));
-	    		GridPane gridPane = loader.load();
-				DiscoverTabController controller = loader.getController();
-				controller.setStage((Stage)((Node) event.getSource()).getScene().getWindow());
-				controller.setMainController(getMainController());
-				controller.setCurrentEventLog(parseLog.get());
-				controller.updateLogInfo();
-	    		
-				tab.setContent(gridPane);
-				tab.setText(new File(parseLog.get().getPath()).getName());
-				discoverTabPane.getTabs().add(tab);
-				
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 
 		} else {
 			logger.info("Fileselection canceled!"); 

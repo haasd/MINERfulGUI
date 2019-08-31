@@ -26,7 +26,10 @@ public class ProgressForm {
 		dialogStage.setResizable(false);
 		dialogStage.setHeight(100);
 		dialogStage.setWidth(250);
-		progressIndicator = new ProgressIndicator(0);
+		progressIndicator = new ProgressIndicator();
+		progressIndicator.setProgress(0);
+        progressIndicator.progressProperty().unbind();
+        progressIndicator.setVisible(true);
 		
 		final HBox hBox = new HBox();
 	    hBox.setSpacing(5);
@@ -35,21 +38,18 @@ public class ProgressForm {
 
 	    Scene scene = new Scene(hBox);
 	    dialogStage.setScene(scene);
+	    dialogStage.show();
 	    
 	}
 	
-	public void activateProgress(final Task<?> task)  {
+	public void closeProgressForm() {
+		if (dialogStage != null) {
+            dialogStage.hide();
+        }
+	}
+	
+	public void activateProgress(Task<?> task)  {
         progressIndicator.progressProperty().bind(task.progressProperty());
-        dialogStage.show();
-        
-        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                if (dialogStage != null) {
-                    dialogStage.hide();
-                }
-            }
-        });
     }      
 
 }

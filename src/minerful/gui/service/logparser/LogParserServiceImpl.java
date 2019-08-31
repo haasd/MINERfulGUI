@@ -43,8 +43,6 @@ public class LogParserServiceImpl implements LogParserService  {
 
 				inputParams.inputLogFile = new File(path);
 				inputParams.inputLanguage = MinerfulGuiUtil.determineInputEncoding(path);
-				
-				updateProgress(0, 100);
 
 				logger.info("Start parsing Log-File");
 				long start = System.currentTimeMillis();
@@ -61,7 +59,6 @@ public class LogParserServiceImpl implements LogParserService  {
 				time = System.currentTimeMillis() - start;
 				logger.info("Finished mine Process-Model");
 				logger.info("Mining Time: "+ TimeUnit.MILLISECONDS.toSeconds(time));
-				updateProgress(100, 100);
 		   
 		        return new LogInfo(logParser,path,new Date(),processModel);
 		    }
