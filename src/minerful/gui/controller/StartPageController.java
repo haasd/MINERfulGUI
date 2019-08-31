@@ -136,7 +136,7 @@ public class StartPageController extends AbstractController implements Initializ
     private void openStartPage(MouseEvent me) {
     	if(currentView != "startpage") {
     		logger.info("Open Startpage");
-    		loadContent("pages/Startpage.fxml");
+    		loadContent("pages/Tutorial.fxml");
     		currentView = "startpage";
     	}
     }

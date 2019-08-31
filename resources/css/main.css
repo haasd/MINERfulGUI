@@ -11,7 +11,7 @@
 
 .menu-button {
 	-fx-background-color: transparent;
-	-fx-text-fill: "#292928";
+	-fx-text-fill: #e8eaf6;
 	-fx-font-family: open sans;
 	-fx-font-size: 16px;
 	-fx-cursor: hand;
@@ -20,14 +20,9 @@
 }
 
 .menu-button:hover {
-	-fx-opacity: 0.5;
-	-fx-text-fill: white;
-	-fx-background-color: black;
+	-fx-font-weight: bold;
 	-fx-background-radius: 0px;
-}
-
-.menu-icon {
-	-fx-color: white;
+	-fx-background-color: #4bb3fd;
 }
 
 .content {
@@ -44,7 +39,7 @@
 }
 
 .area-header {
-	-fx-background-color: #292929;
+	-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #00a6fb, #4bb3fd);
 }
 
 .area-header-label {
@@ -76,6 +71,7 @@
 .section-menu {
 	-fx-border-width: 0 1px 0 0;
 	-fx-border-color: #393939;
+	-fx-background-color: white;
 }
 
 .model-canvas {

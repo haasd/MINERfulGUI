@@ -23,11 +23,12 @@
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.AreaChart?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml/" fx:controller="minerful.gui.controller.DiscoverTabController">
 	<children>
 		<!-- Event-Log  -->
-		<VBox styleClass="section, section-menu"  style="-fx-background-color: white;" GridPane.columnIndex="0" GridPane.rowIndex="0">
+		<VBox styleClass="section, section-menu" GridPane.columnIndex="0" GridPane.rowIndex="0">
          	<children>
          		
          		<!-- Event-Log -->
@@ -174,30 +175,30 @@
 		        			</GridPane>
 		       			</VBox>
 		       			<HBox GridPane.columnIndex="1" GridPane.rowIndex="1">
-		       				<LineChart fx:id="supportChart" title="Support">
+		       				<AreaChart fx:id="supportChart" title="Support">
 				              <xAxis>
-				                <NumberAxis side="BOTTOM" />
+				                <NumberAxis side="BOTTOM" fx:id="supportXAxis" />
 				              </xAxis>
 				              <yAxis>
-				                <NumberAxis side="LEFT" />
+				                <NumberAxis side="LEFT" fx:id="supportYAxis" />
 				              </yAxis>
-            				</LineChart>
-            				<LineChart fx:id="confidenceChart" title="Confidence">
+            				</AreaChart>
+            				<AreaChart fx:id="confidenceChart" title="Confidence">
 				              <xAxis>
-				                <NumberAxis side="BOTTOM" />
+				                <NumberAxis side="BOTTOM" fx:id="confidenceXAxis"/>
 				              </xAxis>
 				              <yAxis>
-				                <NumberAxis side="LEFT" />
+				                <NumberAxis side="LEFT" fx:id="confidenceYAxis"/>
 				              </yAxis>
-            				</LineChart>
-            				<LineChart fx:id="interestChart" title="Interest">
+            				</AreaChart>
+            				<AreaChart fx:id="interestChart" title="Interest">
 				              <xAxis>
-				                <NumberAxis side="BOTTOM" />
+				                <NumberAxis side="BOTTOM" fx:id="interestXAxis"/>
 				              </xAxis>
 				              <yAxis>
-				                <NumberAxis side="LEFT" />
+				                <NumberAxis side="LEFT" fx:id="interestYAxis"/>
 				              </yAxis>
-            				</LineChart>
+            				</AreaChart>
 		       			</HBox>
 		         	</children>
 					<rowConstraints>
