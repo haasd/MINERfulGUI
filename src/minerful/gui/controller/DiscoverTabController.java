@@ -35,7 +35,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.chart.LineChart;
+import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
@@ -68,6 +68,7 @@ import minerful.gui.common.ModelInfo;
 import minerful.gui.common.ValidationEngine;
 import minerful.gui.graph.util.GraphMouseManager;
 import minerful.gui.graph.util.GraphUtil;
+import minerful.gui.service.DiscoverUtil;
 import minerful.gui.service.loginfo.EventFilter;
 import minerful.gui.service.loginfo.LogInfo;
 import minerful.io.params.OutputModelParameters;
@@ -160,13 +161,13 @@ public class DiscoverTabController extends AbstractController implements Initial
 	VBox canvasBox;
 	
 	@FXML
-	LineChart<Double, Integer> supportChart;
+	AreaChart<Double, Integer> supportChart;
 	
 	@FXML
-	LineChart<Double, Integer> confidenceChart;
+	AreaChart<Double, Integer> confidenceChart;
 	
 	@FXML
-	LineChart<Double, Integer> interestChart;
+	AreaChart<Double, Integer> interestChart;
 	
 	@FXML
 	NumberAxis supportXAxis;
@@ -384,6 +385,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		//init Charts
 		supportChart.getXAxis().setLabel("Threshold value");
 		supportChart.getYAxis().setLabel("Number of constraints");
+		supportChart.setLegendVisible(false);
 		supportXAxis.setLowerBound(0.0);
 		supportXAxis.setAutoRanging(false);
 		supportXAxis.setTickUnit(0.2);
@@ -391,6 +393,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		
 		confidenceChart.getXAxis().setLabel("Threshold value");
 		confidenceChart.getYAxis().setLabel("Number of constraints");
+		confidenceChart.setLegendVisible(false);
 		confidenceXAxis.setLowerBound(0.0);
 		confidenceXAxis.setAutoRanging(false);
 		confidenceXAxis.setTickUnit(0.2);
@@ -398,6 +401,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		
 		interestChart.getXAxis().setLabel("Threshold value");
 		interestChart.getYAxis().setLabel("Number of constraints");
+		interestChart.setLegendVisible(false);
 		interestXAxis.setLowerBound(0.0);
 		interestXAxis.setAutoRanging(false);
 		interestXAxis.setTickUnit(0.2);
@@ -429,6 +433,14 @@ public class DiscoverTabController extends AbstractController implements Initial
 		processModel = currentEventLog.getProcessModel();
 		processModel.addPropertyChangeListener(this);
 		discoveredConstraints.addAll(processModel.getAllUnmarkedConstraints());
+		
+		supportChart.getData().clear();
+		supportChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllUnmarkedConstraints(), "support"));
+		confidenceChart.getData().clear();
+		confidenceChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllUnmarkedConstraints(), "confidence"));
+		interestChart.getData().clear();
+		interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllUnmarkedConstraints(), "interest"));
+		
 		Graph graph = GraphUtil.drawGraph(processModel);
 		Viewer viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
 		FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
@@ -503,6 +515,13 @@ public class DiscoverTabController extends AbstractController implements Initial
 
 			discoveredConstraints.clear();
 			discoveredConstraints.addAll(processModel.getAllUnmarkedConstraints());
+			
+			supportChart.getData().clear();
+			supportChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllUnmarkedConstraints(), "support"));
+			confidenceChart.getData().clear();
+			confidenceChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllUnmarkedConstraints(), "confidence"));
+			interestChart.getData().clear();
+			interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllUnmarkedConstraints(), "interest"));
 			
 			Graph graph = GraphUtil.drawGraph(processModel);
 			Viewer viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD );
