@@ -16,7 +16,10 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.controlsfx.control.ToggleSwitch;
+import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.Graph;
+import org.graphstream.graph.implementations.Graphs;
+import org.graphstream.stream.ProxyPipe;
 import org.graphstream.ui.fx_viewer.FxViewPanel;
 import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.view.Viewer;
@@ -196,6 +199,12 @@ public class DiscoverTabController extends AbstractController implements Initial
 	private PostProcessingAnalysisType postProcessingType = PostProcessingAnalysisType.HIERARCHY;
 	
 	private Boolean cropRedundantAndInconsistentConstraints = false;
+	
+	private Graph graph;
+	
+	private Viewer viewer;
+	
+	private ProxyPipe pipe;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -441,11 +450,13 @@ public class DiscoverTabController extends AbstractController implements Initial
 		interestChart.getData().clear();
 		interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllUnmarkedConstraints(), "interest"));
 		
-		Graph graph = GraphUtil.drawGraph(processModel);
-		Viewer viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+		graph = GraphUtil.drawGraph(processModel);
+		Toolkit.computeLayout(graph,0.99);
+		viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
 		FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
+		pipe = viewer.newViewerPipe();
+		pipe.addAttributeSink(graph);
 		view.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, this.getStage()));
-		viewer.enableAutoLayout();
 		canvasBox.getChildren().add(view);
 
 		logInfos.add(GuiConstants.FILENAME+new File(currentEventLog.getPath()).getName());
@@ -523,14 +534,16 @@ public class DiscoverTabController extends AbstractController implements Initial
 			interestChart.getData().clear();
 			interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllUnmarkedConstraints(), "interest"));
 			
-			Graph graph = GraphUtil.drawGraph(processModel);
-			Viewer viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD );
+			graph = GraphUtil.drawGraph(processModel);
+			Toolkit.computeLayout(graph,0.99);
+			viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD );
+			pipe = viewer.newViewerPipe();
+			pipe.addAttributeSink(graph);
 			FxViewPanel view1 = (FxViewPanel) viewer.addDefaultView(true);
 			view1.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, this.getStage()));
-			viewer.enableAutoLayout();
+			
 			canvasBox.getChildren().clear();
 			canvasBox.getChildren().add(view1);
-			viewer.disableAutoLayout();
 		}
 	}
 	
@@ -647,7 +660,8 @@ public class DiscoverTabController extends AbstractController implements Initial
 			MinerFulOutputManagementLauncher outputMgt = new MinerFulOutputManagementLauncher();
 			outputMgt.manageOutput(processModel, outParams);
 			
-			ModelInfo modelInfo = new ModelInfo(processModel,new Date(),outputFile.getName());
+			pipe.pump();
+			ModelInfo modelInfo = new ModelInfo(processModel,new Date(),outputFile.getName(), Graphs.clone(graph));
 			
 			getMainController().addSavedProcessModels(modelInfo);
 
@@ -680,6 +694,14 @@ public class DiscoverTabController extends AbstractController implements Initial
 		dialog.setContentText("Modelname:");
 		dialog.getDialogPane().setMinWidth(500.0);
 		
+		try {
+			Thread.sleep(100);
+			pipe.pump();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 		ModelInfo modelInfo = new ModelInfo();
 		Optional<String> result = dialog.showAndWait();
@@ -691,6 +713,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		
 		modelInfo.setProcessModel(processModel);
 		modelInfo.setSaveDate(new Date());
+		modelInfo.setGraph(Graphs.clone(graph));
 		
 		getMainController().addSavedProcessModels(modelInfo);
 

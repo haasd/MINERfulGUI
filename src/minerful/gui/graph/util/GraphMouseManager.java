@@ -141,7 +141,6 @@ public class GraphMouseManager implements MouseManager {
 				if(node.getInDegree() != 0) {
 					node.enteringEdges().forEach(edge -> {edge.setAttribute("ui.class", "incoming"); });
 				}
-				element.setAttribute("ui.selected");
 			}
 			
 		}
@@ -184,6 +183,7 @@ public class GraphMouseManager implements MouseManager {
 	EventHandler<MouseEvent> mouseDragged = new EventHandler<MouseEvent>() {
 		@Override
 		public void handle(MouseEvent event) {
+			
 			if (curElement != null) {
 				elementMoving(curElement, event);
 			} else {

@@ -14,6 +14,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.ui.fx_viewer.FxViewPanel;
 import org.graphstream.ui.fx_viewer.FxViewer;
+import org.graphstream.ui.graphicGraph.GraphicGraph;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.util.InteractiveElement;
 
@@ -71,7 +72,6 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
 		FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
 		view.setMouseManager(ggmm);
-		viewer.enableAutoLayout();
 		canvasBox.getChildren().add(view);
 		
 		activitiesList.setItems(taskChars);
@@ -132,7 +132,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 			MinerFulOutputManagementLauncher outputMgt = new MinerFulOutputManagementLauncher();
 			outputMgt.manageOutput(processModel, outParams);
 			
-			ModelInfo modelInfo = new ModelInfo(processModel,new Date(),outputFile.getName());
+			ModelInfo modelInfo = new ModelInfo(processModel,new Date(),outputFile.getName(), graph);
 			
 			getMainController().addSavedProcessModels(modelInfo);
 
@@ -187,21 +187,29 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	public void createTaskChar(String task) {
 		processModel.getTasks().add(tChFactory.makeTaskChar(task));
 		taskChars.add(tChFactory.makeTaskChar(task));
-		updateGraph();
+		graph = GraphUtil.drawGraph(processModel);
 	}
 	
 	public void addConstraint(Constraint con) {
 		processModel.getAllConstraints().add(con);
-		updateGraph();
+		graph = GraphUtil.drawGraph(processModel);
 	}
 	
-	private void updateGraph() {
-		graph = GraphUtil.drawGraph(processModel);
+	public void loadGraph() {
 		
+		graph = modelInfo.getGraph();
+		if(graph == null) {
+			graph = GraphUtil.drawGraph(processModel);
+		}
+		processGraph();
+	}
+	
+	private void processGraph() {
+
 		viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+		
 		FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
 		view.setMouseManager(ggmm);
-		viewer.enableAutoLayout();
 		canvasBox.getChildren().clear();
 		canvasBox.getChildren().add(view);
 	}

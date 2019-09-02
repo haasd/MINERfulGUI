@@ -66,6 +66,7 @@ public class ModelGeneratorController extends AbstractController implements Init
 				controller.setStage((Stage)((Node) event.getSource()).getScene().getWindow());
 				controller.setMainController(getMainController());
 				controller.setModelInfo(modelController.getSelectedRow());
+				controller.loadGraph();
 	    		
 				tab.setContent(gridPane);
 				tab.setText(modelController.getSelectedRow().getSaveName());

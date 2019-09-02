@@ -25,6 +25,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import minerful.gui.common.ModelInfo;
 import minerful.gui.common.ProgressForm;
+import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.service.loginfo.LogInfo;
 import minerful.gui.service.logparser.LogParserService;
 import minerful.gui.service.logparser.LogParserServiceImpl;
@@ -75,7 +76,7 @@ public class DiscoverController extends AbstractController implements Initializa
 	            public void handle(WorkerStateEvent event) {
 	            	try {
 	    				getMainController().addLoadedLogFile(parseLog.get());
-	    				getMainController().addSavedProcessModels(new ModelInfo(parseLog.get().getProcessModel(), new Date(), new File(parseLog.get().getPath()).getName()));
+	    				getMainController().addSavedProcessModels(new ModelInfo(parseLog.get().getProcessModel(), new Date(), new File(parseLog.get().getPath()).getName(), null));
 	    				
 	    				Tab tab = new Tab();
 	    				FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/discover/DiscoverTab.fxml"));
