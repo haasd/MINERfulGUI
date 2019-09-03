@@ -14,4 +14,5 @@ public final class GuiConstants {
 	public static final String SIMPLIFY="simplify";
 	public static final String GENERATE_AUTOMATA="generateAutomata";
 	public static final String PERFORM_CHECK="performCheck";
+	public static final Integer NUMBER_CONSTRAINTS_WARNING=40;
 }

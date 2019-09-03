@@ -1,9 +1,8 @@
 package minerful.gui.common;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
@@ -13,20 +12,14 @@ import org.deckfour.xes.model.XLog;
 import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
-import minerful.MinerFulMinerLauncher;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import minerful.checking.relevance.dao.ModelFitnessEvaluation;
 import minerful.concept.ProcessModel;
 import minerful.concept.constraint.Constraint;
-import minerful.gui.controller.EventLogGeneratorController;
-import minerful.gui.service.loginfo.LogInfo;
 import minerful.logmaker.MinerFulLogMaker;
 import minerful.logmaker.params.LogMakerParameters.Encoding;
-import minerful.logparser.LogParser;
-import minerful.miner.params.MinerFulCmdParameters;
-import minerful.params.InputLogCmdParameters;
-import minerful.params.SystemCmdParameters;
 import minerful.params.InputLogCmdParameters.InputEncoding;
-import minerful.postprocessing.params.PostProcessingCmdParameters;
 
 public class MinerfulGuiUtil {
 	
@@ -51,13 +44,17 @@ public class MinerfulGuiUtil {
 			}
 		}
 		
-		//display Alert on error
-		public static void displayAlert(String title, String headerText, String contentText) {
-			Alert alert = new Alert(AlertType.ERROR);
+		//display Alert
+		public static Optional<ButtonType> displayAlert(String title, String headerText, String contentText, AlertType type) {
+			Alert alert = new Alert(type);
+			if(type == AlertType.CONFIRMATION) {
+				((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Okay");
+				((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Cancel");
+			}
 			alert.setTitle(title);
 			alert.setHeaderText(headerText);
 			alert.setContentText(contentText);
-			alert.showAndWait();
+			return alert.showAndWait();
 		}
 		
 		public static List<FitnessCheckInfo> deriveFitnessCheckInfo(ModelFitnessEvaluation mfe) {

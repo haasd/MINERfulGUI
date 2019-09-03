@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.ui.fx_viewer.FxViewPanel;
@@ -25,6 +26,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -51,6 +53,9 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	@FXML
 	ListView<TaskChar> activitiesList;
 	
+	@FXML
+	ListView<Constraint> constraintsList;
+	
 	private ModelInfo modelInfo;
 	
 	private ConstraintsBag bag = new ConstraintsBag();
@@ -62,6 +67,8 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	private TaskCharFactory tChFactory = new TaskCharFactory();
 	
 	private ObservableList<TaskChar> taskChars = FXCollections.observableArrayList();
+	
+	private ObservableList<Constraint> constraints = FXCollections.observableArrayList();
 	
 	private Viewer viewer;
 	
@@ -75,6 +82,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		canvasBox.getChildren().add(view);
 		
 		activitiesList.setItems(taskChars);
+		constraintsList.setItems(constraints);
 	}
 	
 	@FXML
@@ -157,7 +165,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		if (result.isPresent()){
 			modelInfo.setSaveName(result.get());
 		} else {
-			MinerfulGuiUtil.displayAlert("Error Saving", "Error Saving", "No Name was provided!");
+			MinerfulGuiUtil.displayAlert("Error Saving", "Error Saving", "No Name was provided!", AlertType.ERROR);
 			return;
 		}
 		
@@ -198,8 +206,11 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	public void loadGraph() {
 		
 		graph = modelInfo.getGraph();
+		taskChars.addAll(modelInfo.getProcessModel().getTasks());
+		constraints.addAll(modelInfo.getProcessModel().getAllUnmarkedConstraints());
 		if(graph == null) {
-			graph = GraphUtil.drawGraph(processModel);
+			graph = GraphUtil.drawGraph(modelInfo.getProcessModel());
+			Toolkit.computeLayout(graph,0.99);
 		}
 		processGraph();
 	}

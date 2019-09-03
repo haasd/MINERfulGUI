@@ -40,6 +40,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -450,14 +452,24 @@ public class DiscoverTabController extends AbstractController implements Initial
 		interestChart.getData().clear();
 		interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllUnmarkedConstraints(), "interest"));
 		
-		graph = GraphUtil.drawGraph(processModel);
-		Toolkit.computeLayout(graph,0.99);
-		viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-		FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
-		pipe = viewer.newViewerPipe();
-		pipe.addAttributeSink(graph);
-		view.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, this.getStage()));
-		canvasBox.getChildren().add(view);
+		if(processModel.getAllUnmarkedConstraints().size() > GuiConstants.NUMBER_CONSTRAINTS_WARNING) {
+			Optional<ButtonType> result = MinerfulGuiUtil.displayAlert("Warning", "Proceed rendering of graph?", "Rendering of Graph was stopped due to a high number of constraints.", AlertType.CONFIRMATION);
+			if (result.get() == ButtonType.OK){
+				graph = GraphUtil.drawGraph(processModel);
+				Toolkit.computeLayout(graph,0.99);
+				viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+				FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
+				pipe = viewer.newViewerPipe();
+				pipe.addAttributeSink(graph);
+				view.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, this.getStage()));
+				canvasBox.getChildren().add(view);
+			} else {
+				viewer = new FxViewer( null, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+				FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
+				view.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, this.getStage()));
+				canvasBox.getChildren().add(view);
+			}
+		}
 
 		logInfos.add(GuiConstants.FILENAME+new File(currentEventLog.getPath()).getName());
 		logInfos.add(GuiConstants.NUMBER_OF_EVENTS+currentEventLog.getLogParser().numberOfEvents());

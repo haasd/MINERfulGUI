@@ -2,6 +2,7 @@ package minerful.gui.graph.util;
 
 import java.util.EnumSet;
 
+import org.graphstream.ui.graphicGraph.GraphicEdge;
 import org.graphstream.ui.graphicGraph.GraphicElement;
 import org.graphstream.ui.graphicGraph.GraphicGraph;
 import org.graphstream.ui.graphicGraph.GraphicNode;
@@ -93,39 +94,49 @@ public class GraphMouseManager implements MouseManager {
 											 MouseEvent event) {
 		view.freezeElement(element, true);
 		if (event.getButton() == MouseButton.SECONDARY) {
-			
-			GraphicNode node = (GraphicNode) element;
-			
-			VBox vbox = new VBox();
-			Label activityLabel = new Label(node.getLabel());
-			activityLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;"); 
-			Label outgoingLabel = new Label("Outgoing Constraints");
-			outgoingLabel.setStyle("-fx-padding: 10px 0px;");
-			outgoingLabel.getStyleClass().add("section-header2");
-			Label incomingLabel = new Label("Incoming Constraints");
-			incomingLabel.setStyle("-fx-padding: 10px 0px;");
-			incomingLabel.getStyleClass().add("section-header2");
-			TableView<Constraint> outgoingCon = GraphUtil.getConstraintsForActivity(processModel, node.getId(), true);
-			TableView<Constraint> incomingCon = GraphUtil.getConstraintsForActivity(processModel, node.getId(), false);
-			
-			vbox.getChildren().addAll(activityLabel, outgoingLabel, outgoingCon, incomingLabel, incomingCon);
-			stackPane.getChildren().clear();
-			stackPane.getChildren().add(vbox);
-			
-			graph.nodes().filter(n -> n != node).forEach(n -> n.edges().forEach(e -> e.removeAttribute("ui.class")));
-			
-			if(node.getOutDegree() != 0) {
-				node.leavingEdges().forEach(edge -> {edge.setAttribute("ui.class", "outgoing"); });
+					
+			if(element instanceof GraphicNode) {
+					
+				GraphicNode node = (GraphicNode) element;
+				
+				VBox vbox = new VBox();
+				Label activityLabel = new Label(node.getLabel());
+				activityLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;"); 
+				Label outgoingLabel = new Label("Outgoing Constraints");
+				outgoingLabel.setStyle("-fx-padding: 10px 0px;");
+				outgoingLabel.getStyleClass().add("section-header2");
+				Label incomingLabel = new Label("Incoming Constraints");
+				incomingLabel.setStyle("-fx-padding: 10px 0px;");
+				incomingLabel.getStyleClass().add("section-header2");
+				TableView<Constraint> outgoingCon = GraphUtil.getConstraintsForActivity(processModel, node.getId(), true);
+				TableView<Constraint> incomingCon = GraphUtil.getConstraintsForActivity(processModel, node.getId(), false);
+				
+				vbox.getChildren().addAll(activityLabel, outgoingLabel, outgoingCon, incomingLabel, incomingCon);
+				stackPane.getChildren().clear();
+				stackPane.getChildren().add(vbox);
+				
+				graph.nodes().filter(n -> n != node).forEach(n -> n.edges().forEach(e -> e.removeAttribute("ui.class")));
+				
+				if(node.getOutDegree() != 0) {
+					node.leavingEdges().forEach(edge -> {edge.setAttribute("ui.class", "outgoing"); });
+				}
+				
+				if(node.getInDegree() != 0) {
+					node.enteringEdges().forEach(edge -> {edge.setAttribute("ui.class", "incoming"); });
+				}
+				
+				stage.setX(event.getSceneX()- 600);
+				stage.setY(event.getSceneY());
+				stage.show();
+				stage.toFront();
+				
+			} else if(element instanceof GraphicEdge) {
+				GraphicEdge edge = (GraphicEdge) element;
+				
+				graph.edges().filter(e -> e != edge).forEach(e -> e.removeAttribute("ui.class"));
+				edge.setAttribute("ui.selected");
+
 			}
-			
-			if(node.getInDegree() != 0) {
-				node.enteringEdges().forEach(edge -> {edge.setAttribute("ui.class", "incoming"); });
-			}
-			
-			stage.setX(event.getSceneX()- 600);
-			stage.setY(event.getSceneY());
-			stage.show();
-			stage.toFront();
 			
 		} else {
 

@@ -39,14 +39,14 @@
 }
 
 .area-header {
-	-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #00a6fb, #4bb3fd);
+	-fx-background-color: white;
 }
 
 .area-header-label {
 	-fx-font-size: 24px;
-	-fx-text-fill: white;
+	-fx-text-fill: #393939;
 	-fx-font-weight: bold;
-	-fx-padding: 20px 10px;
+	-fx-padding: 20px 30px;
 }
 
 .section-header1, .section-header2 {
@@ -202,8 +202,8 @@
 	-fx-font-weight: bold;
 	-fx-background-color: #393939;
 	-fx-text-fill: white;
-	-fx-background-radius: 5px;
-	-fx-border-radius: 5px;
+	-fx-background-radius: 0px;
+	-fx-border-radius: 0px;
 	-fx-cursor: hand;
 }
 
@@ -217,20 +217,23 @@
 }
 
 .btn-header {
+	-fx-border-width: 2px;
 	-fx-background-color: white;
-	-fx-text-fill: #393939;
-	-fx-border-color: white;
+	-fx-text-fill: #00a6fb;
+	-fx-border-color: #00a6fb;
+	-fx-border-radius: 0px;
 }
 
 .btn-default:hover {
-	-fx-border-color: #232323;
-	-fx-background-color: #232323;
+	-fx-background-color: white;
+	-fx-text-fill: #393939;
 }
 
-.btn-header:hover {
-	-fx-background-color: grey;
-	-fx-text-fill: #393939;
-	-fx-border-color: grey;
+.btn-header:hover {	
+	-fx-background-color: white;
+	-fx-border-color: #00a6fb;
+	-fx-text-fill: #00a6fb;
+	-fx-font-size: 14px;
 }
 
 .btn-save {
@@ -246,6 +249,10 @@
 .btn-important {
 	-fx-border-color: #fcbe03;
 	-fx-background-color: #fcbe03;
+}
+
+.btn-important:hover {
+	-fx-text-fill: #fcbe03;
 }
 
 .scroll-pane {

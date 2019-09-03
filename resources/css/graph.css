@@ -49,6 +49,12 @@ node.Participation {
 edge {
 	fill-color: #7eaad3;
 	shape: line;
+	size: 2px;
+}
+
+edge:selected {
+	size: 4px;
+	fill-color: red;
 }
 
 edge.outgoing {
