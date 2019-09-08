@@ -24,7 +24,7 @@
 			<Label styleClass="area-header-label" text="Discover" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
 			<Button styleClass="btn-default, btn-header" text="Open Log" onAction="#openFile" AnchorPane.leftAnchor="150.0" AnchorPane.topAnchor="10.0" >
 				<graphic>
-           			<FontIcon iconColor="#00a6fb" iconLiteral="typ-document" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+           			<FontIcon iconColor="white" iconLiteral="typ-document" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
             	</graphic>
 			</Button>
 		</HBox>

@@ -40,6 +40,9 @@ public class LogParserServiceImpl implements LogParserService  {
 						new SystemCmdParameters();
 				PostProcessingCmdParameters postParams =
 						new PostProcessingCmdParameters();
+				
+				minerFulParams.kbParallelProcessingThreads = 4;
+				minerFulParams.queryParallelProcessingThreads = 4;
 
 				inputParams.inputLogFile = new File(path);
 				inputParams.inputLanguage = MinerfulGuiUtil.determineInputEncoding(path);

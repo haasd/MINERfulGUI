@@ -24,7 +24,7 @@
 			<Label styleClass="area-header-label" text="Create Event-Log" />
 			<Button styleClass="btn-default, btn-header" text="Select Process Model" onAction="#selectModel">
 				<graphic>
-           			<FontIcon iconColor="#00a6fb" iconLiteral="typ-document" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+           			<FontIcon iconColor="white" iconLiteral="typ-document" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
             	</graphic>
 			</Button>
 		</HBox>

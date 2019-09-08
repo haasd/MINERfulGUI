@@ -19,7 +19,7 @@
 <GridPane style="-fx-background-color: white; -fx-alignment: center;" GridPane.columnIndex="1" GridPane.rowIndex="0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="minerful.gui.controller.StartPageController">
   	<children>
   		<AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="0" >
-  			<Label styleClass="info-icon-header" text="Learn about MINERful's basic functions" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+  			<Label styleClass="info-icon-header" text="Learn more about MINERful's basic functions" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
    		</AnchorPane>
    		<FlowPane hgap="100" vgap="100" style="-fx-padding: 0 300px; -fx-alignment: center;" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.fillHeight="true" GridPane.fillWidth="true">
     		<GridPane fx:id="infoDiscover" styleClass="info-icon">

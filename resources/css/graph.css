@@ -13,16 +13,6 @@ node {
 	text-offset: 10px, 0px;
 }
 
-sprite {
-	size: 0px;
-	shape: box;
-	fill-color: rgba(0,0,0,0);
-	stroke-mode: plain;
-	stroke-color: rgba(0,0,0,0);
-	text-alignment: center;
-	text-size: 13px;
-}
-
 node:selected {
 	size: 125px;
 	fill-color: #ffc9ae;
@@ -77,11 +67,9 @@ edge.NotChainSuccession {
 }
 
 edge.CoExistence {
-
 }
 
 edge.NotSuccession {
-
 }
 
 edge.ChainPrecedence {

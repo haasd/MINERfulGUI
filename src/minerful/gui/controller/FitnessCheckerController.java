@@ -125,11 +125,11 @@ public class FitnessCheckerController extends AbstractController implements Init
 	@FXML
 	public void performFitnessCheck(ActionEvent event) {
 		if((selectedModelInfo == null) && (selectedEventLogInfo == null)) {
-			MinerfulGuiUtil.displayAlert("Missing Selection", "Missing Selection", "Please select a model and an event-log!");
+			MinerfulGuiUtil.displayAlert("Missing Selection", "Missing Selection", "Please select a model and an event-log!", AlertType.ERROR);
 		} else if (selectedModelInfo == null) {
-			MinerfulGuiUtil.displayAlert("Missing Selection", "Missing Selection", "Please select a model!");
+			MinerfulGuiUtil.displayAlert("Missing Selection", "Missing Selection", "Please select a model!", AlertType.ERROR);
 		} else if (selectedEventLogInfo == null) {
-			MinerfulGuiUtil.displayAlert("Missing Selection", "Missing Selection", "Please select an event-log!");
+			MinerfulGuiUtil.displayAlert("Missing Selection", "Missing Selection", "Please select an event-log!", AlertType.ERROR);
 		} else {
 			CheckingCmdParameters chkParams = new CheckingCmdParameters();
 			MinerFulFitnessCheckLauncher miFuCheLa = new MinerFulFitnessCheckLauncher(selectedModelInfo.getProcessModel(), selectedEventLogInfo.getLogParser(), chkParams);

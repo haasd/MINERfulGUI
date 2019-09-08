@@ -20,6 +20,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -131,10 +132,10 @@ public class EventLogGeneratorTabController extends AbstractController implement
 		Long tracesNumber = Long.parseLong(tracesInLog.getText());
 		
 		if(minEvents > maxEvents) {
-			MinerfulGuiUtil.displayAlert("Input Error", "Input Error", "Maximum number of events per trace has to be less than the minimum number of events per trace!");
+			MinerfulGuiUtil.displayAlert("Input Error", "Input Error", "Maximum number of events per trace has to be less than the minimum number of events per trace!", AlertType.ERROR);
 			return;
 		} else if(tracesNumber == 0) {
-			MinerfulGuiUtil.displayAlert("Input Error", "Input Error", "Number of generated Traces should not be 0!");
+			MinerfulGuiUtil.displayAlert("Input Error", "Input Error", "Number of generated Traces should not be 0!", AlertType.ERROR);
 			return;
 		}
 		

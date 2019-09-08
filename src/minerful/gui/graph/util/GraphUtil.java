@@ -1,15 +1,15 @@
 package minerful.gui.graph.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
+import org.graphstream.ui.spriteManager.Sprite;
+import org.graphstream.ui.spriteManager.SpriteManager;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -39,12 +39,11 @@ public class GraphUtil {
 			if(constraint.getImplied() == null) {
 				Node node = graph.getNode(constraint.getBase().getJoinedStringOfIdentifiers());
 				node.setAttribute("ui.class", constraint.type);
+				
 			} else {
-
 				String forwardEdge = constraint.getBase().getJoinedStringOfIdentifiers()+constraint.getImplied().getJoinedStringOfIdentifiers()+"_"+constraint.toString();
 				Edge edge = graph.addEdge(forwardEdge, constraint.getBase().getJoinedStringOfIdentifiers(), constraint.getImplied().getJoinedStringOfIdentifiers());
 				edge.setAttribute("ui.class", constraint.type);
-				
 				}
 		}
 		

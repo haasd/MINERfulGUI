@@ -19,6 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import minerful.gui.common.GuiConstants;
 import minerful.gui.common.ModelInfo;
@@ -64,6 +65,10 @@ public class StartPageController extends AbstractController implements Initializ
 	
 	private Stage infoStage = new Stage();
 	
+	private Stage inventoryStage = new Stage();
+	
+	private InventoryController inventoryController;
+	
 	private Map<String,GridPane> gridPanes = new HashMap<>();
 	
 	@Override
@@ -107,7 +112,7 @@ public class StartPageController extends AbstractController implements Initializ
     	} 
     }
     
-    private GridPane loadContent(String pathToFxml) {
+    private GridPane loadContent(String pathToFxml, Boolean newWindow) {
     	try {
     		FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(pathToFxml));
     		GridPane gridPane = loader.load(); 
@@ -115,10 +120,10 @@ public class StartPageController extends AbstractController implements Initializ
     		AbstractController abstractController = loader.getController();
     		abstractController.setMainController(this);
     		
-    		abstractController.performAfterInit();
-    		
     		// replace context pane
-			rootPane.getChildren().set(0, gridPane);
+    		if(!newWindow) {
+    			rootPane.getChildren().set(0, gridPane);
+    		} 
 			
 			return gridPane;
 			
@@ -136,7 +141,7 @@ public class StartPageController extends AbstractController implements Initializ
     private void openStartPage(MouseEvent me) {
     	if(currentView != "startpage") {
     		logger.info("Open Startpage");
-    		loadContent("pages/Tutorial.fxml");
+    		handlePane("tutorial", "pages/Tutorial.fxml");
     		currentView = "startpage";
     	}
     }
@@ -195,6 +200,40 @@ public class StartPageController extends AbstractController implements Initializ
         	currentView = "fitnesschecker";
     	}
     }
+    
+    @FXML
+    private void openInventory() {
+    	try {
+    		if(inventoryStage.getOwner() == null) {
+    			initInventory();
+    		}
+	        
+    		inventoryStage.showAndWait();
+    		inventoryStage.requestFocus();
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	    }
+    }
+    
+    private void initInventory() {
+    	FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/Inventory.fxml"));
+        Scene scene;
+		try {
+			scene = new Scene(loader.load());
+			inventoryController = loader.getController();
+	        scene.getStylesheets().add(getClass().getClassLoader().getResource("css/main.css").toExternalForm());
+	        inventoryController.setMainController(this);
+			inventoryController.performAfterInit();
+			inventoryStage.initOwner(rootPane.getScene().getWindow());
+	        inventoryStage.setScene(scene);
+	        inventoryStage.initModality(Modality.WINDOW_MODAL);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        
+    }
 
 	public ObservableList<LogInfo> getLoadedLogFiles() {
 		return loadedLogFiles;
@@ -215,7 +254,7 @@ public class StartPageController extends AbstractController implements Initializ
     private void handlePane(String paneName, String path) {
     	
     	if(gridPanes.get(paneName) == null) {
-			gridPanes.put(paneName, loadContent(path));
+			gridPanes.put(paneName, loadContent(path, false));
 		} else {
 			rootPane.getChildren().set(0, gridPanes.get(paneName));
 		}

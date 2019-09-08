@@ -1,5 +1,6 @@
 package minerful.gui.service.loginfo;
 
+import java.io.File;
 import java.util.Date;
 import java.util.Map;
 
@@ -54,6 +55,12 @@ public class LogInfo {
 
 	public void setProcessModel(ProcessModel processModel) {
 		this.processModel = processModel;
+	}
+	
+	@Override
+	public String toString() {
+		File f = new File(path);
+		return f.getName();
 	}
 	
 }

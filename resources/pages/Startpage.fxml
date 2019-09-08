@@ -22,7 +22,7 @@
       <GridPane style="-fx-background-color: white; -fx-alignment: center;" fx:id="contentPane" GridPane.columnIndex="1" GridPane.rowIndex="0" >
       		<children>
       			<AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="0" >
-      				<Label styleClass="info-icon-header" text="Learn about MINERful's basic functions" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      				<Label styleClass="info-icon-header" text="Learn more about MINERful's basic functions" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
 	      		</AnchorPane>
 	      		<FlowPane hgap="100" vgap="100" style="-fx-padding: 0 300px; -fx-alignment: center;" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.fillHeight="true" GridPane.fillWidth="true">
 		      		<GridPane fx:id="infoDiscover" styleClass="info-icon">
@@ -87,7 +87,7 @@
       </GridPane>
       <AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="0" style="-fx-background-color: #00a6fb;">
          <children>
-            <ImageView styleClass="clickable" fitHeight="100.0" fitWidth="133.3" layoutX="80.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true" onMousePressed='#openStartPage'>
+            <ImageView styleClass="clickable" fitHeight="100.0" fitWidth="133.3" layoutX="20.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true" onMousePressed='#openStartPage'>
                <image>
                   <Image url="@../images/minerful-logo-standard.png"/>
                </image>
@@ -128,7 +128,7 @@
             </AnchorPane>
             <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
-               		<Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="7.0" layoutY="300.0" mnemonicParsing="false" prefHeight="54.0" text="Inventory" styleClass="menu-button" >
+               		<Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="7.0" layoutY="300.0" mnemonicParsing="false" prefHeight="54.0" text="Inventory" styleClass="menu-button" onAction="#openInventory" >
 	                  <graphic>
 	                  		<FontIcon iconColor="#e8eaf6" iconLiteral="fa-cube" iconSize="30" layoutX="20.0" layoutY="300.0" textAlignment="CENTER" wrappingWidth="26.0" />
                   	  </graphic>
