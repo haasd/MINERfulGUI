@@ -221,19 +221,22 @@ public class DiscoverTabController extends AbstractController implements Initial
 		stopAtTrace.setTextFormatter(ValidationEngine.getNumericFilter());
 		stopAtTrace.setOnKeyPressed(onEnterPressed());
 		
-		supportThresholdField.setTextFormatter(ValidationEngine.getDoubleFilter());
+		supportThresholdField.setTextFormatter(ValidationEngine.getDoubleFilter(0.95));
+		supportThresholdSlider.setValue(0.95);
 		supportThresholdField.textProperty().addListener(getTextFieldChangeListener(supportThresholdSlider));
 		supportThresholdField.setOnKeyPressed(onEnterPressed());
 		supportThresholdSlider.valueProperty().addListener(getSliderChangeListener(supportThresholdField));
 		supportThresholdSlider.setOnMouseReleased(onMouseReleaseSlider());
 		
-		confidenceThresholdField.setTextFormatter(ValidationEngine.getDoubleFilter());
+		confidenceThresholdField.setTextFormatter(ValidationEngine.getDoubleFilter(0.25));
+		confidenceThresholdSlider.setValue(0.25);
 		confidenceThresholdField.textProperty().addListener(getTextFieldChangeListener(confidenceThresholdSlider));
 		confidenceThresholdField.setOnKeyPressed(onEnterPressed());
 		confidenceThresholdSlider.valueProperty().addListener(getSliderChangeListener(confidenceThresholdField));
 		confidenceThresholdSlider.setOnMouseReleased(onMouseReleaseSlider());
 		
-		interestThresholdField.setTextFormatter(ValidationEngine.getDoubleFilter());
+		interestThresholdField.setTextFormatter(ValidationEngine.getDoubleFilter(0.125));
+		interestThresholdSlider.setValue(0.125);
 		interestThresholdField.textProperty().addListener(getTextFieldChangeListener(interestThresholdSlider));
 		interestThresholdField.setOnKeyPressed(onEnterPressed());
 		interestThresholdSlider.valueProperty().addListener(getSliderChangeListener(interestThresholdField));
@@ -284,7 +287,6 @@ public class DiscoverTabController extends AbstractController implements Initial
 	    
 	    setHeight(logInfoList, 125);
 	    setHeight(eventsTable, 250);
-	    setHeight(constraintsTable, 250);
 		
 		// define date-column and set format
 		dateColumn.setCellValueFactory(

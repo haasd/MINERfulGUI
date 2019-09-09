@@ -30,7 +30,9 @@
 				 <columns>
 				    <TableColumn styleClass="column-left" text="Template" fx:id="templateColumn" prefWidth="50.0">
 				    </TableColumn>
-				    <TableColumn styleClass="column-left" text="Constraint" fx:id="constraintColumn" prefWidth="150.0"> 
+				    <TableColumn styleClass="column-left" text="Source" fx:id="constraintSourceColumn" prefWidth="150.0"> 
+				    </TableColumn>
+				    <TableColumn styleClass="column-left" text="Target" fx:id="constraintTargetColumn" prefWidth="150.0"> 
 				    </TableColumn>
 				     <TableColumn styleClass="column-center" text="Fitness" fx:id="fitnessColumn" prefWidth="50.0"> 
 				    </TableColumn>

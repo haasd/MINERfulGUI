@@ -66,14 +66,16 @@ public class MinerfulGuiUtil {
 			for(Constraint con : constraints) {
 				FitnessCheckInfo fci = new FitnessCheckInfo();
 				fci.setTemplate(con.getTemplateName());
-				fci.setConstraint(con.toString());
+				fci.setConstraintSource(con.getBase().toString());
+				if(con.getImplied() != null) {
+					fci.setConstraintTarget(con.getImplied().toString());
+				}
 				fci.setFitness(con.getFitness());
 				fci.setFullSatisfactions(mfe.evaloMap.evaluationsOnLog.get(con).numberOfFullySatisfyingTraces);
 				fci.setVacuousSatisfactions(mfe.evaloMap.evaluationsOnLog.get(con).numberOfVacuouslySatisfyingTraces);
 				fci.setViolations(mfe.evaloMap.evaluationsOnLog.get(con).numberOfViolatingTraces);
 				fciList.add(fci);
 			}
-			
 			
 			return fciList;
 		}

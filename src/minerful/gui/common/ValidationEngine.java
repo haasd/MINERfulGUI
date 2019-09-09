@@ -28,11 +28,11 @@ public class ValidationEngine {
 	}
 	
 	// only allow numeric input
-	public static TextFormatter<Double> getDoubleFilter() {
+	public static TextFormatter<Double> getDoubleFilter(double init) {
 
 		Pattern validDoubleText = Pattern.compile("(([0-1]{0,1})|(\\d+\\.\\d{0,3}))");
 		
-		return new TextFormatter<Double>(new DoubleStringConverter(), 0.0, 
+		return new TextFormatter<Double>(new DoubleStringConverter(), init, 
 	            change -> {
 	                String newText = change.getControlNewText() ;
 	                if (validDoubleText.matcher(newText).matches()) {

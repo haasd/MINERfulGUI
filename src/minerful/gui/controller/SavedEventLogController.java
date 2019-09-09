@@ -1,6 +1,7 @@
 package minerful.gui.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,7 +13,9 @@ import org.apache.log4j.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -57,7 +60,7 @@ public class SavedEventLogController extends AbstractController implements Initi
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
-		modelTable.setPlaceholder(new Label(GuiConstants.NO_MODEL_LOADED));
+		modelTable.setPlaceholder(new Label(GuiConstants.NO_LOG_LOADED));
 
 		// define date-column and set format
 		timestampColumn.setCellValueFactory(
@@ -123,6 +126,61 @@ public class SavedEventLogController extends AbstractController implements Initi
 		
 		modelTable.setItems(logInfos);
 		
+	}
+	
+	@FXML
+	public void loadLog(ActionEvent event) {
+		// init FileChooser and set extension-filter
+				FileChooser fileChooser = new FileChooser();
+				fileChooser.setTitle("Open Event-Log");
+				FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XES", "*.xes");
+			    fileChooser.getExtensionFilters().add(extFilter);
+			    extFilter =  new FileChooser.ExtensionFilter("MXML","*.mxml");
+			    fileChooser.getExtensionFilters().add(extFilter);
+			    extFilter = new FileChooser.ExtensionFilter("txt","*.txt");
+			    fileChooser.getExtensionFilters().add(extFilter);
+			    
+			    // open FileChooser and handle response
+				File selectedFile = fileChooser.showOpenDialog(new Stage());
+				if(selectedFile != null) {
+
+					logger.info("Process File: " + selectedFile.getAbsolutePath());
+					
+					// set up ProgressForm
+					ProgressForm progressForm = new ProgressForm("Load Log-File!");
+					
+					// create Task bind it to ProgressForm and start
+					LogParserService logParser = new LogParserServiceImpl(selectedFile.getAbsolutePath());
+					Task<LogInfo> parseLog = logParser.parseLog();
+
+					progressForm.activateProgress(parseLog);
+					new Thread(parseLog).start();
+					
+			        parseLog.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			            @Override
+			            public void handle(WorkerStateEvent event) {
+			            	try {
+			    				getMainController().addLoadedLogFile(parseLog.get());
+			    				getMainController().addSavedProcessModels(new ModelInfo(parseLog.get().getProcessModel(), new Date(), new File(parseLog.get().getPath()).getName(), null));
+
+			    				progressForm.closeProgressForm();
+			    				
+			    				updateEntries();
+			    				
+			    			} catch (InterruptedException e) {
+			    				// TODO Auto-generated catch block
+			    				e.printStackTrace();
+			    			} catch (ExecutionException e) {
+			    				// TODO Auto-generated catch block
+			    				e.printStackTrace();
+			    			}
+			            }
+			        });
+						
+
+				} else {
+					logger.info("Fileselection canceled!"); 
+				}
 	}
 	
 	public void selectRow(LogInfo row) {

@@ -43,6 +43,9 @@ public class LogParserServiceImpl implements LogParserService  {
 				
 				minerFulParams.kbParallelProcessingThreads = 4;
 				minerFulParams.queryParallelProcessingThreads = 4;
+				postParams.supportThreshold = 0.95;
+				postParams.confidenceThreshold = 0.25;
+				postParams.interestFactorThreshold = 0.125;
 
 				inputParams.inputLogFile = new File(path);
 				inputParams.inputLanguage = MinerfulGuiUtil.determineInputEncoding(path);

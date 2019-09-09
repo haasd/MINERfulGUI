@@ -36,7 +36,10 @@
 }
 
 .constraints-table {
-	-fx-padding: 0 0 30px 0;
+	-fx-padding: 30px;
+	-fx-border-color: #4bb3fd;
+	-fx-border-width: 0 0 0 2px;
+	-fx-background-color: white;
 }
 
 .area-header {
@@ -241,13 +244,15 @@
 }
 
 .btn-save {
-	-fx-border-color: #40d622;
-	-fx-background-color: #40d622;
+	-fx-border-color: #39bb1b;
+	-fx-background-color: #39bb1b;
+	-fx-text-fill: white;
 }
 
 .btn-save:hover {
 	-fx-border-color: #39bb1b;
-	-fx-background-color: #39bb1b;
+	-fx-background-color: white;
+	-fx-text-fill: #39bb1b;
 }
 
 .btn-important {
@@ -286,7 +291,7 @@
 }
 
 .tab-pane .tab-header-area .tab-header-background {
-    -fx-opacity: 0.0;
+    -fx-opacity: 0.5;
 }
 
 .tab-pane

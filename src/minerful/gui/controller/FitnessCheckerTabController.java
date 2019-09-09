@@ -35,7 +35,10 @@ public class FitnessCheckerTabController extends AbstractController implements I
 	TableColumn<FitnessCheckInfo, String> templateColumn;
 	
 	@FXML
-	TableColumn<FitnessCheckInfo, String> constraintColumn;
+	TableColumn<FitnessCheckInfo, String> constraintSourceColumn;
+	
+	@FXML
+	TableColumn<FitnessCheckInfo, String> constraintTargetColumn;
 	
 	@FXML
 	TableColumn<FitnessCheckInfo, Double> fitnessColumn;
@@ -60,8 +63,11 @@ public class FitnessCheckerTabController extends AbstractController implements I
 		templateColumn.setCellValueFactory(
                 new PropertyValueFactory<FitnessCheckInfo, String>("template"));
 		
-		constraintColumn.setCellValueFactory(
-                new PropertyValueFactory<FitnessCheckInfo, String>("constraint"));
+		constraintSourceColumn.setCellValueFactory(
+                new PropertyValueFactory<FitnessCheckInfo, String>("constraintSource"));
+		
+		constraintTargetColumn.setCellValueFactory(
+                new PropertyValueFactory<FitnessCheckInfo, String>("constraintTarget"));
 		
 		fitnessColumn.setCellValueFactory(
                 new PropertyValueFactory<FitnessCheckInfo, Double>("fitness"));

@@ -4,6 +4,8 @@ public class FitnessCheckInfo {
 	
 	private String template; 
 	private String constraint;
+	private String constraintSource;
+	private String constraintTarget;
 	private Double fitness;
 	private Integer fullSatisfactions;
 	private Integer vacuousSatisfactions;
@@ -56,5 +58,23 @@ public class FitnessCheckInfo {
 	public void setViolations(Integer violations) {
 		this.violations = violations;
 	}
+
+	public String getConstraintSource() {
+		return constraintSource;
+	}
+
+	public void setConstraintSource(String constraintSource) {
+		this.constraintSource = constraintSource;
+	}
+
+	public String getConstraintTarget() {
+		return constraintTarget;
+	}
+
+	public void setConstraintTarget(String constraintTarget) {
+		this.constraintTarget = constraintTarget;
+	}
+	
+	
 
 }

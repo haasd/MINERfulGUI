@@ -212,24 +212,27 @@
 	        </content>
 	        <right>
 	        	<!-- Constraints -->
-      			<VBox styleClass="constraints-table">
-        			<Label styleClass="section-header2" text="Constraints"/>
-        			<TableView fx:id="constraintsTable" styleClass="table">
-						<columns>
-						   <TableColumn styleClass="column-left" text="Constraint" fx:id="constraintColumn"> 
-						   </TableColumn>
-						   <TableColumn text="Support" prefWidth="150.0" minWidth="150.0" maxWidth="150.0" fx:id="supportColumn"> 
-						   </TableColumn>
-						   <TableColumn text="Confidence" prefWidth="150.0" minWidth="150.0" maxWidth="150.0" fx:id="confidenceColumn"> 
-						   </TableColumn>
-						   <TableColumn text="Interest Factor" prefWidth="150.0" minWidth="150.0" maxWidth="150.0" fx:id="interestColumn"> 
-						   </TableColumn>
-						</columns>
-						<columnResizePolicy>
-							<TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-						</columnResizePolicy>
-  					</TableView>
-				</VBox>
+      			<GridPane styleClass="constraints-table">
+      				<children>
+	        			<Label styleClass="section-header2" text="Constraints" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+	        			<TableView fx:id="constraintsTable" styleClass="table" GridPane.columnIndex="0" GridPane.rowIndex="1">
+							<columns>
+							   <TableColumn styleClass="column-left" text="Constraint" fx:id="constraintColumn" prefWidth="300.0"> 
+							   </TableColumn>
+							   <TableColumn text="Support" prefWidth="150.0" minWidth="150.0" maxWidth="150.0" fx:id="supportColumn"> 
+							   </TableColumn>
+							   <TableColumn text="Confidence" prefWidth="150.0" minWidth="150.0" maxWidth="150.0" fx:id="confidenceColumn"> 
+							   </TableColumn>
+							   <TableColumn text="Interest Factor" prefWidth="150.0" minWidth="150.0" maxWidth="150.0" fx:id="interestColumn"> 
+							   </TableColumn>
+							</columns>
+	  					</TableView>
+  					</children>
+  					<rowConstraints>
+  						<RowConstraints />
+					    <RowConstraints vgrow="ALWAYS" />
+					</rowConstraints>
+				</GridPane>
 	        </right>
         </HiddenSidesPane>
        </children>
