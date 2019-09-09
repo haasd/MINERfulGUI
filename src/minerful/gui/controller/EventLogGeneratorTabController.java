@@ -41,6 +41,7 @@ import minerful.gui.common.TraceInfo;
 import minerful.gui.common.ValidationEngine;
 import minerful.logmaker.MinerFulLogMaker;
 import minerful.logmaker.params.LogMakerParameters;
+import minerful.logmaker.params.LogMakerParameters.Encoding;
 
 public class EventLogGeneratorTabController extends AbstractController implements Initializable {
 	
@@ -71,6 +72,14 @@ public class EventLogGeneratorTabController extends AbstractController implement
 	private ModelInfo modelInfo;
 	
 	private Integer traceNumber = 0;
+	
+	private MinerFulLogMaker logMak;
+	
+	private LogMakerParameters logMakParameters;
+	
+	private Integer minEvents, maxEvents;
+	
+	private Long tracesNumber;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -125,72 +134,13 @@ public class EventLogGeneratorTabController extends AbstractController implement
 	}
 	
 	@FXML
-	public void generateEventLog(ActionEvent event) {
-		
-		Integer minEvents = Integer.parseInt(minEventsPerTrace.getText());
-		Integer maxEvents = Integer.parseInt(maxEventsPerTrace.getText());
-		Long tracesNumber = Long.parseLong(tracesInLog.getText());
-		
-		if(minEvents > maxEvents) {
-			MinerfulGuiUtil.displayAlert("Input Error", "Input Error", "Maximum number of events per trace has to be less than the minimum number of events per trace!", AlertType.ERROR);
-			return;
-		} else if(tracesNumber == 0) {
-			MinerfulGuiUtil.displayAlert("Input Error", "Input Error", "Number of generated Traces should not be 0!", AlertType.ERROR);
-			return;
-		}
-		
-		LogMakerParameters logMakParameters = new LogMakerParameters(minEvents, maxEvents, tracesNumber);
+	public void exportEventLog(ActionEvent event) {
+		generateLog(true);
+	}
 	
-		MinerFulLogMaker logMak = new MinerFulLogMaker(logMakParameters);
-
-		// init FileChooser and set extension-filter
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Open Event-Log");
-		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT (*.txt)", "*.txt");
-		fileChooser.getExtensionFilters().add(extFilter);
-		extFilter = new FileChooser.ExtensionFilter("XES (*.xes)", "*.xes");
-		fileChooser.getExtensionFilters().add(extFilter);
-		extFilter = new FileChooser.ExtensionFilter("MXML (*.mxml)", "*.mxml");
-		fileChooser.getExtensionFilters().add(extFilter);
-	    
-	    // open FileChooser and handle response
-		File saveFile = fileChooser.showSaveDialog(new Stage());
-		if(saveFile != null) {
-			
-			String extension = saveFile.getName().substring(saveFile.getName().lastIndexOf(".") + 1, saveFile.getName().length());
-			
-			logMakParameters.outputEncoding = MinerfulGuiUtil.determineEncoding(extension.toLowerCase());
-			logMakParameters.outputLogFile = saveFile;
-			
-			try {
-				// set up ProgressForm
-				ProgressForm progressForm = new ProgressForm("Create Log!");
-				
-				Task<XLog> createLog = MinerfulGuiUtil.generateLog(logMak, modelInfo.getProcessModel());
-				progressForm.activateProgress(createLog);
-				new Thread(createLog).start();
-				XLog log = createLog.get();
-				Iterator<XTrace> it = log.iterator();
-				Integer number=0;
-				while(it.hasNext()) {
-					number++;
-					XTrace xtrace = it.next();
-					eventLogList.add(new TraceInfo("Trace " + number, xtrace));
-				}	
-				
-				logMak.storeLog();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
+	@FXML
+	public void generateEventLog(ActionEvent event) {
+		generateLog(false);
 	}
 	
 	private class EventListCell extends ListCell<EventInfo> {
@@ -234,6 +184,150 @@ public class EventLogGeneratorTabController extends AbstractController implement
             }
         }
     }
+	
+	private void generateLog(Boolean save) {
+
+		// generate and store Log
+		if(save && logMak == null) {
+			
+			if(!checkInput()) {
+				return;
+			}
+			eventLogList.clear();
+
+			logMakParameters = new LogMakerParameters(minEvents, maxEvents, tracesNumber);
+			logMak = new MinerFulLogMaker(logMakParameters);
+			
+			// init FileChooser and set extension-filter
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Open Event-Log");
+			FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT (*.txt)", "*.txt");
+			fileChooser.getExtensionFilters().add(extFilter);
+			extFilter = new FileChooser.ExtensionFilter("XES (*.xes)", "*.xes");
+			fileChooser.getExtensionFilters().add(extFilter);
+			extFilter = new FileChooser.ExtensionFilter("MXML (*.mxml)", "*.mxml");
+			fileChooser.getExtensionFilters().add(extFilter);
+		    
+			
+		    // open FileChooser and handle response
+			File saveFile = fileChooser.showSaveDialog(new Stage());
+			if(saveFile != null) {
+				String extension = saveFile.getName().substring(saveFile.getName().lastIndexOf(".") + 1, saveFile.getName().length());
+				
+				logMakParameters.outputEncoding = MinerfulGuiUtil.determineEncoding(extension.toLowerCase());
+				logMakParameters.outputLogFile = saveFile;
+				
+				try {
+					// set up ProgressForm
+					ProgressForm progressForm = new ProgressForm("Create Log!");
+					
+					Task<XLog> createLog = MinerfulGuiUtil.generateLog(logMak, modelInfo.getProcessModel());
+					progressForm.activateProgress(createLog);
+					new Thread(createLog).start();
+					XLog log = createLog.get();
+					Iterator<XTrace> it = log.iterator();
+					Integer number=0;
+					while(it.hasNext()) {
+						number++;
+						XTrace xtrace = it.next();
+						eventLogList.add(new TraceInfo("Trace " + number, xtrace));
+					}
+					logMak.storeLog();
+					
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		} else if(save && logMak != null) {
+			// init FileChooser and set extension-filter
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Open Event-Log");
+			FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT (*.txt)", "*.txt");
+			fileChooser.getExtensionFilters().add(extFilter);
+			extFilter = new FileChooser.ExtensionFilter("XES (*.xes)", "*.xes");
+			fileChooser.getExtensionFilters().add(extFilter);
+			extFilter = new FileChooser.ExtensionFilter("MXML (*.mxml)", "*.mxml");
+			fileChooser.getExtensionFilters().add(extFilter);
+		    
+			
+		    // open FileChooser and handle response
+			File saveFile = fileChooser.showSaveDialog(new Stage());
+			if(saveFile != null) {
+				String extension = saveFile.getName().substring(saveFile.getName().lastIndexOf(".") + 1, saveFile.getName().length());
+				
+				logMakParameters.outputEncoding = MinerfulGuiUtil.determineEncoding(extension.toLowerCase());
+				logMakParameters.outputLogFile = saveFile;
+				
+				//only store Log
+				try {
+					logMak.storeLog();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+			}
+			
+		} else {
+			
+			if(!checkInput()) {
+				return;
+			}
+			
+			// only generate Log
+			logMakParameters = new LogMakerParameters(minEvents, maxEvents, tracesNumber);
+			logMak = new MinerFulLogMaker(logMakParameters);
+			eventLogList.clear();
+			
+			try {
+				// set up ProgressForm
+				ProgressForm progressForm = new ProgressForm("Create Log!");
+				
+				Task<XLog> createLog = MinerfulGuiUtil.generateLog(logMak, modelInfo.getProcessModel());
+				progressForm.activateProgress(createLog);
+				new Thread(createLog).start();
+				XLog log = createLog.get();
+				Iterator<XTrace> it = log.iterator();
+				Integer number=0;
+				while(it.hasNext()) {
+					number++;
+					XTrace xtrace = it.next();
+					eventLogList.add(new TraceInfo("Trace " + number, xtrace));
+				}
+				
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}
+
+	}
+	
+	private Boolean checkInput() {
+		minEvents = Integer.parseInt(minEventsPerTrace.getText());
+		maxEvents = Integer.parseInt(maxEventsPerTrace.getText());
+		tracesNumber = Long.parseLong(tracesInLog.getText());
+		
+		if(minEvents > maxEvents) {
+			MinerfulGuiUtil.displayAlert("Input Error", "Input Error", "Maximum number of events per trace has to be less than the minimum number of events per trace!", AlertType.ERROR);
+			return false;
+		} else if(tracesNumber == 0) {
+			MinerfulGuiUtil.displayAlert("Input Error", "Input Error", "Number of generated Traces should not be 0!", AlertType.ERROR);
+			return false;
+		}
+		
+		return true;
+	}
 	
 	public ModelInfo getModelInfo() {
 		return modelInfo;

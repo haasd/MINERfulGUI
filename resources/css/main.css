@@ -305,12 +305,12 @@
 .tab-pane .tab
 {	
     -fx-background-color: white;
-	-fx-background-radius: 10 10 0 0, 9 9 0 0, 8 8 0 0;
+	-fx-background-radius: 2 2 0 0, 2 2 0 0, 2 2 0 0;
 }
 
 .tab-pane .tab:selected
 {
-   	-fx-background-color: #00a6fb;
+   	-fx-background-color: #4bb3fd;
 }
 
 .tab .tab-label { 
@@ -326,7 +326,7 @@
 }
 
 .tab:selected .focus-indicator {
-    -fx-border-radius: 9 9 0 0, 8 8 0 0;
+    -fx-border-radius: 2 2 0 0, 2 2 0 0;
 }
 
 .tab-pane:top *.tab-header-area {
