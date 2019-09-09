@@ -626,7 +626,16 @@ public class DiscoverTabController extends AbstractController implements Initial
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open Event-Log");
 		FileChooser.ExtensionFilter extFilter = 
-	             new FileChooser.ExtensionFilter("XML/JSON/CSV/HTML", "*.xml", "*.json", "*.csv", "*.html");
+	             new FileChooser.ExtensionFilter("XML", "*.xml");
+	    fileChooser.getExtensionFilters().add(extFilter);
+		extFilter = 
+	             new FileChooser.ExtensionFilter("JSON","*.json");
+	    fileChooser.getExtensionFilters().add(extFilter);
+		extFilter = 
+	             new FileChooser.ExtensionFilter("CSV","*.csv");
+	    fileChooser.getExtensionFilters().add(extFilter);
+		extFilter = 
+	             new FileChooser.ExtensionFilter("HTML","*.html");
 	    fileChooser.getExtensionFilters().add(extFilter);
 	    
 	    // open FileChooser and handle response
