@@ -21,61 +21,66 @@ node:selected {
 }
 
 node.Init {
-
+	stroke-color: #00bf00;
+	stroke-width: 2px;
 }
 
 node.End {
-
+	stroke-color: #2bb5b5;
+	stroke-width: 2px;
 }
 
 node.AtMostOne {
-	stroke-color: #800080;
+	stroke-color: #4b58f3;
+	stroke-width: 2px;
 }
 
 node.Participation {
-	stroke-color: #ff8040;
+	stroke-color: #cc2665;
+	stroke-width: 2px;
 }
 
 edge {
 	fill-color: #7eaad3;
 	shape: line;
-	size: 2px;
 }
 
 edge:selected {
-	size: 4px;
 	fill-color: red;
 }
 
 edge.outgoing {
 	fill-color: #008080;
-	size: 4px;
 }
 
 edge.incoming {
 	fill-color: #ff8000;
-	size: 4px;
 }
 
 edge.AlternateSuccession {
+	fill-color: #ff8000;
 }
 
 edge.AlternatePrecedence {
+	fill-color: #e3f50a;
 }
 
 edge.NotChainSuccession {
+	fill-color: #a6a6ff;
 }
 
 edge.CoExistence {
+	fill-color: #b8ffa6;
 }
 
 edge.NotSuccession {
+	fill-color: #f38386;
 }
 
 edge.ChainPrecedence {
-
+	fill-color: #f0bb86;
 }
 
 edge.AlternateResponse {
-
+	fill-color: #bdb9b9;
 }

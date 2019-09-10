@@ -36,14 +36,24 @@ public class GraphUtil {
 		}
 		
 		for(Constraint constraint : processModel.getAllUnmarkedConstraints()) {
+			
+			
+			
 			if(constraint.getImplied() == null) {
 				Node node = graph.getNode(constraint.getBase().getJoinedStringOfIdentifiers());
 				node.setAttribute("ui.class", constraint.type);
-				
 			} else {
 				String forwardEdge = constraint.getBase().getJoinedStringOfIdentifiers()+constraint.getImplied().getJoinedStringOfIdentifiers()+"_"+constraint.toString();
 				Edge edge = graph.addEdge(forwardEdge, constraint.getBase().getJoinedStringOfIdentifiers(), constraint.getImplied().getJoinedStringOfIdentifiers());
 				edge.setAttribute("ui.class", constraint.type);
+				
+				Integer width = (int) Math.round(constraint.getSupport()*10);
+				Integer opacity = (int) Math.round(constraint.getConfidence()*255); 
+				Integer shadow = (int) Math.round(constraint.getInterestFactor()*10);
+				
+				edge.setAttribute("layout.weight", 5.0);
+				
+				edge.setAttribute("ui.style", String.format("size: %s; fill-color: rgba(131,173,213, %d); shadow-mode: gradient-radial; shadow-color: #EEF, #000; shadow-offset: 0px; shadow-width: %s;", width, opacity, shadow));
 				}
 		}
 		

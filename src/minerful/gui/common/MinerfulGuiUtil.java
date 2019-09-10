@@ -47,6 +47,9 @@ public class MinerfulGuiUtil {
 		//display Alert
 		public static Optional<ButtonType> displayAlert(String title, String headerText, String contentText, AlertType type) {
 			Alert alert = new Alert(type);
+			alert.getDialogPane().getStylesheets().add(MinerfulGuiUtil.class.getClassLoader().getResource("css/main.css").toExternalForm());
+			alert.getDialogPane().getStyleClass().add("alert");
+			
 			if(type == AlertType.CONFIRMATION) {
 				((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Okay");
 				((Button) alert.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Cancel");
