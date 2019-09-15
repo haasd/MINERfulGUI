@@ -2,11 +2,154 @@
     -fx-font-size: 12px;
     -fx-font-family: sans-serif;
     -fx-text-fill: "#393939";
-	-fx-font-family: open sans; 
+	-fx-font-family: open sans;
+	
+	-activity-background-color: rgba(196,232,247,1);
+	-activity-border-color: rgb(61,136,195); 
 }
 
 .clickable {
 	-fx-cursor: hand;
+}
+
+.background {
+	-fx-background-color: white;
+}
+
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
+}
+
+.scroll-pane {
+   -fx-background-color: transparent;
+}
+
+.activityLabel {
+  -fx-font-size: 9pt;
+  -fx-font-family: "Arial";
+  -fx-text-fill:-activity-border-color;
+
+  -fx-wrap-text:true;
+}
+
+.constraintText {
+	-fx-font-family: "Arial";
+	-fx-font-size:7pt;
+	-fx-text-fill:-activity-border-color;
+}
+
+.constraintPaneActivityLabel{
+	-fx-background-color: -activity-background-color; /*:#C4E8F7;*/
+	-fx-border-color: -activity-border-color;
+	-fx-border-radius: 10;
+	-fx-background-radius: 10;
+	-fx-padding: 5;
+	-fx-text-fill: -activity-border-color;
+}
+
+.constraintPaneActivityBox{
+	-fx-padding: 10 0 0 0 ;
+	
+}
+
+.editConstraintSideBox{
+	-fx-border-color: -activity-border-color;
+	-fx-border-radius: 10;
+	-fx-padding:0 10 10 10;
+}
+
+.editConstraintAddButtonBox{
+	-fx-padding: 5 10 0 0;
+}
+
+.editConstraintTypeSelection{
+	-fx-padding:5;
+}
+
+.selectedLabel{
+
+	-fx-background-color: #dddddd;
+	-fx-padding: 15;
+}
+
+.actionButton {
+	-fx-padding: 5;
+	-fx-border-color: black; 
+	-fx-border-width: 1; 
+}
+
+.structuringElements, .cardinalityElements {
+	-fx-fill:#ffffff;
+	-fx-stroke:-activity-border-color;
+}
+
+.activity{
+	-fx-fill: -activity-background-color;/*#C4E8F7;*/
+	-fx-stroke:-activity-border-color;
+}
+
+.selectedActivity {
+	-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 5, 0.0 , 0 , 1 );
+	
+	-fx-fill: rgba(196,232,247,0.8);
+	/*-fx-fill: -activity-background-color;*/
+	
+	-fx-stroke:-activity-border-color;
+}
+
+.highlightedActivity {
+	-fx-effect: dropshadow( three-pass-box , rgba(255,255,0, 0.6) , 10, 0.0 , 0 , 1 );
+	
+	-fx-fill: -activity-background-color;/*#C4E8F7;*/
+	-fx-stroke:-activity-border-color;
+}
+
+.line {
+	-fx-stroke: -activity-border-color;
+	-fx-stroke-width: 1;
+}
+
+.dashedline {
+	-fx-stroke: -activity-border-color;
+	-fx-stroke-dash-array: 10;
+    -fx-stroke-dash-offset: 15;
+    -fx-stroke-width: 1;
+}
+
+.lineOptimized{
+	-fx-stroke: lightgrey;
+	-fx-stroke-width: 1;
+	-fx-text-fill:lightgrey;
+}
+
+.newNegativeCircle{
+	-fx-fill: white;
+	-fx-stroke: lightgrey;
+}
+
+.invisible{
+	-fx-background-color: transparent;
+	-fx-fill: transparent;
+	-fx-stroke: transparent;
+	-fx-text-fill: transparent;
+}
+
+.alternateLabel{
+	 -fx-font: 16px "Serif";
+	 -fx-text-fill: -activity-border-color
+}
+
+.connectable{
+	-fx-background-color: red;
+}
+
+.negArrow{
+	-fx-fill:WHITE;
+	-fx-stroke: grey; /*-activity-border-color;*/
+}
+
+.arrow{
+	-fx-fill:-activity-border-color;
 }
 
 .menu-button {
@@ -82,6 +225,7 @@
 	-fx-border-color: #A5A39C;
 	-fx-border-width: 1px;
 	-fx-border-radius: 2px;
+	-fx-background-color: white;
 }
 
 .table, .log-infos {
@@ -200,6 +344,11 @@
     -fx-padding: 20px;
 }
 
+
+/*
+ * Buttons
+ */
+
 .btn-default {
 	-fx-border-width: 2px;
 	-fx-border-color: #393939;
@@ -263,6 +412,45 @@
 .btn-important:hover {
 	-fx-text-fill: #fcbe03;
 }
+
+.btn-important-with-graphic {
+	-fx-border-color: #fcbe03;
+	-fx-background-color: #fcbe03;
+	-fx-font-size: 16px;
+}
+
+.btn-important-with-graphic:hover {
+	-fx-border-color: #fcbe03;
+	-fx-background-color: #ffce03;
+	-fx-text-fill: white;
+}
+
+.add-button-with-graphic {
+	-fx-border-color: #2ecc71;
+	-fx-background-color: #2ecc71;
+	-fx-text-fill: white;
+	-fx-font-weight: bold;
+}
+
+.add-button-with-graphic:hover {
+	-fx-border-color: #2edd71;
+	-fx-background-color: #2edd71;
+	-fx-text-fill: white;
+}
+
+.delete-button-with-graphic {
+	-fx-border-color: #e74c3c;
+	-fx-background-color: #e74c3c;
+	-fx-text-fill: white;
+	-fx-font-weight: bold;
+}
+
+.delete-button-with-graphic:hover {
+	-fx-border-color: #f94c3c;
+	-fx-background-color: #f94c3c;
+	-fx-text-fill: white;
+}
+
 
 .scroll-pane {
     -fx-background-color: transparent;
@@ -409,3 +597,76 @@
 	-fx-font-weight: bold;
 	-fx-text-fill: white;
 }
+
+/*
+ * TitledPane
+ */
+.titled-pane {   
+	-fx-text-fill: white;
+	-fx-background-color: #4bb3fd;
+}
+
+.titled-pane:focused {
+	-fx-text-fill: white;
+}
+
+.titled-pane > .title {
+	-fx-text-fill: white;
+	-fx-font-weight: bold;
+	-fx-font-size: 16px;
+	-fx-background-color: #4bb3fd;
+	-fx-background-insets: 0, 1, 2;
+	-fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
+	-fx-padding: 0.166667em 0.833333em 0.25em 0.833333em; /* 2 10 3 10 */
+}
+
+.titled-pane:focused > .title {
+	-fx-color: -fx-focus-color;
+}
+
+.titled-pane > .title > .arrow-button {
+	-fx-background-color: null;
+	-fx-background-insets: 0;
+	-fx-background-radius: 0;
+	-fx-padding: 0.0em 0.25em 0.0em 0.0em; /* 0 3 0 0 */
+}
+
+.titled-pane > .title > .arrow-button .arrow {
+	-fx-background-color: white;
+}
+
+.titled-pane > *.content {
+	-fx-background-color: white;
+	-fx-background-insets: 0, 0 1 1 1;
+	-fx-padding: 10px;
+	-fx-border-color: white;
+}
+
+.titled-pane:focused > .title > .arrow-button .arrow {
+	-fx-background-color: white;
+}
+
+/*
+ * EditPanes - Activities, Constraints
+ */
+ .editpane {
+ 	-fx-padding: 10px 0 10px 0;
+ }
+ 
+ .editpane-header{
+ 	-fx-font-size: 14px;
+ 	-fx-font-weight: bold;
+ }
+ 
+ .edit-name {
+	
+ }
+ 
+ .existence-constraint-box {
+ 	-fx-padding: 10px 0 0 0;
+ }
+ 
+.errorMessageLabel{
+	-fx-text-fill: red;
+}
+ 

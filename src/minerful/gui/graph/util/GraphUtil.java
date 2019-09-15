@@ -21,7 +21,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import minerful.concept.ProcessModel;
 import minerful.concept.TaskChar;
 import minerful.concept.constraint.Constraint;
+import minerful.gui.common.RelationConstraintInfo;
 import minerful.gui.common.ValidationEngine;
+import minerful.gui.model.ActivityElement;
+import minerful.gui.model.Card;
+import minerful.gui.model.RelationConstraintElement;
+import minerful.gui.model.StructuringElement;
 
 public class GraphUtil {
 	
@@ -117,6 +122,47 @@ public class GraphUtil {
 		constraints.setItems(discoveredConstraints);
 		
 		return constraints;
+	}
+	
+	public static List<RelationConstraintInfo> determineConstraints(List<ActivityElement> activityElements) {
+		List<RelationConstraintInfo> constraintElements = new ArrayList<>();
+		
+		for(ActivityElement sourceElement : activityElements) {
+			
+			if(sourceElement.getExistenceConstraint() != null) {
+				StructuringElement struct = sourceElement.getExistenceConstraint().getStruct();
+				if(struct != null) {
+					if(struct == StructuringElement.END) {
+						constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), null, "End"));
+					} else if (struct == StructuringElement.INIT) {
+						constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), null, "Init"));
+					} else if (struct == StructuringElement.INITEND) {
+						constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), null, "Init"));
+						constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), null, "End"));
+					}
+				}
+			
+				Card card = sourceElement.getExistenceConstraint().getCard();
+				
+				if(card != null) {
+					if("0".equals(card.getMin()) && "1".equals(card.getMax())) {
+						constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), null, "AtMostOne"));
+					} else {
+						constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), null, "Participation"));
+					}
+				}
+			}
+			for(RelationConstraintElement constraint : sourceElement.getConstraintList()) {
+				for(ActivityElement targetElement : constraint.getParameter2Elements()) {
+					
+					if(targetElement != sourceElement) {
+						constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), targetElement.getIdentifier(), constraint.getTemplate().getName()));
+					}
+				}
+			}
+		}
+		
+		return constraintElements;
 	}
 	
 }

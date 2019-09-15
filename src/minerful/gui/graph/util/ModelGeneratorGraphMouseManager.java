@@ -97,7 +97,7 @@ public class ModelGeneratorGraphMouseManager implements MouseManager {
 				}
 				
 				if(controller.getActivityName() != null && !controller.getActivityName().isEmpty()) {
-					modelGeneratorTabController.createTaskChar(controller.getActivityName());
+					//modelGeneratorTabController.createTaskChar(controller.getActivityName());
 				}
 				
 			} catch (IOException e) {

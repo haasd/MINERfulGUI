@@ -19,26 +19,13 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="minerful.gui.controller.ModelGeneratorTabController">
 	<children>
 		<!-- Sidebar  -->
-		<VBox styleClass="section, section-menu"  style="-fx-background-color: white;" GridPane.columnIndex="0" GridPane.rowIndex="0">
-         	<children>
-         		
-         		<!-- Activities -->
-				<Label styleClass="section-header1" text="Activities">
-				</Label>
-				<ListView fx:id="activitiesList" styleClass="table">
-    			</ListView>
-    			<Button styleClass="btn-default" text="Add Activity" />         			
-    			
-    			<!-- Constraints -->
-    			<Label styleClass="section-header2" text="Constraints"/>
-       			<ListView fx:id="constraintsList" styleClass="table">
- 				</ListView>
-				<Button styleClass="btn-default" text="Add Constraint" /> 
-         	</children>
+		<VBox alignment="TOP_CENTER" fx:id="sidePane" styleClass="section, section-menu"  style="-fx-background-color: white;" GridPane.columnIndex="0" GridPane.rowIndex="0">
 		</VBox>
 		
 		<!-- Model -->
@@ -52,8 +39,46 @@
 		         			<Button styleClass="btn-default, btn-save" text="Save" onAction="#saveModel" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 		         			<Button styleClass="btn-default" text="Export" onAction="#exportFile" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
 		         		</HBox>
-	         			<VBox fx:id="canvasBox" styleClass="model-canvas" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
-	         			</VBox>
+	         			<ScrollPane fx:id="scrollPane" styleClass="model-canvas, background" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
+         					<AnchorPane fx:id="anchorPane" styleClass="background">
+         						<BorderPane fx:id="backgroundPane">
+         						</BorderPane>
+         					</AnchorPane>
+	         			</ScrollPane>
+	         			<GridPane GridPane.columnIndex="0" GridPane.rowIndex="2">
+	         				<children>
+		         				<!-- Activities -->
+		         				<VBox style="-fx-padding: 10px;" GridPane.columnIndex="0" GridPane.rowIndex="0">
+									<Label GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="section-header1" text="Activities">
+									</Label>
+									<ListView VBox.vgrow="ALWAYS" GridPane.columnIndex="0" GridPane.rowIndex="1" fx:id="activitiesList" styleClass="table">
+					    			</ListView>
+					    		</VBox>	
+				    			
+				    			<!-- Constraints -->
+				    			<VBox style="-fx-padding: 10px;" GridPane.columnIndex="1" GridPane.rowIndex="0">
+					    			<Label  styleClass="section-header1" text="Constraints"/>
+					       			<TableView VBox.vgrow="ALWAYS" fx:id="constraintsTable" styleClass="table">
+										<columns>
+										 	<TableColumn styleClass="column-left" prefWidth="150.0" minWidth="150.0" maxWidth="150.0" text="Template" fx:id="templateColumn"> 
+										   </TableColumn>
+										   <TableColumn styleClass="column-left" text="Source Activity" fx:id="sourceColumn">
+										   </TableColumn>
+										   <TableColumn styleClass="column-left" prefWidth="150.0" minWidth="150.0" maxWidth="150.0" text="Target Activity" fx:id="targetColumn"> 
+										   </TableColumn>
+										</columns>
+										<columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+					       			</TableView>
+				       			</VBox>
+							</children>
+	         				<columnConstraints>
+				        		<ColumnConstraints percentWidth="30.0" />
+				        		<ColumnConstraints percentWidth="70.0" />
+							</columnConstraints>
+							<rowConstraints>
+							   <RowConstraints vgrow="ALWAYS" />
+							</rowConstraints>
+	         			</GridPane>
 	         		</children>
 	         		<columnConstraints>
 				        <ColumnConstraints hgrow="ALWAYS" />
@@ -61,6 +86,7 @@
 					<rowConstraints>
 					   <RowConstraints />
 					   <RowConstraints vgrow="ALWAYS" />
+					   <RowConstraints percentHeight="30.0" />
 					</rowConstraints>
 	         	</GridPane>
        			
@@ -74,8 +100,8 @@
         </GridPane>
        </children>
        <columnConstraints>
-			<ColumnConstraints percentWidth="30.0" />
-			<ColumnConstraints percentWidth="70.0" />
+			<ColumnConstraints percentWidth="20.0" />
+			<ColumnConstraints percentWidth="80.0" />
 	</columnConstraints>
 	<rowConstraints>
 			   <RowConstraints vgrow="ALWAYS" />

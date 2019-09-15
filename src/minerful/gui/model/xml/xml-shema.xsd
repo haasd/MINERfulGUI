@@ -1,0 +1,65 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="process" type="processType"/>
+
+	<xs:complexType name="processType">
+		<xs:sequence>
+			<xs:element name="activities" type="activitiesType" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="existenceConstraints" type="existenceConstraintsType" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="relationConstraints" type="relationConstraintsType" maxOccurs="1" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="activitiesType">
+		<xs:sequence>
+			<xs:element name="activity" type="activityType"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="existenceConstraintsType">
+		<xs:sequence>
+			<xs:element name="existenceConstraint" type="existenceConstraintType"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="relationConstraintsType">
+		<xs:sequence>
+			<xs:element name="relationConstraint" type="relationConstraintType"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="activityType">
+		<xs:sequence>
+			<xs:element name="identifier" type="xs:string"/>
+		</xs:sequence>
+		<xs:attribute name="ID" type="xs:integer" use="required"/>
+	</xs:complexType>
+	
+	<xs:complexType name="existenceConstraintType">
+		<xs:sequence>
+			<xs:element name="structure" type="xs:string" maxOccurs="1"/>
+			<xs:element name="cardinality" type="xs:string" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="activityID" type="xs:integer" use="required"/>
+	</xs:complexType>
+	
+	<xs:complexType name="relationConstraintType">
+		<xs:sequence>
+			<xs:element name="activation" type="xs:int" maxOccurs="1"/>
+			<xs:element name="target" type="xs:int" maxOccurs="1"/>
+			<xs:element name="chained" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="negation" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="alternation" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="activationCursorIn" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="activationCursorOut" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="targetCursorIn" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="targetCursorOut" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="ID" type="xs:integer" use="required"/>
+	</xs:complexType>
+	
+
+	
+	
+	
+</xs:schema>
