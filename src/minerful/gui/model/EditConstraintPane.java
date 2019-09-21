@@ -2,6 +2,8 @@ package minerful.gui.model;
 
 import java.util.HashMap;
 
+import org.kordamp.ikonli.javafx.FontIcon;
+
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -18,6 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.TextAlignment;
 import minerful.gui.controller.ModelGeneratorTabController;
 
@@ -69,14 +72,15 @@ public class EditConstraintPane extends ScrollPane {
 
 		activityEditVBox.setAlignment(Pos.TOP_CENTER);
 		Label sideATitle = new Label("Parameter 1:");
+		sideATitle.getStyleClass().add("editpane-header");
 		sideATitle.getStyleClass().add("EditPaneH2");
 		
 		Label sideBTitle = new Label("Parameter 2:");
+		sideBTitle.getStyleClass().add("editpane-header");
 		sideBTitle.getStyleClass().add("EditPaneH2");
 		
-		Label arrowLabel = new Label("|\nv");
-		arrowLabel.setWrapText(true);
-		arrowLabel.setMinHeight(30);
+		FontIcon arrowLabel = new FontIcon("typ-arrow-down-thick");
+		arrowLabel.setIconSize(20);
 		parameter1Area = new VBox();
 		parameter2Area = new VBox();
 		
@@ -116,110 +120,9 @@ public class EditConstraintPane extends ScrollPane {
 				parameter2Area, addParameter2HBox);
 
 		typeLabel = new Label("Type:");
+		typeLabel.getStyleClass().add("editpane-header");
 		typeLabel.getStyleClass().add("EditPaneH2");
-		/*
-		final ToggleGroup typeGroup = new ToggleGroup();
-		Image tooltipImage = new Image(getClass().getResource("resources/Tooltip-icon.png").toExternalForm(),
-				15, 15, true, true);
-		
-		precedenceRB = new RadioButton("Precedence");
-		precedenceRB.setTooltip(new Tooltip("Give some information about this type of constraint..."));
-		ImageView precedenceToolTip = new ImageView(tooltipImage);
-		HBox precedenceBox = new HBox(precedenceRB, precedenceToolTip);
-		precedenceRB.setToggleGroup(typeGroup);
-		precedenceRB.setOnAction(createActionEventHandler(TemplateEnum.PRECEDENCE));
-				
-		respondedExistenceRB = new RadioButton("RespondedExistence");
-		respondedExistenceRB.setTooltip(new Tooltip("Give some information about this type of constraint..."));
-		ImageView respondedExistenceToolTip = new ImageView(tooltipImage);
-		HBox respondedExistenceBox = new HBox(respondedExistenceRB, respondedExistenceToolTip);
-		respondedExistenceRB.setToggleGroup(typeGroup);
-		respondedExistenceRB.setOnAction(createActionEventHandler(TemplateEnum.RESPONDEDEXISTENCE));
-		
-		coExistenceRB = new RadioButton("CoExistence");
-		coExistenceRB.setTooltip(new Tooltip("Give some information about this type of constraint..."));
-		ImageView coExistenceToolTip = new ImageView(tooltipImage);
-		HBox coExistenceBox = new HBox(coExistenceRB, coExistenceToolTip);
-		coExistenceRB.setToggleGroup(typeGroup);
-		coExistenceRB.setOnAction(createActionEventHandler(TemplateEnum.COEXISTENCE));
-		
-		responseRB = new RadioButton("Response");
-		responseRB.setTooltip(new Tooltip("Give some information about this type of constraint..."));
-		ImageView responseToolTip = new ImageView(tooltipImage);
-		HBox responseBox = new HBox(responseRB, responseToolTip);
-		responseRB.setToggleGroup(typeGroup);
-		responseRB.setOnAction(createActionEventHandler(TemplateEnum.RESPONSE));
-		
-		alternateResponseRB = new RadioButton("AlternateResponse");
-		precedenceRB.setTooltip(new Tooltip("Give some information about this type of constraint..."));
-		ImageView alternateResponseToolTip = new ImageView(tooltipImage);
-		HBox alternateResponseBox = new HBox(alternateResponseRB, alternateResponseToolTip);
-		alternateResponseRB.setToggleGroup(typeGroup);
-		alternateResponseRB.setOnAction(createActionEventHandler(TemplateEnum.ALTERNATERESPONSE));
-		
-		alternatePrecedenceRB = new RadioButton("AlternatePrecedence");
-		alternatePrecedenceRB.setTooltip(new Tooltip("Give some information about this type of constraint..."));
-		ImageView alternatePrecedenceToolTip = new ImageView(tooltipImage);
-		HBox alternatePrecedenceBox = new HBox(alternatePrecedenceRB, alternatePrecedenceToolTip);
-		alternatePrecedenceRB.setToggleGroup(typeGroup);
-		alternatePrecedenceRB.setOnAction(createActionEventHandler(TemplateEnum.ALTERNATEPRECEDENCE));
-		
-		chainResponseRB = new RadioButton("ChainResponse");
-		precedenceRB.setTooltip(new Tooltip("Give some information about this type of constraint..."));
-		ImageView chainResponseToolTip = new ImageView(tooltipImage);
-		HBox chainResponseBox = new HBox(chainResponseRB, chainResponseToolTip);
-		chainResponseRB.setToggleGroup(typeGroup);
-		chainResponseRB.setOnAction(createActionEventHandler(TemplateEnum.CHAINRESPONSE));
-		
-		chainPrecedenceRB = new RadioButton("ChainPrecedence");
-		precedenceRB.setTooltip(new Tooltip("Give some information about this type of constraint..."));
-		ImageView chainPrecedenceToolTip = new ImageView(tooltipImage);
-		HBox chainPrecedenceBox = new HBox(chainPrecedenceRB, chainPrecedenceToolTip);
-		chainPrecedenceRB.setToggleGroup(typeGroup);
-		chainPrecedenceRB.setOnAction(createActionEventHandler(TemplateEnum.CHAINPRECEDENCE));
-		
-		successionRB = new RadioButton("Succession");
-		precedenceRB.setTooltip(new Tooltip("Give some information about this type of constraint..."));
-		ImageView successionToolTip = new ImageView(tooltipImage);
-		HBox successionBox = new HBox(successionRB, successionToolTip);
-		successionRB.setToggleGroup(typeGroup);
-		successionRB.setOnAction(createActionEventHandler(TemplateEnum.SUCCESSION));
-		
-		alternateSuccessionRB = new RadioButton("AlternateSuccession");
-		alternateSuccessionRB.setTooltip(new Tooltip("Give some information about this type of constraint..."));
-		ImageView alternateSuccessionToolTip = new ImageView(tooltipImage);
-		HBox alternateSuccessionBox = new HBox(alternateSuccessionRB, alternateSuccessionToolTip);
-		alternateSuccessionRB.setToggleGroup(typeGroup);
-		alternateSuccessionRB.setOnAction(createActionEventHandler(TemplateEnum.ALTERNATSUCCESION));
-		
-		chainSuccessionRB = new RadioButton("ChainSuccession");
-		precedenceRB.setTooltip(new Tooltip("Give some information about this type of constraint..."));
-		ImageView chainSuccessionToolTip = new ImageView(tooltipImage);
-		HBox chainSuccessionBox = new HBox(chainSuccessionRB, chainSuccessionToolTip);
-		chainSuccessionRB.setToggleGroup(typeGroup);
-		chainSuccessionRB.setOnAction(createActionEventHandler(TemplateEnum.CHAINSUCCESSION));
-		
-		notSuccessionRB = new RadioButton("NotSuccession");
-		precedenceRB.setTooltip(new Tooltip("Give some information about this type of constraint..."));
-		ImageView notSuccessionToolTip = new ImageView(tooltipImage);
-		HBox notSuccessionBox = new HBox(notSuccessionRB, notSuccessionToolTip);
-		notSuccessionRB.setToggleGroup(typeGroup);
-		notSuccessionRB.setOnAction(createActionEventHandler(TemplateEnum.NOTSUCCESSION));
-		
-		notChainSuccessionRB = new RadioButton("NotChainSuccession");
-		precedenceRB.setTooltip(new Tooltip("Give some information about this type of constraint..."));
-		ImageView notChainSuccessionToolTip = new ImageView(tooltipImage);
-		HBox notChainSuccessionBox = new HBox(notChainSuccessionRB, notChainSuccessionToolTip);
-		notChainSuccessionRB.setToggleGroup(typeGroup);
-		notChainSuccessionRB.setOnAction(createActionEventHandler(TemplateEnum.NOTCHAINSUCCESSION));
-		
-		notCoExistenceRB = new RadioButton("NotCoExistence");
-		precedenceRB.setTooltip(new Tooltip("Give some information about this type of constraint..."));
-		ImageView notCoExistenceToolTip = new ImageView(tooltipImage);
-		HBox notCoExistenceBox = new HBox(notCoExistenceRB, notCoExistenceToolTip);
-		notCoExistenceRB.setToggleGroup(typeGroup);
-		notCoExistenceRB.setOnAction(createActionEventHandler(TemplateEnum.NOTCOEXISTENCE));
-		*/	
+	
 		typeEditVBox.getChildren().add(typeLabel);
 		
 		for (Template template : controller.getCurrentProcessElement().getTemplateList()){
@@ -257,15 +160,15 @@ public class EditConstraintPane extends ScrollPane {
 	
 	private HBox createTemplateSelectionBox(Template template){
 		
-		Image tooltipImage = new Image(getClass().getClassLoader().getResource("images/Tooltip-icon.png").toExternalForm(),
-				15, 15, true, true);
+		FontIcon fontIcon = new FontIcon("fa-question-circle");
+		fontIcon.setIconSize(15);
+		fontIcon.setIconColor(Paint.valueOf("#0966d7"));
 		RadioButton radioButton = new RadioButton(template.getName());
 		radioButtonOfTemplate.put(template, radioButton);
 		
 		//TODO: load Tooltip of template by template.getInformation();
 		radioButton.setTooltip(new Tooltip("Give some information about this type of constraint..."));
-		ImageView templateToolTip = new ImageView(tooltipImage);
-		HBox templateBox = new HBox(radioButton, templateToolTip);
+		HBox templateBox = new HBox(radioButton, fontIcon);
 		radioButton.setToggleGroup(templateGroup);
 		radioButton.setOnAction(createActionEventHandler(template));
 		return templateBox;

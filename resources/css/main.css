@@ -41,8 +41,8 @@
 .constraintPaneActivityLabel{
 	-fx-background-color: -activity-background-color; /*:#C4E8F7;*/
 	-fx-border-color: -activity-border-color;
-	-fx-border-radius: 10;
-	-fx-background-radius: 10;
+	-fx-border-radius: 2;
+	-fx-background-radius: 2;
 	-fx-padding: 5;
 	-fx-text-fill: -activity-border-color;
 }
@@ -54,7 +54,7 @@
 
 .editConstraintSideBox{
 	-fx-border-color: -activity-border-color;
-	-fx-border-radius: 10;
+	-fx-border-radius: 2;
 	-fx-padding:0 10 10 10;
 }
 

@@ -875,6 +875,12 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		
 	}
 	
+	public void determineActivities() {
+		activityElements.clear(); 
+		activityElements.addAll(currentProcessElement.getActivityEList());
+		
+	}
+	
 	public List<ActivityNode> getActivityNodes() {
 		return activityNodes;
 	}

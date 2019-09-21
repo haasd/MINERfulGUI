@@ -19,6 +19,7 @@ public interface ProcessElementInterface {
 	public void deleteActivity(ActivityNode aNode);
 	public void editActivity(ActivityNode activityNode);
 	public void determineConstraints();
+	public void determineActivities();
 	public List<RelationConstraintNode> getConstraintNodes();
 
 }

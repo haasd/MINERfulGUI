@@ -236,6 +236,7 @@ public class ActivityNode extends StackPane implements Selectable {
 		updateExistenceConstraint();
 		if(processTab != null) {
 			processTab.determineConstraints();
+			processTab.determineActivities();
 		}
 	}
 	
