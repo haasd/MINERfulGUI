@@ -1,6 +1,8 @@
 package minerful.gui.model;
 
 
+import java.io.Serializable;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -9,7 +11,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
-import minerful.gui.controller.DiscoverTabController;
 import minerful.gui.controller.ModelGeneratorTabController;
 import minerful.gui.util.Config;
 
@@ -22,7 +23,12 @@ import minerful.gui.util.Config;
  * 		LineNodes - Lines to both activities
  * @author Lukas
  */
-public class RelationConstraintNode extends StackPane implements Positionable, Selectable {
+public class RelationConstraintNode extends StackPane implements Positionable, Selectable, Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -210909592012283202L;
+
 	private Config config = new Config("config");
 	
 	private RelationConstraintElement constraintElement;
@@ -62,7 +68,7 @@ public class RelationConstraintNode extends StackPane implements Positionable, S
 		
 		//Action Buttons
 		deleteButton = new Button("");
-		deleteButton.setOnAction((event)-> {this.controller.deleteRelationConstraint(this);});
+		deleteButton.setOnAction((event)-> {if(this.controller != null) {this.controller.deleteRelationConstraint(this);}});
 		//TODO: DISABLE AGAIN
 		// = new Image(getClass().getResource("resources/Delete-icon.png").toExternalForm(),12,12,true,true);
 		//deleteButton.setGraphic(new ImageView(imgDeleteButton));
@@ -97,7 +103,9 @@ public class RelationConstraintNode extends StackPane implements Positionable, S
 				this.getChildren().add(deleteButton);
 			}
 			clickable.getStyleClass().add(selectedClass);
-			controller.editConstraint(this);
+			if(this.controller != null) {
+				controller.editConstraint(this);
+			}
 			
 		} else {
 			if (getChildren().contains(deleteButton)){
@@ -189,8 +197,9 @@ public class RelationConstraintNode extends StackPane implements Positionable, S
 			}
 			clickable.getStyleClass().add(normalStyle);
 		}
-		
-		controller.determineConstraints();
+		if(this.controller != null) {
+			controller.determineConstraints();
+		}
 	}
 
 	

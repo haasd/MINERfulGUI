@@ -1,13 +1,18 @@
 package minerful.gui.model;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import minerful.concept.ProcessModel;
 import minerful.gui.model.xml.XMLExistenceConstraint;
 
-public class ProcessElement {
+public class ProcessElement implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3686562242357489964L;
 
 	private File filename;
 
@@ -193,9 +198,8 @@ public class ProcessElement {
 		templateList.add(new Template("notChainSuccession", false, true, true, false, false, false, true, true));
 		templateList.add(new Template("notCoExistence", true, true, true, true, false, false, false, true));
 	}
-	// Template(
-	//     String name, Boolean p1InsideCursor, Boolean p1OutsideCursor,
-	//     Boolean p2InsideCursor, Boolean p2OutsideCursor, 
-	//     Boolean p1Alternation, Boolean p2Alternation, 
-	//     Boolean chained, Boolean negation)
+	
+	public Object clone() throws CloneNotSupportedException{  
+		return super.clone();  
+	}  
 }

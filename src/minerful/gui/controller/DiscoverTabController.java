@@ -8,7 +8,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -16,17 +15,14 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.controlsfx.control.ToggleSwitch;
-import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.Graphs;
 import org.graphstream.stream.ProxyPipe;
-import org.graphstream.ui.fx_viewer.FxViewPanel;
-import org.graphstream.ui.fx_viewer.FxViewer;
 import org.graphstream.ui.view.Viewer;
-import org.graphstream.ui.view.util.InteractiveElement;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -38,6 +34,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Alert.AlertType;
@@ -46,6 +43,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -57,6 +55,8 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -71,8 +71,9 @@ import minerful.gui.common.GuiConstants;
 import minerful.gui.common.MinerfulGuiUtil;
 import minerful.gui.common.ModelInfo;
 import minerful.gui.common.ValidationEngine;
-import minerful.gui.graph.util.GraphMouseManager;
 import minerful.gui.graph.util.GraphUtil;
+import minerful.gui.model.EventHandlerManager;
+import minerful.gui.model.ProcessElement;
 import minerful.gui.service.DiscoverUtil;
 import minerful.gui.service.loginfo.EventFilter;
 import minerful.gui.service.loginfo.LogInfo;
@@ -104,6 +105,15 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	@FXML
 	TableView<Constraint> constraintsTable;
+	
+	@FXML
+	ScrollPane scrollPane;
+	
+	@FXML
+	AnchorPane anchorPane;
+	
+	@FXML
+	BorderPane backgroundPane;
 	
 	@FXML
 	ListView<String> logInfoList;
@@ -202,11 +212,20 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	private Boolean cropRedundantAndInconsistentConstraints = false;
 	
+	private EventHandlerManager eventManager = new EventHandlerManager(null);
+	
 	private Graph graph;
 	
 	private Viewer viewer;
 	
+	private ProcessElement processElement;
+	
 	private ProxyPipe pipe;
+	
+	private double scrollPanePadding = 250d;
+	private DoubleProperty maxTranslateX = new SimpleDoubleProperty(scrollPanePadding);
+	private DoubleProperty maxTranslateY = new SimpleDoubleProperty(scrollPanePadding);
+	
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -420,6 +439,14 @@ public class DiscoverTabController extends AbstractController implements Initial
 		interestXAxis.setTickUnit(0.2);
 		interestXAxis.setUpperBound(1.0);
 		
+		// add Listeners for Background
+		maxTranslateX.addListener((obs,oldValue,newValue) -> {
+			backgroundPane.setPrefWidth(newValue.doubleValue());
+		});
+		maxTranslateY.addListener((obs,oldValue,newValue) -> {
+			backgroundPane.setPrefHeight(newValue.doubleValue());
+		});
+		
 	}
 	
 	public void updateLogInfo() {
@@ -457,20 +484,9 @@ public class DiscoverTabController extends AbstractController implements Initial
 		if(processModel.getAllUnmarkedConstraints().size() > GuiConstants.NUMBER_CONSTRAINTS_WARNING) {
 			Optional<ButtonType> result = MinerfulGuiUtil.displayAlert("Warning", "Proceed rendering of graph?", "Rendering of Graph was stopped due to a high number of constraints.", AlertType.CONFIRMATION);
 			if (result.get() == ButtonType.OK){
-				graph = GraphUtil.drawGraph(processModel);
-				Toolkit.computeLayout(graph,0.99);
-				viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-				FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
-				pipe = viewer.newViewerPipe();
-				pipe.addAttributeSink(graph);
-				view.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, this.getStage()));
-				canvasBox.getChildren().add(view);
-			} else {
-				viewer = new FxViewer( null, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-				FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
-				view.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, this.getStage()));
-				canvasBox.getChildren().add(view);
-			}
+				processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager);
+				setMaxTranslate();
+			} 
 		}
 
 		logInfos.add(GuiConstants.FILENAME+new File(currentEventLog.getPath()).getName());
@@ -548,16 +564,9 @@ public class DiscoverTabController extends AbstractController implements Initial
 			interestChart.getData().clear();
 			interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllUnmarkedConstraints(), "interest"));
 			
-			graph = GraphUtil.drawGraph(processModel);
-			Toolkit.computeLayout(graph,0.99);
-			viewer = new FxViewer( graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD );
-			pipe = viewer.newViewerPipe();
-			pipe.addAttributeSink(graph);
-			FxViewPanel view1 = (FxViewPanel) viewer.addDefaultView(true);
-			view1.setMouseManager(new GraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), processModel, this.getStage()));
-			
-			canvasBox.getChildren().clear();
-			canvasBox.getChildren().add(view1);
+			anchorPane.getChildren().remove(1, anchorPane.getChildren().size());
+			processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager);
+			setMaxTranslate();
 		}
 	}
 	
@@ -682,9 +691,8 @@ public class DiscoverTabController extends AbstractController implements Initial
 			
 			MinerFulOutputManagementLauncher outputMgt = new MinerFulOutputManagementLauncher();
 			outputMgt.manageOutput(processModel, outParams);
-			
-			pipe.pump();
-			ModelInfo modelInfo = new ModelInfo(processModel,new Date(),outputFile.getName(), Graphs.clone(graph));
+
+			ModelInfo modelInfo = new ModelInfo(processModel,new Date(),outputFile.getName(), processElement);
 			
 			getMainController().addSavedProcessModels(modelInfo);
 
@@ -717,14 +725,6 @@ public class DiscoverTabController extends AbstractController implements Initial
 		dialog.setContentText("Modelname:");
 		dialog.getDialogPane().setMinWidth(500.0);
 		
-		try {
-			Thread.sleep(100);
-			pipe.pump();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		
 		ModelInfo modelInfo = new ModelInfo();
 		Optional<String> result = dialog.showAndWait();
@@ -736,10 +736,32 @@ public class DiscoverTabController extends AbstractController implements Initial
 		
 		modelInfo.setProcessModel(processModel);
 		modelInfo.setSaveDate(new Date());
-		modelInfo.setGraph(Graphs.clone(graph));
+
+		modelInfo.setProcessElement(GraphUtil.cloneProcessElement(processElement));
 		
 		getMainController().addSavedProcessModels(modelInfo);
 
+	}
+	
+	/**
+	 * determines the Node that is translated the most to the right, and the one to 
+	 * the bottom and saves the coordinates to define the edge of the background.
+	 * Field Scrollpadding defines how much padding there is between the outer elements 
+	 * and the edge of the background.
+	 */
+	public void setMaxTranslate() {
+		double maxX = scrollPanePadding;
+		double maxY = scrollPanePadding;
+		for(Node n : anchorPane.getChildren()){
+			if (n.getTranslateX() + scrollPanePadding > maxX) {
+				maxX = n.getTranslateX() + scrollPanePadding;
+			}
+			if (n.getTranslateY() + scrollPanePadding > maxY){
+				maxY = n.getTranslateY() + scrollPanePadding;
+			}
+		}
+		maxTranslateX.set(maxX);
+		maxTranslateY.set(maxY);
 	}
 
 }

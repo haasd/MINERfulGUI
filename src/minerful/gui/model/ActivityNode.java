@@ -151,16 +151,17 @@ public class ActivityNode extends StackPane implements Selectable {
 		
 		//Edit Buttons
 		deleteButton = new Button("");
-		deleteButton.setOnAction((event) -> {this.processTab.deleteActivity(this);});
+		deleteButton.setOnAction((event) -> {if(this.processTab != null) {this.processTab.deleteActivity(this);}});
 		//TODO: ENABLE AGAIN
 		
 		
 		
 		addConstraintButton = new Button("");
 		addConstraintButton.setOnAction((event) -> {
-			//this.processTab.setActivitySelectionMode(true, 2, true);
-			this.processTab.setSelectionModeToAddConstraint();
-			});
+			if(this.processTab != null) {
+				this.processTab.setSelectionModeToAddConstraint();
+			}
+		});
 		
 		//this.getChildren().addAll(deleteButton, addConstraintButton /*, editButton*/);
 		StackPane.setAlignment(deleteButton, Pos.TOP_RIGHT);
@@ -210,7 +211,10 @@ public class ActivityNode extends StackPane implements Selectable {
 			
 			clickable.getStyleClass().clear();
 			clickable.getStyleClass().add("selectedActivity");
-			processTab.editActivity(this);
+			if(processTab != null) {
+				processTab.editActivity(this);
+			}
+			
 		} else {
 			if(getChildren().contains(deleteButton)){
 				imgDelete = null;
@@ -228,7 +232,9 @@ public class ActivityNode extends StackPane implements Selectable {
 	public void updateNode(){
 		this.identifier.setText(activityElement.getIdentifier());
 		updateExistenceConstraint();
-		processTab.determineConstraints();
+		if(processTab != null) {
+			processTab.determineConstraints();
+		}
 	}
 	
 	/**

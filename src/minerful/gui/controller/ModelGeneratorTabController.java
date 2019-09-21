@@ -298,7 +298,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 			MinerFulOutputManagementLauncher outputMgt = new MinerFulOutputManagementLauncher();
 			outputMgt.manageOutput(processModel, outParams);
 			
-			ModelInfo modelInfo = new ModelInfo(processModel,new Date(),outputFile.getName(), graph);
+			ModelInfo modelInfo = new ModelInfo(processModel,new Date(),outputFile.getName(), GraphUtil.cloneProcessElement(currentProcessElement));
 			
 			getMainController().addSavedProcessModels(modelInfo);
 
@@ -350,31 +350,12 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		this.tChFactory = tChFactory;
 	}
 	
-	public void addConstraint(Constraint con) {
-		processModel.getAllConstraints().add(con);
-		graph = GraphUtil.drawGraph(processModel);
-	}
-	
 	public void loadGraph() {
 		
-		graph = modelInfo.getGraph();
+		currentProcessElement = modelInfo.getProcessElement();
 		//taskChars.addAll(modelInfo.getProcessModel().getTasks());
 		//constraints.addAll(modelInfo.getProcessModel().getAllUnmarkedConstraints());
-		if(graph == null) {
-			graph = GraphUtil.drawGraph(modelInfo.getProcessModel());
-			Toolkit.computeLayout(graph,0.99);
-		}
-		processGraph();
-	}
-	
-	private void processGraph() {
-
-//		viewer = new FxViewer(graph, FxViewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-//		
-//		FxViewPanel view = (FxViewPanel) viewer.addDefaultView(true);
-//		view.setMouseManager(ggmm);
-//		canvasBox.getChildren().clear();
-//		canvasBox.getChildren().add(view);
+		GraphUtil.drawProcessModel(currentProcessElement, eventManager, anchorPane);
 	}
 	
 	/**

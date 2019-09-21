@@ -41,20 +41,22 @@ public class EventHandlerManager {
            	cElem.getConstraintNode().updatePosition();
            }
        
-           processTab.getConstraintPane().setDisable(true);
-           processTab.getActivityPane().setDisable(false);
-           processTab.getEditTabPane().setExpandedPane(processTab.getActivityPane());
-           EditActivityPane aPane = (EditActivityPane) processTab.getActivityPane().getContent();
-           aPane.getActivityNameTF().requestFocus();
-           aPane.getActivityNameTF().selectAll();
-           
-           //Update selected element
-           if (processTab.getSelectedElement() != null){
-        	   processTab.getSelectedElement().setEditable(false);        	   
+           if(processTab != null) {
+        	   processTab.getConstraintPane().setDisable(true);
+               processTab.getActivityPane().setDisable(false);
+               processTab.getEditTabPane().setExpandedPane(processTab.getActivityPane());
+               EditActivityPane aPane = (EditActivityPane) processTab.getActivityPane().getContent();
+               aPane.getActivityNameTF().requestFocus();
+               aPane.getActivityNameTF().selectAll();
+               
+               //Update selected element
+               if (processTab.getSelectedElement() != null){
+            	   processTab.getSelectedElement().setEditable(false);        	   
+               }
+               
+               processTab.setSelectedElement(aNode);
+               aNode.setEditable(true);
            }
-           
-           processTab.setSelectedElement(aNode);
-           aNode.setEditable(true);
 		}
 		
 	}; 
@@ -70,12 +72,15 @@ public class EventHandlerManager {
             
             ActivityNode aNode = (ActivityNode)(t.getSource());
             aNode.toFront();
-            //Update selected element
-            if (processTab.getSelectedElement() != null){
-         	   processTab.getSelectedElement().setEditable(false);        	   
+            
+            if(processTab != null) {
+            	//Update selected element
+                if (processTab.getSelectedElement() != null){
+             	   processTab.getSelectedElement().setEditable(false);        	   
+                }
+                processTab.setSelectedElement(aNode);
+                aNode.setEditable(true);
             }
-            processTab.setSelectedElement(aNode);
-            aNode.setEditable(true);
         }
     };
      
@@ -103,8 +108,9 @@ public class EventHandlerManager {
             }
             
             aNode.getActivityElement().updateAllLineNodePositions();
-            
-            processTab.setMaxTranslate();
+            if(processTab != null) {
+            	processTab.setMaxTranslate();
+            }
         }
     };
     
@@ -136,15 +142,17 @@ public class EventHandlerManager {
            cNode.updatePosition(); 
            cNode.getConstraintElement().setPositionFixed(true);
            
-           if (processTab.getSelectedElement() != null){
-        	   processTab.getSelectedElement().setEditable(false);        	   
+           if(processTab != null) {
+	           if (processTab.getSelectedElement() != null){
+	        	   processTab.getSelectedElement().setEditable(false);        	   
+	           }
+	           processTab.setSelectedElement(cNode);
+	           cNode.setEditable(true);
+	           
+	           processTab.getConstraintPane().setDisable(false);
+	           processTab.getActivityPane().setDisable(true);
+	           processTab.getEditTabPane().setExpandedPane(processTab.getConstraintPane());
            }
-           processTab.setSelectedElement(cNode);
-           cNode.setEditable(true);
-           
-           processTab.getConstraintPane().setDisable(false);
-           processTab.getActivityPane().setDisable(true);
-           processTab.getEditTabPane().setExpandedPane(processTab.getConstraintPane());
 		}
 	}; 
 		
@@ -184,9 +192,10 @@ public class EventHandlerManager {
            	   line.updateLinePosition();
             }
 
-            
-            //Update BackgroundTab (Sheet)
-            processTab.setMaxTranslate();
+            if(processTab != null) {
+	            //Update BackgroundTab (Sheet)
+	            processTab.setMaxTranslate();
+            }
         }
     };
 	
@@ -227,27 +236,31 @@ public class EventHandlerManager {
 	private EventHandler<MouseEvent> selectAndIncludeActivityHandler = new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent t) {
-				//System.out.println("A new Activity was selected.");
-				ActivityNode aNode2 = (ActivityNode) t.getSource();
-				if(processTab.isAddConstraintMode() == AddConstraintMode.NEW_CONSTRAINT){
-					ActivityNode aNode1 = (ActivityNode) processTab.getSelectedElement();
-					processTab.addNewRelationConstraint(aNode1.getActivityElement(), aNode2.getActivityElement());
-					//reset modus to normal
-					processTab.resetToNormalState();
-					//processTab.setSelectionModeToAddConstraint(false);
-				} else if(processTab.isAddConstraintMode() == AddConstraintMode.EXCHANGE_ACTIVITY) {
-					processTab.adjustRelationConstraint(aNode2, parameterNumber);
-					//reset modus to normal
-					processTab.resetToNormalState();
-					//processTab.setSelectionModeToChangeConstraint(false, null, null);
-				} else if(processTab.isAddConstraintMode() == AddConstraintMode.ADD_TO_PARAMETER1 ) {
-					processTab.addAdditionalActivity(aNode2.getActivityElement(), (RelationConstraintNode)processTab.getSelectedElement(), 1);
-					processTab.resetToNormalState();
-				} else if(processTab.isAddConstraintMode() == AddConstraintMode.ADD_TO_OPARAMETER2){
-					processTab.addAdditionalActivity(aNode2.getActivityElement(), (RelationConstraintNode)processTab.getSelectedElement(), 2);
-					
-					processTab.resetToNormalState();					
+				
+				if(processTab != null) {
+					//System.out.println("A new Activity was selected.");
+					ActivityNode aNode2 = (ActivityNode) t.getSource();
+					if(processTab.isAddConstraintMode() == AddConstraintMode.NEW_CONSTRAINT){
+						ActivityNode aNode1 = (ActivityNode) processTab.getSelectedElement();
+						processTab.addNewRelationConstraint(aNode1.getActivityElement(), aNode2.getActivityElement());
+						//reset modus to normal
+						processTab.resetToNormalState();
+						//processTab.setSelectionModeToAddConstraint(false);
+					} else if(processTab.isAddConstraintMode() == AddConstraintMode.EXCHANGE_ACTIVITY) {
+						processTab.adjustRelationConstraint(aNode2, parameterNumber);
+						//reset modus to normal
+						processTab.resetToNormalState();
+						//processTab.setSelectionModeToChangeConstraint(false, null, null);
+					} else if(processTab.isAddConstraintMode() == AddConstraintMode.ADD_TO_PARAMETER1 ) {
+						processTab.addAdditionalActivity(aNode2.getActivityElement(), (RelationConstraintNode)processTab.getSelectedElement(), 1);
+						processTab.resetToNormalState();
+					} else if(processTab.isAddConstraintMode() == AddConstraintMode.ADD_TO_OPARAMETER2){
+						processTab.addAdditionalActivity(aNode2.getActivityElement(), (RelationConstraintNode)processTab.getSelectedElement(), 2);
+						
+						processTab.resetToNormalState();					
+					}
 				}
+				
 			}
 		};
 

@@ -1,15 +1,16 @@
 package minerful.gui.graph.util;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Set;
+import java.util.SortedSet;
 import java.util.stream.Collectors;
 
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.ui.spriteManager.Sprite;
-import org.graphstream.ui.spriteManager.SpriteManager;
+import org.springframework.util.FastByteArrayOutputStream;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -18,56 +19,31 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import minerful.concept.ProcessModel;
 import minerful.concept.TaskChar;
 import minerful.concept.constraint.Constraint;
 import minerful.gui.common.RelationConstraintInfo;
 import minerful.gui.common.ValidationEngine;
+import minerful.gui.controller.ModelGeneratorTabController;
 import minerful.gui.model.ActivityElement;
+import minerful.gui.model.ActivityNode;
 import minerful.gui.model.Card;
+import minerful.gui.model.EventHandlerManager;
+import minerful.gui.model.ExistenceConstraintEnum;
+import minerful.gui.model.LineNode;
+import minerful.gui.model.ProcessElement;
 import minerful.gui.model.RelationConstraintElement;
+import minerful.gui.model.RelationConstraintEnum;
+import minerful.gui.model.RelationConstraintNode;
 import minerful.gui.model.StructuringElement;
+import minerful.gui.model.Template;
+import minerful.gui.model.xml.XMLExistenceConstraint;
+import minerful.gui.util.Config;
 
 public class GraphUtil {
 	
-	public static Graph drawGraph(ProcessModel processModel) {
-		
-		Graph graph = new MultiGraph("MINERful");
-		graph.setAttribute("ui.stylesheet", "url("+GraphUtil.class.getClassLoader().getResource("css/graph.css").toExternalForm()+")");
-		
-		for(TaskChar task : processModel.getTasks()) {
-			Node node = graph.addNode(task.identifier.toString());
-			node.setAttribute("ui.label", task.getName());
-		}
-		
-		for(Constraint constraint : processModel.getAllUnmarkedConstraints()) {
-			
-			
-			
-			if(constraint.getImplied() == null) {
-				Node node = graph.getNode(constraint.getBase().getJoinedStringOfIdentifiers());
-				node.setAttribute("ui.class", constraint.type);
-			} else {
-				String forwardEdge = constraint.getBase().getJoinedStringOfIdentifiers()+constraint.getImplied().getJoinedStringOfIdentifiers()+"_"+constraint.toString();
-				Edge edge = graph.addEdge(forwardEdge, constraint.getBase().getJoinedStringOfIdentifiers(), constraint.getImplied().getJoinedStringOfIdentifiers());
-				edge.setAttribute("ui.class", constraint.type);
-				
-				Integer width = (int) Math.round(constraint.getSupport()*10);
-				Integer opacity = (int) Math.round(constraint.getConfidence()*255); 
-				Integer shadow = (int) Math.round(constraint.getInterestFactor()*10);
-				
-				edge.setAttribute("layout.weight", 5.0);
-				
-				edge.setAttribute("ui.style", String.format("size: %s; fill-color: rgba(131,173,213, %d); shadow-mode: gradient-radial; shadow-color: #EEF, #000; shadow-offset: 0px; shadow-width: %s;", width, opacity, shadow));
-				}
-		}
-		
-		return graph;
-	}
-
-	public static String showInfo(Constraint constraint) {
-		return String.format("%s \nSupport: %4.3f \nConfidence: %4.3f \nInterestFactor: %4.3f",constraint.type, constraint.getSupport(), constraint.getConfidence(), constraint.getInterestFactor());
-	}
+	private static Config config = new Config("config");
 	
 	public static TableView<Constraint> getConstraintsForActivity(ProcessModel processModel, String activity, Boolean outgoing){
 		TableView<Constraint> constraints = new TableView<>();
@@ -163,6 +139,225 @@ public class GraphUtil {
 		}
 		
 		return constraintElements;
+	}
+	
+	public static void drawProcessModel(ProcessElement processElement, EventHandlerManager eventHandler, AnchorPane anchorPane) {
+		for(ActivityElement aElement : processElement.getActivityEList()) {
+			anchorPane.getChildren().add(aElement.getNode());
+			eventHandler.setEventHandler(aElement.getNode());
+		}
+		
+		for(RelationConstraintElement rcElement : processElement.getConstraintEList()) {
+			anchorPane.getChildren().add(rcElement.getConstraintNode());
+			eventHandler.setEventHandler(rcElement.getConstraintNode());
+		}
+	}
+	
+	
+	/*
+	 * Create ProcessElement based on a ProcessModel 
+	 */
+	public static ProcessElement transformProcessModelIntoProcessElement(ProcessModel processModel, AnchorPane pane, EventHandlerManager eventHandler) {
+		ProcessElement processElement = new ProcessElement();
+		
+		determineActivityElements(processElement, processModel.getTasks(), pane, eventHandler);
+		determineConstraintElements(processElement, processModel.getAllUnmarkedConstraints(), pane, eventHandler);
+		
+		return processElement;
+	}
+	
+	//generate a copy of a ProcessElement
+	public static ProcessElement cloneProcessElement(ProcessElement processElement) {
+		ProcessElement newProcessElement = new ProcessElement();
+		
+		 try {
+	            // Write the object out to a byte array
+	            FastByteArrayOutputStream fbos = 
+	                    new FastByteArrayOutputStream();
+	            ObjectOutputStream out = new ObjectOutputStream(fbos);
+	            out.writeObject(processElement);
+	            out.flush();
+	            out.close();
+
+	            // Retrieve an input stream from the byte array and read
+	            // a copy of the object back in. 
+	            ObjectInputStream in = 
+	                new ObjectInputStream(fbos.getInputStream());
+	            newProcessElement = (ProcessElement) in.readObject();
+	        }
+	        catch(IOException e) {
+	            e.printStackTrace();
+	        }
+	        catch(ClassNotFoundException cnfe) {
+	            cnfe.printStackTrace();
+	        }
+		
+		return newProcessElement;
+	}
+	
+	private static void determineActivityElements(ProcessElement processElement, Set<TaskChar> activities, AnchorPane pane, EventHandlerManager eventHandler) {
+		
+		Integer id = 0;
+		double x = 100d;
+		double y = 100d;
+		for(TaskChar taskChar : activities) {
+			id++;
+			ActivityElement activityElement = new ActivityElement(id, taskChar.getName(), taskChar.identifier.toString());
+			activityElement.setPosition(x, y);
+			processElement.addActivity(activityElement);
+
+			Random random = new Random(); 
+			
+			x += (random.nextDouble() * 800d ) - 400d;
+			y += (random.nextDouble() * 800d ) - 400d;
+			
+			if(x < 0) {
+				x+= 400d;
+			}
+			
+			if(y < 0) {
+				y+= 400d;
+			}
+			
+			//create Node and add it to Pane
+			ActivityNode aNode = new ActivityNode(activityElement, null);
+			pane.getChildren().add(aNode);
+			
+			eventHandler.setEventHandler(aNode);
+			
+		}
+	}
+	
+	/*
+	 * Transform ProcessModel constraints into ExistenceConstraints and RelationConstraints
+	 */
+	private static void determineConstraintElements(ProcessElement processElement, SortedSet<Constraint> constraints, AnchorPane pane, EventHandlerManager eventHandler) {
+	
+		for(Constraint constraint : constraints) {
+			
+			// Determine Constraints Label
+			String conTemplateLabel = constraint.getTemplateName();
+			
+			if(constraint.getImplied() == null) {
+				// handle ExistenceConstraints
+				String taskId = constraint.getBase().getJoinedStringOfIdentifiers();
+				
+				ActivityElement activityElement = processElement.getActivityEList().stream().filter(a -> taskId.equals(a.getTaskCharIdentifier())).findFirst().orElse(null);
+				
+				if(activityElement != null) {
+
+					if(conTemplateLabel.equals(ExistenceConstraintEnum.PARTICIPATION.getTemplateLabel()) || conTemplateLabel.equals(ExistenceConstraintEnum.AT_MOST_ONE.getTemplateLabel())) {
+						
+						Card card;
+						if(conTemplateLabel.equals(ExistenceConstraintEnum.AT_MOST_ONE.getTemplateLabel())) {
+							 card = new Card("0", "1");
+						} else {
+							 card = new Card("0", "*");
+						}
+						
+						if(activityElement.getExistenceConstraint() != null) {
+							activityElement.getExistenceConstraint().setCard(card);
+						} else {
+							activityElement.setExistenceConstraint(new XMLExistenceConstraint(activityElement.getId(), card, null));
+						}
+						
+					} else if (conTemplateLabel.equals(ExistenceConstraintEnum.INIT.getTemplateLabel()) || conTemplateLabel.equals(ExistenceConstraintEnum.END.getTemplateLabel())) {
+						
+						// If INIT or END was already set replace it with INITEND
+						if(activityElement.getExistenceConstraint() != null) {
+							if(activityElement.getExistenceConstraint().getStruct() == StructuringElement.END || activityElement.getExistenceConstraint().getStruct() == StructuringElement.INIT) {
+								activityElement.getExistenceConstraint().setStruct(StructuringElement.INITEND);
+							} else {
+								activityElement.getExistenceConstraint().setStruct(conTemplateLabel.equals(ExistenceConstraintEnum.INIT.getTemplateLabel()) ? StructuringElement.INIT : StructuringElement.END);
+							}
+						} else {
+							activityElement.setExistenceConstraint(new XMLExistenceConstraint(activityElement.getId(), null,conTemplateLabel.equals(ExistenceConstraintEnum.INIT.getTemplateLabel()) ? StructuringElement.INIT : StructuringElement.END));
+						}
+					} 
+					
+				}
+			} else {
+				// handle RelationConstraints
+				Template template = RelationConstraintEnum.findTemplateByTemplateLabel(conTemplateLabel);
+				Integer maxConstraintID = processElement.getMaxConstraintId();
+
+				RelationConstraintElement cElement = new RelationConstraintElement(maxConstraintID, template);
+				
+				String taskId1 = constraint.getBase().getJoinedStringOfIdentifiers();
+				String taskId2 = constraint.getImplied().getJoinedStringOfIdentifiers();
+				
+				ActivityElement aElement1 = processElement.getActivityEList().stream().filter(a -> taskId1.equals(a.getTaskCharIdentifier())).findFirst().orElse(null);
+				ActivityElement aElement2 = processElement.getActivityEList().stream().filter(a -> taskId2.equals(a.getTaskCharIdentifier())).findFirst().orElse(null);
+				
+			
+				//Create new Position Element
+				double contraintRadius = config.getDouble("constraint.radius");
+				double activityRadius = config.getDouble("activity.radius");
+				double posX = (aElement1.getPosX() + aElement2.getPosX()) / 2 + activityRadius - contraintRadius; 
+				double posY = (aElement1.getPosY() + aElement2.getPosY()) / 2 + activityRadius - contraintRadius;
+				cElement.setPosition(posX, posY);
+				
+				// add Constraint to Process
+				processElement.addRelationConstraint(cElement);
+				
+				RelationConstraintNode cNode = createConstraintNode(cElement);
+				addAdditionalActivity(aElement1, cNode, 1, pane);
+				addAdditionalActivity(aElement2, cNode, 2, pane);
+
+				int amountOfLinesOnPane = 1; // start with 1 because of backgroundPane
+				for(ActivityElement aElem : processElement.getActivityEList()){
+					amountOfLinesOnPane += aElem.getConstraintList().size();
+				}
+				
+				pane.getChildren().add(amountOfLinesOnPane,cNode);	
+				eventHandler.setEventHandler(cNode);
+				
+			}
+		}
+	}
+	
+	/**
+	 * creates a Node of an already existing Constraint in the currentProcessElement
+	 * @param c is a constraintElement that encapsulates information and positions of the constraint
+	 * @return
+	 * @throws PersistenceException
+	 */
+	private static RelationConstraintNode createConstraintNode(RelationConstraintElement cElement){
+		RelationConstraintNode cNode = new RelationConstraintNode(cElement,null);
+		ArrayList<ActivityElement> parameter1List = cElement.getParameter1Elements();
+		ArrayList<ActivityElement> parameter2List = cElement.getParameter2Elements();
+		
+		if (parameter1List == null || parameter2List == null){
+			//TODO Dialog WARNING
+			System.out.println("Inconsistent Files: Constraint connects not existing Activity.");
+		}
+		
+		ArrayList<ActivityElement> tempList = new ArrayList<ActivityElement>();
+		tempList.addAll(parameter1List);
+		for (ActivityElement aElem : tempList){
+			cElement.createAndSetLineNode(aElem,1);
+		}
+		
+		tempList = new ArrayList<ActivityElement>();
+		tempList.addAll(parameter2List);
+		for (ActivityElement aElem : tempList){
+			cElement.createAndSetLineNode(aElem,2);
+		}
+		return cNode;
+	}
+	
+	/**
+	 * adds an Activity to the Activation Side of a constraint
+	 * @param aNode defines the ActivityNode
+	 * @param cNode defines the ConstraintNode, if NULL the selectedElement has to be a ConstraintNode and will be connected
+	 */
+	public static void addAdditionalActivity(ActivityElement aNode, RelationConstraintNode cNode, int parameterNumber, AnchorPane pane){
+		RelationConstraintElement cElement;
+		cElement = cNode.getConstraintElement();
+		
+		LineNode newLine = cElement.addActivityElement(aNode, parameterNumber);
+		//int position = currentProcessElement.getActivityEList().size() + 1;		// line has to be added after Activities
+		pane.getChildren().add(1,newLine);		// position 0 is BackgroundPane, but has to be behind other Nodes
 	}
 	
 }

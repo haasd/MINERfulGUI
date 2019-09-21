@@ -388,7 +388,6 @@ public class ConstraintsBag implements Cloneable, PropertyChangeListener {
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		Constraint con = (Constraint) evt.getSource();
-		System.out.println( con + " " + con.isMarkedForExclusion());
 		pcs.firePropertyChange(evt);
 	}
 }

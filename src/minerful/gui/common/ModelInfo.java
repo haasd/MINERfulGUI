@@ -3,27 +3,27 @@ package minerful.gui.common;
 import java.util.Date;
 
 import org.graphstream.graph.Graph;
-import org.graphstream.ui.graphicGraph.GraphicGraph;
 
 import minerful.concept.ProcessModel;
+import minerful.gui.model.ProcessElement;
 
 public class ModelInfo {
 	
 	private ProcessModel processModel;
 	private Date saveDate;
 	private String saveName;
-	private Graph graph;
+	private ProcessElement processElement;
 	
 	public ModelInfo() {
 		
 	}
 	
-	public ModelInfo(ProcessModel processModel, Date saveDate, String saveName, Graph graph) {
+	public ModelInfo(ProcessModel processModel, Date saveDate, String saveName, ProcessElement processElement) {
 		super();
 		this.processModel = processModel;
 		this.saveDate = saveDate;
 		this.saveName = saveName;
-		this.graph = graph;
+		this.processElement = processElement;
 	}
 	public ProcessModel getProcessModel() {
 		return processModel;
@@ -43,11 +43,13 @@ public class ModelInfo {
 	public void setSaveName(String saveName) {
 		this.saveName = saveName;
 	}
-	public Graph getGraph() {
-		return graph;
+
+	public ProcessElement getProcessElement() {
+		return processElement;
 	}
-	public void setGraph(Graph graph) {
-		this.graph = graph;
-	}	
+
+	public void setProcessElement(ProcessElement processElement) {
+		this.processElement = processElement;
+	}
 	
 }

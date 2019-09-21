@@ -9,6 +9,7 @@ import minerful.gui.model.xml.XMLExistenceConstraint;
 public class ActivityElement {
 
 	private Integer id;
+	private String taskCharIdentifier;
 	private String identifier;
 	private Double posX;
 	private Double posY;
@@ -24,6 +25,20 @@ public class ActivityElement {
 		constraintList = new ArrayList<RelationConstraintElement>();
 		this.id = id;
 		this.identifier = identifier;
+		identifierProperty = new SimpleStringProperty(identifier);
+		
+		
+		// Standard Position if no position was found
+		this.posX = 50.0;
+		this.posY = 50.0;
+	}
+	
+	public ActivityElement(Integer id, String identifier, String taskCharIdentifier) {
+		super();
+		constraintList = new ArrayList<RelationConstraintElement>();
+		this.id = id;
+		this.identifier = identifier;
+		this.taskCharIdentifier = taskCharIdentifier;
 		identifierProperty = new SimpleStringProperty(identifier);
 		
 		
@@ -86,6 +101,14 @@ public class ActivityElement {
 
 	public StringProperty getIdentifierProperty() {
 		return identifierProperty;
+	}
+
+	public String getTaskCharIdentifier() {
+		return taskCharIdentifier;
+	}
+
+	public void setTaskCharIdentifier(String taskCharIdentifier) {
+		this.taskCharIdentifier = taskCharIdentifier;
 	}
 
 	/**

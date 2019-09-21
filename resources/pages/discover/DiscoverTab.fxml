@@ -24,6 +24,8 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml/" fx:controller="minerful.gui.controller.DiscoverTabController">
 	<children>
@@ -119,8 +121,12 @@
 				         			<Button styleClass="btn-default, btn-save" text="Take Snapshot" onAction="#saveSnapshotOfModel" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 				         			<Button styleClass="btn-default" text="Export" onAction="#exportFile" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
 				         		</HBox>
-			         			<VBox fx:id="canvasBox" styleClass="model-canvas" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
-			         			</VBox>
+			         			<ScrollPane fx:id="scrollPane" styleClass="model-canvas, background" maxHeight="600" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
+		         					<AnchorPane fx:id="anchorPane" styleClass="background">
+		         						<BorderPane fx:id="backgroundPane">
+		         						</BorderPane>
+		         					</AnchorPane>
+	         					</ScrollPane>
 			         		</children>
 			         		<columnConstraints>
 						        <ColumnConstraints hgrow="ALWAYS" />
