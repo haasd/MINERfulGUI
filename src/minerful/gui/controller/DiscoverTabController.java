@@ -8,6 +8,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -16,7 +17,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.controlsfx.control.ToggleSwitch;
 import org.graphstream.graph.Graph;
-import org.graphstream.graph.implementations.Graphs;
 import org.graphstream.stream.ProxyPipe;
 import org.graphstream.ui.view.Viewer;
 
@@ -72,9 +72,14 @@ import minerful.gui.common.MinerfulGuiUtil;
 import minerful.gui.common.ModelInfo;
 import minerful.gui.common.ValidationEngine;
 import minerful.gui.graph.util.GraphUtil;
+import minerful.gui.model.ActivityElement;
+import minerful.gui.model.ActivityNode;
 import minerful.gui.model.EventHandlerManager;
 import minerful.gui.model.ProcessElement;
+import minerful.gui.model.RelationConstraintElement;
+import minerful.gui.model.RelationConstraintNode;
 import minerful.gui.service.DiscoverUtil;
+import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.service.loginfo.EventFilter;
 import minerful.gui.service.loginfo.LogInfo;
 import minerful.io.params.OutputModelParameters;
@@ -84,7 +89,7 @@ import minerful.params.SystemCmdParameters;
 import minerful.postprocessing.params.PostProcessingCmdParameters;
 import minerful.postprocessing.params.PostProcessingCmdParameters.PostProcessingAnalysisType;
 
-public class DiscoverTabController extends AbstractController implements Initializable, PropertyChangeListener {
+public class DiscoverTabController extends AbstractController implements Initializable, PropertyChangeListener, ProcessElementInterface {
 	
 	Logger logger = Logger.getLogger(DiscoverTabController.class);
 	
@@ -212,7 +217,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	private Boolean cropRedundantAndInconsistentConstraints = false;
 	
-	private EventHandlerManager eventManager = new EventHandlerManager(null);
+	private EventHandlerManager eventManager = new EventHandlerManager(this);
 	
 	private Graph graph;
 	
@@ -225,6 +230,10 @@ public class DiscoverTabController extends AbstractController implements Initial
 	private double scrollPanePadding = 250d;
 	private DoubleProperty maxTranslateX = new SimpleDoubleProperty(scrollPanePadding);
 	private DoubleProperty maxTranslateY = new SimpleDoubleProperty(scrollPanePadding);
+	
+	// ProcessNode workaround
+	private List<ActivityNode> activityNodes = new ArrayList<>();
+	private List<RelationConstraintNode> constraintNodes = new ArrayList<>();
 	
 	
 	@Override
@@ -484,7 +493,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		if(processModel.getAllUnmarkedConstraints().size() > GuiConstants.NUMBER_CONSTRAINTS_WARNING) {
 			Optional<ButtonType> result = MinerfulGuiUtil.displayAlert("Warning", "Proceed rendering of graph?", "Rendering of Graph was stopped due to a high number of constraints.", AlertType.CONFIRMATION);
 			if (result.get() == ButtonType.OK){
-				processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager);
+				processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this);
 				setMaxTranslate();
 			} 
 		}
@@ -565,7 +574,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 			interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllUnmarkedConstraints(), "interest"));
 			
 			anchorPane.getChildren().remove(1, anchorPane.getChildren().size());
-			processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager);
+			processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this);
 			setMaxTranslate();
 		}
 	}
@@ -763,5 +772,67 @@ public class DiscoverTabController extends AbstractController implements Initial
 		maxTranslateX.set(maxX);
 		maxTranslateY.set(maxY);
 	}
+	
+	public ActivityNode determineActivityNode(ActivityElement activityElement) {
+		for(ActivityNode activityNode : activityNodes) {
+			if(activityNode.getActivityElement() == activityElement) {
+				return activityNode;
+			}
+		}
+		
+		return null;
+	}
+	
+	public RelationConstraintNode determineRelationConstraintNode(RelationConstraintElement relationElement) {
+		for(RelationConstraintNode rcNode : constraintNodes) {
+			if(rcNode.getConstraintElement() == relationElement) {
+				return rcNode;
+			}
+		}
+		
+		return null;
+	}
 
+	public List<ActivityNode> getActivityNodes() {
+		return activityNodes;
+	}
+
+	public void setActivityNodes(List<ActivityNode> activityNodes) {
+		this.activityNodes = activityNodes;
+	}
+
+	public List<RelationConstraintNode> getConstraintNodes() {
+		return constraintNodes;
+	}
+
+	public void setConstraintNodes(List<RelationConstraintNode> constraintNodes) {
+		this.constraintNodes = constraintNodes;
+	}
+
+	@Override
+	public void setSelectionModeToAddConstraint() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteActivity(ActivityNode aNode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void editActivity(ActivityNode activityNode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void determineConstraints() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+	
 }

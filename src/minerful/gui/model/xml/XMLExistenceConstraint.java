@@ -1,13 +1,19 @@
 package minerful.gui.model.xml;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import minerful.gui.model.Card;
 import minerful.gui.model.StructuringElement;
 
-public class XMLExistenceConstraint {
+public class XMLExistenceConstraint implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5243357124521361465L;
 	private Integer activityID;
 	private Card card;						// optional: may choose from PARTICIPATION and ATMOSTON
 	private StructuringElement struct;					// optional: may choose from INIT and ENDE

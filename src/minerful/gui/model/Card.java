@@ -1,9 +1,15 @@
 package minerful.gui.model;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class Card {
+public class Card implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6073788820411271600L;
 	private String min;	// DataType String to allow "*" 
 	private String max;
 	

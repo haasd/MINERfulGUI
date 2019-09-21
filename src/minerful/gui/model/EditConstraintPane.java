@@ -248,6 +248,7 @@ public class EditConstraintPane extends ScrollPane {
             @Override 
             public void handle(ActionEvent e) {
             	selectedConstraint.getConstraintElement().changeConstraintType(template);
+            	selectedConstraint.changeConstraintType();
             }
         };
         return handler;
@@ -323,7 +324,7 @@ public class EditConstraintPane extends ScrollPane {
 			} else {
 				parameterNumber = 2;
 			}			
-			controller.setSelectionModeToChangeConstraint(aNode.getActivityElement(),
+			controller.setSelectionModeToChangeConstraint(aNode,
 					AddConstraintMode.EXCHANGE_ACTIVITY, parameterNumber);
 		});
 
@@ -356,12 +357,12 @@ public class EditConstraintPane extends ScrollPane {
 			if (selectedConstraint.getConstraintElement() != null) { // for initial update
 				int numberOfActivatonElements = selectedConstraint.getConstraintElement().getParameter1Elements().size();
 				for (ActivityElement aElement : selectedConstraint.getConstraintElement().getParameter1Elements()) {
-					addActivityToConstraintButtons(aElement.getNode(), parameter1Area, numberOfActivatonElements);
+					addActivityToConstraintButtons(controller.determineActivityNode(aElement), parameter1Area, numberOfActivatonElements);
 				}
 
 				int numberOfParameter2Elements = selectedConstraint.getConstraintElement().getParameter2Elements().size();
 				for (ActivityElement aElement : selectedConstraint.getConstraintElement().getParameter2Elements()) {
-					addActivityToConstraintButtons(aElement.getNode(), parameter2Area, numberOfParameter2Elements);
+					addActivityToConstraintButtons(controller.determineActivityNode(aElement), parameter2Area, numberOfParameter2Elements);
 				}
 				// TODO: differentiate between all types of Constraints
 				setTypeSelectionRadioButton();
@@ -376,8 +377,17 @@ public class EditConstraintPane extends ScrollPane {
 	 * part of updatePane method. Sets the selection of the RadioButtons to the currently selected template of the RelationConstraint.
 	 */
 	private void setTypeSelectionRadioButton(){
-		Template template = selectedConstraint.getConstraintElement().getTemplate();
-		radioButtonOfTemplate.get(template).setSelected(true);
+		Template template = controller.getCurrentProcessElement().getTemplateByName(selectedConstraint.getConstraintElement().getTemplate().getName());
+		
+		RadioButton button;
+		
+		for(Template temp : radioButtonOfTemplate.keySet()) {
+			if(temp.getName().equals(selectedConstraint.getConstraintElement().getTemplate().getName())) {
+				button = radioButtonOfTemplate.get(temp);
+				button.setSelected(true);
+			}
+		}
+
 		/*switch (template) {
 		case PRECEDENCE:
 			precedenceRB.setSelected(true);

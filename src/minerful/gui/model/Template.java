@@ -1,13 +1,19 @@
 package minerful.gui.model;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Template {
+public class Template implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6985999203547702619L;
 	private String name;
 	private Boolean chained;
 	private Boolean negation;

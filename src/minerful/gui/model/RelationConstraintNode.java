@@ -2,6 +2,7 @@ package minerful.gui.model;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import minerful.gui.controller.ModelGeneratorTabController;
+import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.util.Config;
 
 /**
@@ -37,7 +39,7 @@ public class RelationConstraintNode extends StackPane implements Positionable, S
 	private Circle clickable;
 	private Image imgDelete;
 	private Button deleteButton;
-	private ModelGeneratorTabController controller;
+	private ProcessElementInterface controller;
 	
 	private String selectedClass = "selectedActivity";
 	private Label asteriskLabel;
@@ -52,8 +54,10 @@ public class RelationConstraintNode extends StackPane implements Positionable, S
 	private double activityRadius = config.getDouble("activity.radius");
 	private double constraintRadius = config.getDouble("constraint.radius");
 	
-	public RelationConstraintNode(RelationConstraintElement constraintElement, ModelGeneratorTabController controller) {
-		constraintElement.setConstraintNode(this);
+	private ArrayList<LineNode> parameter1Lines = new ArrayList<LineNode>();
+	private ArrayList<LineNode> parameter2Lines = new ArrayList<LineNode>();
+	
+	public RelationConstraintNode(RelationConstraintElement constraintElement, ProcessElementInterface controller) {
 		this.constraintElement = constraintElement;
 		this.controller = controller;
 		radius = config.getDouble("constraint.radius");
@@ -68,7 +72,7 @@ public class RelationConstraintNode extends StackPane implements Positionable, S
 		
 		//Action Buttons
 		deleteButton = new Button("");
-		deleteButton.setOnAction((event)-> {if(this.controller != null) {this.controller.deleteRelationConstraint(this);}});
+		deleteButton.setOnAction((event)-> {if(controller instanceof ModelGeneratorTabController) {((ModelGeneratorTabController) this.controller).deleteRelationConstraint(this);}});
 		//TODO: DISABLE AGAIN
 		// = new Image(getClass().getResource("resources/Delete-icon.png").toExternalForm(),12,12,true,true);
 		//deleteButton.setGraphic(new ImageView(imgDeleteButton));
@@ -79,8 +83,6 @@ public class RelationConstraintNode extends StackPane implements Positionable, S
 		
 		this.setTranslateX(this.constraintElement.getPosX());
 		this.setTranslateY(this.constraintElement.getPosY());
-		
-		this.constraintElement.setConstraintNode(this);
 		
 		//Set StyleClasses
 		this.getStyleClass().add("activityPane");
@@ -103,8 +105,8 @@ public class RelationConstraintNode extends StackPane implements Positionable, S
 				this.getChildren().add(deleteButton);
 			}
 			clickable.getStyleClass().add(selectedClass);
-			if(this.controller != null) {
-				controller.editConstraint(this);
+			if(controller instanceof ModelGeneratorTabController) {
+				((ModelGeneratorTabController) controller).editConstraint(this);
 			}
 			
 		} else {
@@ -152,10 +154,13 @@ public class RelationConstraintNode extends StackPane implements Positionable, S
 	}
 
 	public void moveConstraintBetweenActivities() {
-		double activity1CenterX = constraintElement.getParameter1Elements().get(0).getNode().getTranslateX() + activityRadius;
-		double activity2CenterX = constraintElement.getParameter2Elements().get(0).getNode().getTranslateX() + activityRadius;
-		double activity1CenterY = constraintElement.getParameter1Elements().get(0).getNode().getTranslateY() + activityRadius;
-		double activity2CenterY = constraintElement.getParameter2Elements().get(0).getNode().getTranslateY() + activityRadius;
+		ActivityNode activity1 = controller.determineActivityNode(constraintElement.getParameter1Elements().get(0));
+		ActivityNode activity2 = controller.determineActivityNode(constraintElement.getParameter2Elements().get(0));
+		
+		double activity1CenterX = activity1.getTranslateX() + activityRadius;
+		double activity2CenterX = activity2.getTranslateX() + activityRadius;
+		double activity1CenterY = activity1.getTranslateY() + activityRadius;
+		double activity2CenterY = activity2.getTranslateY() + activityRadius;
 		
 		double centerPositionX = (activity1CenterX + activity2CenterX) / 2 - constraintRadius;
 		double centerPositionY = (activity1CenterY + activity2CenterY) / 2 - constraintRadius;
@@ -165,10 +170,10 @@ public class RelationConstraintNode extends StackPane implements Positionable, S
 		
 		//Update Line Positions on Scene     
         
-        for(LineNode line : constraintElement.getParameter1Lines()){
+        for(LineNode line : getParameter1Lines()){
       	   line.updateLinePosition();
         }
-        for(LineNode line : constraintElement.getParameter2Lines()){
+        for(LineNode line : getParameter2Lines()){
        	   line.updateLinePosition();
         }
 		
@@ -202,8 +207,70 @@ public class RelationConstraintNode extends StackPane implements Positionable, S
 		}
 	}
 
+	/**
+	 * creates a LineNode from this RelationConstraint to the given ActivityElement.
+	 * ActivityElement should already be in List of Activities of this relationConstraint. 
+	 * Line will be added to the list of paramater1Elements of this relationConstraint.
+	 * @param activityElement
+	 * @param parameterNumber - defines the relevant parameter of the constraint
+	 * @return - the lineNode which has to be added to the contentPane
+	 */
+	public LineNode createAndSetLineNode(ActivityNode activityNode, int parameterNumber){	
+		LineNode newLine = new LineNode(this, activityNode,parameterNumber);
+		if(parameterNumber == 1){
+			parameter1Lines.add(newLine);
+		} else {
+			if (parameterNumber == 2){
+				parameter2Lines.add(newLine);
+			}
+		}
+		activityNode.addLineNode(newLine);
+		newLine.updateLineElementsAfterChanges();
+		updateAfterChanges();
+		return newLine;
+	}
 	
-	
+	/**
+	 * Removes the Connection between a this RelationConstraint and an Activity
+	 * @param activityElement
+	 * @return - the lineNode which has to be removed from the contentPane
+	 */
+	public LineNode removeActivity(LineNode removedLine, int parameterNumber){
+		
+		if (parameterNumber == 1){
+			parameter1Lines.remove(removedLine);
+		} else {
+			if (parameterNumber == 2){
+				parameter2Lines.remove(removedLine);
+			}
+		}
+		
+		return removedLine;
+	}
 
+	public ArrayList<LineNode> getParameter1Lines() {
+		return parameter1Lines;
+	}
 
+	public void setParameter1Lines(ArrayList<LineNode> parameter1Lines) {
+		this.parameter1Lines = parameter1Lines;
+	}
+
+	public ArrayList<LineNode> getParameter2Lines() {
+		return parameter2Lines;
+	}
+
+	public void setParameter2Lines(ArrayList<LineNode> parameter2Lines) {
+		this.parameter2Lines = parameter2Lines;
+	}
+
+	public void changeConstraintType(){
+		updateAfterChanges();
+		for (LineNode line : getParameter1Lines()){
+			line.updateLineElementsAfterChanges();
+		}
+		for (LineNode line : getParameter2Lines()){
+			line.updateLineElementsAfterChanges();
+		}
+	}
 }

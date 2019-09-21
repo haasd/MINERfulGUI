@@ -25,6 +25,7 @@ import minerful.concept.TaskChar;
 import minerful.concept.constraint.Constraint;
 import minerful.gui.common.RelationConstraintInfo;
 import minerful.gui.common.ValidationEngine;
+import minerful.gui.controller.DiscoverTabController;
 import minerful.gui.controller.ModelGeneratorTabController;
 import minerful.gui.model.ActivityElement;
 import minerful.gui.model.ActivityNode;
@@ -39,6 +40,7 @@ import minerful.gui.model.RelationConstraintNode;
 import minerful.gui.model.StructuringElement;
 import minerful.gui.model.Template;
 import minerful.gui.model.xml.XMLExistenceConstraint;
+import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.util.Config;
 
 public class GraphUtil {
@@ -141,15 +143,31 @@ public class GraphUtil {
 		return constraintElements;
 	}
 	
-	public static void drawProcessModel(ProcessElement processElement, EventHandlerManager eventHandler, AnchorPane anchorPane) {
+	public static void drawProcessModel(ProcessElement processElement, EventHandlerManager eventHandler, AnchorPane anchorPane, ModelGeneratorTabController controller) {
 		for(ActivityElement aElement : processElement.getActivityEList()) {
-			anchorPane.getChildren().add(aElement.getNode());
-			eventHandler.setEventHandler(aElement.getNode());
+			
+			ActivityNode aNode = new ActivityNode(aElement, controller);
+			
+			controller.getActivityNodes().add(aNode);
+			
+			anchorPane.getChildren().add(aNode);
+			eventHandler.setEventHandler(aNode);
 		}
 		
 		for(RelationConstraintElement rcElement : processElement.getConstraintEList()) {
-			anchorPane.getChildren().add(rcElement.getConstraintNode());
-			eventHandler.setEventHandler(rcElement.getConstraintNode());
+			
+			RelationConstraintNode rcNode = createConstraintNode(rcElement,controller);
+			controller.getConstraintNodes().add(rcNode);
+
+			int amountOfLinesOnPane = 1; // start with 1 because of backgroundPane
+			for(ActivityElement aElem : processElement.getActivityEList()){
+				amountOfLinesOnPane += aElem.getConstraintList().size();
+			}
+			
+			anchorPane.getChildren().add(rcNode);
+			
+			
+			eventHandler.setEventHandler(rcNode);
 		}
 	}
 	
@@ -157,11 +175,11 @@ public class GraphUtil {
 	/*
 	 * Create ProcessElement based on a ProcessModel 
 	 */
-	public static ProcessElement transformProcessModelIntoProcessElement(ProcessModel processModel, AnchorPane pane, EventHandlerManager eventHandler) {
+	public static ProcessElement transformProcessModelIntoProcessElement(ProcessModel processModel, AnchorPane pane, EventHandlerManager eventHandler, DiscoverTabController controller) {
 		ProcessElement processElement = new ProcessElement();
 		
-		determineActivityElements(processElement, processModel.getTasks(), pane, eventHandler);
-		determineConstraintElements(processElement, processModel.getAllUnmarkedConstraints(), pane, eventHandler);
+		determineActivityElements(processElement, processModel.getTasks(), pane, eventHandler, controller);
+		determineConstraintElements(processElement, processModel.getAllUnmarkedConstraints(), pane, eventHandler, controller);
 		
 		return processElement;
 	}
@@ -195,7 +213,7 @@ public class GraphUtil {
 		return newProcessElement;
 	}
 	
-	private static void determineActivityElements(ProcessElement processElement, Set<TaskChar> activities, AnchorPane pane, EventHandlerManager eventHandler) {
+	private static void determineActivityElements(ProcessElement processElement, Set<TaskChar> activities, AnchorPane pane, EventHandlerManager eventHandler, DiscoverTabController controller) {
 		
 		Integer id = 0;
 		double x = 100d;
@@ -220,8 +238,9 @@ public class GraphUtil {
 			}
 			
 			//create Node and add it to Pane
-			ActivityNode aNode = new ActivityNode(activityElement, null);
+			ActivityNode aNode = new ActivityNode(activityElement, controller);
 			pane.getChildren().add(aNode);
+			controller.getActivityNodes().add(aNode);
 			
 			eventHandler.setEventHandler(aNode);
 			
@@ -231,7 +250,7 @@ public class GraphUtil {
 	/*
 	 * Transform ProcessModel constraints into ExistenceConstraints and RelationConstraints
 	 */
-	private static void determineConstraintElements(ProcessElement processElement, SortedSet<Constraint> constraints, AnchorPane pane, EventHandlerManager eventHandler) {
+	private static void determineConstraintElements(ProcessElement processElement, SortedSet<Constraint> constraints, AnchorPane pane, EventHandlerManager eventHandler,DiscoverTabController controller) {
 	
 		for(Constraint constraint : constraints) {
 			
@@ -300,16 +319,20 @@ public class GraphUtil {
 				// add Constraint to Process
 				processElement.addRelationConstraint(cElement);
 				
-				RelationConstraintNode cNode = createConstraintNode(cElement);
-				addAdditionalActivity(aElement1, cNode, 1, pane);
-				addAdditionalActivity(aElement2, cNode, 2, pane);
+				controller.determineActivityNode(aElement1);
+				
+				RelationConstraintNode cNode = createConstraintNode(cElement , controller);
+				addAdditionalActivity(controller.determineActivityNode(aElement1), cNode, 1, pane, processElement);
+				addAdditionalActivity(controller.determineActivityNode(aElement2), cNode, 2, pane, processElement);
 
 				int amountOfLinesOnPane = 1; // start with 1 because of backgroundPane
 				for(ActivityElement aElem : processElement.getActivityEList()){
 					amountOfLinesOnPane += aElem.getConstraintList().size();
 				}
 				
-				pane.getChildren().add(amountOfLinesOnPane,cNode);	
+				pane.getChildren().add(amountOfLinesOnPane,cNode);
+				
+				
 				eventHandler.setEventHandler(cNode);
 				
 			}
@@ -322,8 +345,9 @@ public class GraphUtil {
 	 * @return
 	 * @throws PersistenceException
 	 */
-	private static RelationConstraintNode createConstraintNode(RelationConstraintElement cElement){
-		RelationConstraintNode cNode = new RelationConstraintNode(cElement,null);
+	private static RelationConstraintNode createConstraintNode(RelationConstraintElement cElement, ProcessElementInterface controller){
+		RelationConstraintNode cNode = new RelationConstraintNode(cElement,controller);
+		controller.getConstraintNodes().add(cNode);
 		ArrayList<ActivityElement> parameter1List = cElement.getParameter1Elements();
 		ArrayList<ActivityElement> parameter2List = cElement.getParameter2Elements();
 		
@@ -335,13 +359,13 @@ public class GraphUtil {
 		ArrayList<ActivityElement> tempList = new ArrayList<ActivityElement>();
 		tempList.addAll(parameter1List);
 		for (ActivityElement aElem : tempList){
-			cElement.createAndSetLineNode(aElem,1);
+			controller.determineRelationConstraintNode(cElement).createAndSetLineNode(controller.determineActivityNode(aElem),1);
 		}
 		
 		tempList = new ArrayList<ActivityElement>();
 		tempList.addAll(parameter2List);
 		for (ActivityElement aElem : tempList){
-			cElement.createAndSetLineNode(aElem,2);
+			controller.determineRelationConstraintNode(cElement).createAndSetLineNode(controller.determineActivityNode(aElem),2);
 		}
 		return cNode;
 	}
@@ -351,12 +375,15 @@ public class GraphUtil {
 	 * @param aNode defines the ActivityNode
 	 * @param cNode defines the ConstraintNode, if NULL the selectedElement has to be a ConstraintNode and will be connected
 	 */
-	public static void addAdditionalActivity(ActivityElement aNode, RelationConstraintNode cNode, int parameterNumber, AnchorPane pane){
+	public static void addAdditionalActivity(ActivityNode activityNode, RelationConstraintNode cNode, int parameterNumber,AnchorPane pane, ProcessElement processElement){
 		RelationConstraintElement cElement;
 		cElement = cNode.getConstraintElement();
 		
-		LineNode newLine = cElement.addActivityElement(aNode, parameterNumber);
-		//int position = currentProcessElement.getActivityEList().size() + 1;		// line has to be added after Activities
+		cElement.addActivityElement(activityNode.getActivityElement(), parameterNumber);
+		LineNode newLine = cNode.createAndSetLineNode(activityNode, parameterNumber);
+		
+		int position = processElement.getActivityEList().size() + 1;		// line has to be added after Activities
+		System.out.print(position);
 		pane.getChildren().add(1,newLine);		// position 0 is BackgroundPane, but has to be behind other Nodes
 	}
 	

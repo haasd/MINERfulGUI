@@ -1,5 +1,6 @@
 package minerful.gui.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,6 +23,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
 import minerful.gui.controller.ModelGeneratorTabController;
 import minerful.gui.model.xml.XMLExistenceConstraint;
+import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.util.Config;
 
 /**
@@ -40,7 +42,7 @@ public class ActivityNode extends StackPane implements Selectable {
 	
 	//information 
 	private ActivityElement activityElement;
-	private ModelGeneratorTabController processTab;
+	private ProcessElementInterface processTab;
 	
 	private HashMap<RelationConstraintNode, Cursor> cursorMap = new HashMap<RelationConstraintNode, Cursor>();
 	
@@ -57,6 +59,7 @@ public class ActivityNode extends StackPane implements Selectable {
 	private Label initLabel = new Label("INIT");
 	private Label endLabel = new Label("END");
 	private Label cardLabel;
+	private ArrayList<LineNode> lineNodes = new ArrayList<LineNode>();
 	
 	private int existenceConstraintPosition = 1;
 	
@@ -79,8 +82,7 @@ public class ActivityNode extends StackPane implements Selectable {
 	 * @param activity - contains information
 	 * @param process - processTab where activityNode will be added to
 	 */
-	public ActivityNode(ActivityElement activity, ModelGeneratorTabController process) {
-		activity.setNode(this);
+	public ActivityNode(ActivityElement activity, ProcessElementInterface process) {
 		radius= config.getDouble("activity.radius");
 		this.activityElement = activity;
 		this.processTab = process;
@@ -500,10 +502,7 @@ public class ActivityNode extends StackPane implements Selectable {
 		public Rotate getOutsideRotate() {
 			return outsideRotate;
 		}
-		
-		
-		
-		
+	
 	}
 
 	/**
@@ -541,6 +540,48 @@ public class ActivityNode extends StackPane implements Selectable {
 			cursor.insideCursor.setVisible(!visible);
 			cursor.outsideCursor.setVisible(!visible);
 		}
+	}
+	
+	/**
+	 * adds a LineNode to 
+	 * @param newLine
+	 */
+	public void addLineNode(LineNode newLine) {
+		lineNodes.add(newLine);
+		RelationConstraintNode rcNode = processTab.determineRelationConstraintNode(newLine.getConstraintElement());
+		
+		addCursor(rcNode);
+		rcNode.updateAfterChanges();
+		newLine.updateLineElementsAfterChanges();
+	}
+	
+	public void removeLineNode(LineNode removedLine){
+		lineNodes.remove(removedLine);
+		RelationConstraintNode rcNode = processTab.determineRelationConstraintNode(removedLine.getConstraintElement());
+		removeCursor(rcNode);
+		removedLine.updateLineElementsAfterChanges();
+	}
+
+
+	public void updateAllLineNodePositions() {
+		for (LineNode line : lineNodes){
+			line.updateLinePosition();
+		}
+		
+	}
+	
+	/**
+	 * searches for the LineNode that connects this activity to the given relation Constraint
+	 * @param relationConstraintElement
+	 * @return
+	 */
+	public LineNode getLineNodeByConstraint(RelationConstraintElement relationConstraintElement) {
+		for(LineNode line : lineNodes){
+			if(line.getConstraintElement() == relationConstraintElement){
+				return line;
+			}
+		}
+		return null;
 	}
 	
 }

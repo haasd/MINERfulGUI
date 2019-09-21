@@ -5,16 +5,17 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import minerful.gui.controller.ModelGeneratorTabController;
+import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.util.Config;
 
 public class EventHandlerManager {
-	private ModelGeneratorTabController processTab;
+	private ProcessElementInterface processTab;
 	private Config config = new Config("config");
 	
 	private int parameterNumber;
 	
 	
-	public EventHandlerManager(ModelGeneratorTabController processTab){
+	public EventHandlerManager(ProcessElementInterface processTab){
 		this.processTab = processTab;
 	}
 
@@ -36,25 +37,27 @@ public class EventHandlerManager {
            //Update activityElement
            aNode.updateActivityElement();
        
-           aNode.getActivityElement().updateAllLineNodePositions();
+           aNode.updateAllLineNodePositions();
            for (RelationConstraintElement cElem : aNode.getActivityElement().getConstraintList()){
-           	cElem.getConstraintNode().updatePosition();
+        	   if(processTab != null) {
+        		  processTab.determineRelationConstraintNode(cElem).updatePosition();
+        	   }
            }
        
-           if(processTab != null) {
-        	   processTab.getConstraintPane().setDisable(true);
-               processTab.getActivityPane().setDisable(false);
-               processTab.getEditTabPane().setExpandedPane(processTab.getActivityPane());
-               EditActivityPane aPane = (EditActivityPane) processTab.getActivityPane().getContent();
+           if(processTab instanceof ModelGeneratorTabController) {
+        	   ((ModelGeneratorTabController) processTab).getConstraintPane().setDisable(true);
+        	   ((ModelGeneratorTabController) processTab).getActivityPane().setDisable(false);
+        	   ((ModelGeneratorTabController) processTab).getEditTabPane().setExpandedPane(((ModelGeneratorTabController) processTab).getActivityPane());
+               EditActivityPane aPane = (EditActivityPane) ((ModelGeneratorTabController) processTab).getActivityPane().getContent();
                aPane.getActivityNameTF().requestFocus();
                aPane.getActivityNameTF().selectAll();
                
                //Update selected element
-               if (processTab.getSelectedElement() != null){
-            	   processTab.getSelectedElement().setEditable(false);        	   
+               if (((ModelGeneratorTabController) processTab).getSelectedElement() != null){
+            	   ((ModelGeneratorTabController) processTab).getSelectedElement().setEditable(false);        	   
                }
                
-               processTab.setSelectedElement(aNode);
+               ((ModelGeneratorTabController) processTab).setSelectedElement(aNode);
                aNode.setEditable(true);
            }
 		}
@@ -73,12 +76,12 @@ public class EventHandlerManager {
             ActivityNode aNode = (ActivityNode)(t.getSource());
             aNode.toFront();
             
-            if(processTab != null) {
+            if(processTab instanceof ModelGeneratorTabController) {
             	//Update selected element
-                if (processTab.getSelectedElement() != null){
-             	   processTab.getSelectedElement().setEditable(false);        	   
+                if (((ModelGeneratorTabController) processTab).getSelectedElement() != null){
+                	((ModelGeneratorTabController) processTab).getSelectedElement().setEditable(false);        	   
                 }
-                processTab.setSelectedElement(aNode);
+                ((ModelGeneratorTabController) processTab).setSelectedElement(aNode);
                 aNode.setEditable(true);
             }
         }
@@ -103,13 +106,13 @@ public class EventHandlerManager {
             
             for (RelationConstraintElement cElem : aNode.getActivityElement().getConstraintList()){
             	 if (!cElem.isPositionFixed()){
-            		 cElem.getConstraintNode().moveConstraintBetweenActivities();
+            		 processTab.determineRelationConstraintNode(cElem).moveConstraintBetweenActivities();
             	 }
             }
             
-            aNode.getActivityElement().updateAllLineNodePositions();
-            if(processTab != null) {
-            	processTab.setMaxTranslate();
+            aNode.updateAllLineNodePositions();
+            if(processTab instanceof ModelGeneratorTabController) {
+            	((ModelGeneratorTabController) processTab).setMaxTranslate();
             }
         }
     };
@@ -142,16 +145,16 @@ public class EventHandlerManager {
            cNode.updatePosition(); 
            cNode.getConstraintElement().setPositionFixed(true);
            
-           if(processTab != null) {
-	           if (processTab.getSelectedElement() != null){
-	        	   processTab.getSelectedElement().setEditable(false);        	   
+           if(processTab instanceof ModelGeneratorTabController) {
+	           if (((ModelGeneratorTabController) processTab).getSelectedElement() != null){
+	        	   ((ModelGeneratorTabController) processTab).getSelectedElement().setEditable(false);        	   
 	           }
-	           processTab.setSelectedElement(cNode);
+	           ((ModelGeneratorTabController) processTab).setSelectedElement(cNode);
 	           cNode.setEditable(true);
 	           
-	           processTab.getConstraintPane().setDisable(false);
-	           processTab.getActivityPane().setDisable(true);
-	           processTab.getEditTabPane().setExpandedPane(processTab.getConstraintPane());
+	           ((ModelGeneratorTabController) processTab).getConstraintPane().setDisable(false);
+	           ((ModelGeneratorTabController) processTab).getActivityPane().setDisable(true);
+	           ((ModelGeneratorTabController) processTab).getEditTabPane().setExpandedPane(((ModelGeneratorTabController) processTab).getConstraintPane());
            }
 		}
 	}; 
@@ -165,6 +168,18 @@ public class EventHandlerManager {
             constraintY = t.getSceneY();
             constraintTranslateX = ((Node)(t.getSource())).getTranslateX();
             constraintTranslateY = ((Node)(t.getSource())).getTranslateY();
+            
+            RelationConstraintNode rcNode = (RelationConstraintNode)(t.getSource());
+            rcNode.toFront();
+            
+            if(processTab instanceof ModelGeneratorTabController) {
+            	//Update selected element
+                if (((ModelGeneratorTabController) processTab).getSelectedElement() != null){
+                	((ModelGeneratorTabController) processTab).getSelectedElement().setEditable(false);        	   
+                }
+                ((ModelGeneratorTabController) processTab).setSelectedElement(rcNode);
+                rcNode.setEditable(true);
+            }
         }
     };
      
@@ -185,16 +200,16 @@ public class EventHandlerManager {
             
             //Update Line Positions on Scene     
             
-            for(LineNode line : cNode.getConstraintElement().getParameter1Lines()){
+            for(LineNode line : cNode.getParameter1Lines()){
           	   line.updateLinePosition();
             }
-            for(LineNode line : cNode.getConstraintElement().getParameter2Lines()){
+            for(LineNode line : cNode.getParameter2Lines()){
            	   line.updateLinePosition();
             }
 
-            if(processTab != null) {
+            if(processTab instanceof ModelGeneratorTabController) {
 	            //Update BackgroundTab (Sheet)
-	            processTab.setMaxTranslate();
+            	((ModelGeneratorTabController) processTab).setMaxTranslate();
             }
         }
     };
@@ -207,11 +222,11 @@ public class EventHandlerManager {
     private EventHandler<MouseEvent> noElementReleasedEventHandler = new EventHandler<MouseEvent>() {
 		@Override
         public void handle(MouseEvent t) {
-			if(processTab.getSelectedElement() != null ) {
-				processTab.getSelectedElement().setEditable(false);
-				processTab.setSelectedElement(null);
-				processTab.getConstraintPane().setDisable(true);
-		        processTab.getActivityPane().setDisable(true);
+			if(((ModelGeneratorTabController) processTab).getSelectedElement() != null ) {
+				((ModelGeneratorTabController) processTab).getSelectedElement().setEditable(false);
+				((ModelGeneratorTabController) processTab).setSelectedElement(null);
+				((ModelGeneratorTabController) processTab).getConstraintPane().setDisable(true);
+				((ModelGeneratorTabController) processTab).getActivityPane().setDisable(true);
 			}
 		}
     };
@@ -237,27 +252,27 @@ public class EventHandlerManager {
 			@Override
 			public void handle(MouseEvent t) {
 				
-				if(processTab != null) {
+				if(processTab instanceof ModelGeneratorTabController) {
 					//System.out.println("A new Activity was selected.");
 					ActivityNode aNode2 = (ActivityNode) t.getSource();
-					if(processTab.isAddConstraintMode() == AddConstraintMode.NEW_CONSTRAINT){
-						ActivityNode aNode1 = (ActivityNode) processTab.getSelectedElement();
-						processTab.addNewRelationConstraint(aNode1.getActivityElement(), aNode2.getActivityElement());
+					if(((ModelGeneratorTabController) processTab).isAddConstraintMode() == AddConstraintMode.NEW_CONSTRAINT){
+						ActivityNode aNode1 = (ActivityNode) ((ModelGeneratorTabController) processTab).getSelectedElement();
+						((ModelGeneratorTabController) processTab).addNewRelationConstraint(aNode1.getActivityElement(), aNode2.getActivityElement());
 						//reset modus to normal
-						processTab.resetToNormalState();
+						((ModelGeneratorTabController) processTab).resetToNormalState();
 						//processTab.setSelectionModeToAddConstraint(false);
-					} else if(processTab.isAddConstraintMode() == AddConstraintMode.EXCHANGE_ACTIVITY) {
-						processTab.adjustRelationConstraint(aNode2, parameterNumber);
+					} else if(((ModelGeneratorTabController) processTab).isAddConstraintMode() == AddConstraintMode.EXCHANGE_ACTIVITY) {
+						((ModelGeneratorTabController) processTab).adjustRelationConstraint(aNode2, parameterNumber);
 						//reset modus to normal
-						processTab.resetToNormalState();
+						((ModelGeneratorTabController) processTab).resetToNormalState();
 						//processTab.setSelectionModeToChangeConstraint(false, null, null);
-					} else if(processTab.isAddConstraintMode() == AddConstraintMode.ADD_TO_PARAMETER1 ) {
-						processTab.addAdditionalActivity(aNode2.getActivityElement(), (RelationConstraintNode)processTab.getSelectedElement(), 1);
-						processTab.resetToNormalState();
-					} else if(processTab.isAddConstraintMode() == AddConstraintMode.ADD_TO_OPARAMETER2){
-						processTab.addAdditionalActivity(aNode2.getActivityElement(), (RelationConstraintNode)processTab.getSelectedElement(), 2);
+					} else if(((ModelGeneratorTabController) processTab).isAddConstraintMode() == AddConstraintMode.ADD_TO_PARAMETER1 ) {
+						((ModelGeneratorTabController) processTab).addAdditionalActivity(aNode2.getActivityElement(), (RelationConstraintNode)((ModelGeneratorTabController) processTab).getSelectedElement(), 1);
+						((ModelGeneratorTabController) processTab).resetToNormalState();
+					} else if(((ModelGeneratorTabController) processTab).isAddConstraintMode() == AddConstraintMode.ADD_TO_OPARAMETER2){
+						((ModelGeneratorTabController) processTab).addAdditionalActivity(aNode2.getActivityElement(), (RelationConstraintNode)((ModelGeneratorTabController) processTab).getSelectedElement(), 2);
 						
-						processTab.resetToNormalState();					
+						((ModelGeneratorTabController) processTab).resetToNormalState();					
 					}
 				}
 				

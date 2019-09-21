@@ -1,5 +1,6 @@
 package minerful.gui.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javafx.beans.property.Property;
@@ -11,10 +12,14 @@ import javafx.beans.property.StringProperty;
  * @author Lukas
  *
  */
-public class RelationConstraintElement {
+public class RelationConstraintElement implements Serializable {
 	
 	//private final static Logger logger = Logger.getLogger(RelationConstraintElement.class);
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -18749943677928012L;
 	//Information
 	private Integer id;
 	private Template template;
@@ -23,11 +28,8 @@ public class RelationConstraintElement {
 	private boolean positionFixed = false;
 	
 	//connectedElements and Nodes
-	private ArrayList<LineNode> parameter1Lines = new ArrayList<LineNode>();
-	private ArrayList<LineNode> parameter2Lines = new ArrayList<LineNode>();
 	private ArrayList<ActivityElement> parameter1Elements = new ArrayList<ActivityElement>();
 	private ArrayList<ActivityElement> parameter2Elements = new ArrayList<ActivityElement>();
-	private RelationConstraintNode constraintNode;
 		
 	/**
 	 * Basic constructor which defines the information of the RelationConstraint.
@@ -69,52 +71,12 @@ public class RelationConstraintElement {
 		this.posY = posY;
 	}
 
-	public RelationConstraintNode getConstraintNode() {
-		return constraintNode;
-	}
-
-	public void setConstraintNode(RelationConstraintNode constraintNode) {
-		this.constraintNode = constraintNode;
-	}
-
 	public ArrayList<ActivityElement> getParameter1Elements() {
 		return parameter1Elements;
 	}
 
 	public ArrayList<ActivityElement> getParameter2Elements() {
 		return parameter2Elements;
-	}
-	
-
-	public ArrayList<LineNode> getParameter1Lines() {
-		return parameter1Lines;
-	}
-
-	public  ArrayList<LineNode> getParameter2Lines() {
-		return parameter2Lines;
-	}
-	
-	/**
-	 * creates a LineNode from this RelationConstraint to the given ActivityElement.
-	 * ActivityElement should already be in List of Activities of this relationConstraint. 
-	 * Line will be added to the list of paramater1Elements of this relationConstraint.
-	 * @param activityElement
-	 * @param parameterNumber - defines the relevant parameter of the constraint
-	 * @return - the lineNode which has to be added to the contentPane
-	 */
-	public LineNode createAndSetLineNode(ActivityElement activityElement, int parameterNumber){	
-		LineNode newLine = new LineNode(this.getConstraintNode(), activityElement.getNode(),parameterNumber);
-		if(parameterNumber == 1){
-			parameter1Lines.add(newLine);
-		} else {
-			if (parameterNumber == 2){
-				parameter2Lines.add(newLine);
-			}
-		}
-		activityElement.addLineNode(newLine);
-		newLine.updateLineElementsAfterChanges();
-		constraintNode.updateAfterChanges();
-		return newLine;
 	}
 	
 	/**
@@ -125,7 +87,7 @@ public class RelationConstraintElement {
 	 * @param activityElement
 	 * @return - the lineNode which has to be added to the contentPane
 	 */
-	public LineNode addActivityElement(ActivityElement activityElement, int parameterNumber) {
+	public void addActivityElement(ActivityElement activityElement, int parameterNumber) {
 		if(parameterNumber == 1){
 			parameter1Elements.add(activityElement);
 		} else {
@@ -134,8 +96,6 @@ public class RelationConstraintElement {
 			}
 		}
 		activityElement.getConstraintList().add(this);
-		LineNode newLine = createAndSetLineNode(activityElement, parameterNumber);
-		return newLine;
 	}
 	
 	/**
@@ -143,22 +103,16 @@ public class RelationConstraintElement {
 	 * @param activityElement
 	 * @return - the lineNode which has to be removed from the contentPane
 	 */
-	public LineNode removeActivity(ActivityElement activityElement, int parameterNumber){
-		LineNode removedLine = activityElement.getLineNodeByConstraint(this);
-		activityElement.removeLineNode(removedLine);
+	public void removeActivity(ActivityElement activityElement, int parameterNumber){
 		activityElement.getConstraintList().remove(this);
 		
 		if (parameterNumber == 1){
 			parameter1Elements.remove(activityElement);
-			parameter1Lines.remove(removedLine);
 		} else {
 			if (parameterNumber == 2){
 				parameter2Elements.remove(activityElement);
-				parameter2Lines.remove(removedLine);
 			}
 		}
-		
-		return removedLine;
 	}
 		
 	
@@ -166,14 +120,6 @@ public class RelationConstraintElement {
 	public void changeConstraintType(Template template){
 		if(template != null){
 			this.template = template;
-			constraintNode.updateAfterChanges();
-			for (LineNode line : getParameter1Lines()){
-				line.updateLineElementsAfterChanges();
-			}
-			for (LineNode line : getParameter2Lines()){
-				line.updateLineElementsAfterChanges();
-			}
-			
 		} else {
 			//logger.error("Constraint type could not be set because of invalid template type: NULL");
 		}

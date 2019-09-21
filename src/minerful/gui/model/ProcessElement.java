@@ -82,11 +82,9 @@ public class ProcessElement implements Serializable{
 		// remove constraints from constraintList of adjacent Activities
 		for (ActivityElement aElement : deletedConstraintNode.getParameter1Elements()) {
 			aElement.getConstraintList().remove(deletedConstraintNode);
-			aElement.removeLineNode(aElement.getLineNodeByConstraint(deletedConstraintNode));
 		}
 		for (ActivityElement aElement : deletedConstraintNode.getParameter2Elements()) {
 			aElement.getConstraintList().remove(deletedConstraintNode);
-			aElement.removeLineNode(aElement.getLineNodeByConstraint(deletedConstraintNode));
 		}
 		// remove constraint from process
 		relationConstraintElementList.remove(deletedConstraintNode);

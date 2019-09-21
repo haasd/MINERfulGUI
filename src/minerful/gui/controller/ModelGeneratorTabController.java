@@ -6,12 +6,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.graphstream.algorithm.Toolkit;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.ui.view.Viewer;
@@ -54,7 +54,6 @@ import javafx.util.Callback;
 import minerful.MinerFulOutputManagementLauncher;
 import minerful.concept.ProcessModel;
 import minerful.concept.TaskCharFactory;
-import minerful.concept.constraint.Constraint;
 import minerful.concept.constraint.ConstraintsBag;
 import minerful.gui.common.MinerfulGuiUtil;
 import minerful.gui.common.ModelInfo;
@@ -64,7 +63,6 @@ import minerful.gui.graph.util.ModelGeneratorGraphMouseManager;
 import minerful.gui.model.ActivityElement;
 import minerful.gui.model.ActivityNode;
 import minerful.gui.model.AddConstraintMode;
-import minerful.gui.model.Card;
 import minerful.gui.model.EditActivityPane;
 import minerful.gui.model.EditConstraintPane;
 import minerful.gui.model.EventHandlerManager;
@@ -73,12 +71,12 @@ import minerful.gui.model.ProcessElement;
 import minerful.gui.model.RelationConstraintElement;
 import minerful.gui.model.RelationConstraintNode;
 import minerful.gui.model.Selectable;
-import minerful.gui.model.StructuringElement;
 import minerful.gui.model.Template;
+import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.util.Config;
 import minerful.io.params.OutputModelParameters;
 
-public class ModelGeneratorTabController extends AbstractController implements Initializable {
+public class ModelGeneratorTabController extends AbstractController implements Initializable, ProcessElementInterface {
 	
 	Logger logger = Logger.getLogger(ModelGeneratorTabController.class);
 	
@@ -154,6 +152,10 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	
 	private String highlightedClass = "highlightedActivity";
 	private String activityClass = "activity";
+	
+	// ProcessNode workaround
+	private List<ActivityNode> activityNodes = new ArrayList<>();
+	private List<RelationConstraintNode> constraintNodes = new ArrayList<>();
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -353,9 +355,12 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	public void loadGraph() {
 		
 		currentProcessElement = modelInfo.getProcessElement();
+		
+		createAndAddNodesOfProcessElement();
+		
 		//taskChars.addAll(modelInfo.getProcessModel().getTasks());
 		//constraints.addAll(modelInfo.getProcessModel().getAllUnmarkedConstraints());
-		GraphUtil.drawProcessModel(currentProcessElement, eventManager, anchorPane);
+		//GraphUtil.drawProcessModel(currentProcessElement, eventManager, anchorPane, this);
 	}
 	
 	/**
@@ -377,14 +382,16 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		ArrayList<ActivityElement> tempList = new ArrayList<ActivityElement>();
 		tempList.addAll(parameter1List);
 		for (ActivityElement aElem : tempList){
-			cElement.createAndSetLineNode(aElem,1);
+			cNode.createAndSetLineNode(determineActivityNode(aElem),1);
 		}
 		
 		tempList = new ArrayList<ActivityElement>();
 		tempList.addAll(parameter2List);
 		for (ActivityElement aElem : tempList){
-			cElement.createAndSetLineNode(aElem,2);
+			cNode.createAndSetLineNode(determineActivityNode(aElem),2);
 		}
+		
+		constraintNodes.add(cNode);
 		return cNode;
 	}
 	
@@ -400,22 +407,26 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		//ArrayList<ActivityNode> activityNodes = new ArrayList<ActivityNode>();
 		//create ActivityNodes (This includes information of ExistenceConstraints)
 		for (ActivityElement a: currentProcessElement.getActivityEList()){
-			anchorPane.getChildren().add(new ActivityNode(a, this));
-			eventManager.setEventHandler(a.getNode());
+			ActivityNode aNode = new ActivityNode(a, this);
+			activityNodes.add(aNode);
+			anchorPane.getChildren().add(aNode);
+			eventManager.setEventHandler(aNode);
 		}
 		
 		//create RelationConstraintNodes
 		ArrayList<RelationConstraintNode> relationConstraintNodes = new ArrayList<RelationConstraintNode>();
 		ArrayList<LineNode> lineNodes = new ArrayList<LineNode>();
 		for (RelationConstraintElement c : currentProcessElement.getConstraintEList()){
-			relationConstraintNodes.add(new RelationConstraintNode(c, this));
+			RelationConstraintNode rcNode = new RelationConstraintNode(c, this);
+			constraintNodes.add(rcNode);
+			relationConstraintNodes.add(rcNode);
 			for (ActivityElement a : c.getParameter1Elements()){
-				lineNodes.add(c.createAndSetLineNode(a,1));
+				lineNodes.add(rcNode.createAndSetLineNode(determineActivityNode(a),1));
 			}
 			for (ActivityElement a : c.getParameter2Elements()){
-				lineNodes.add(c.createAndSetLineNode(a,2));
+				lineNodes.add(rcNode.createAndSetLineNode(determineActivityNode(a),2));
 			}
-			eventManager.setEventHandler(c.getConstraintNode());
+			eventManager.setEventHandler(rcNode);
 		}
 		
 		anchorPane.getChildren().addAll(1, relationConstraintNodes);
@@ -454,6 +465,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		//create Node and add it to Pane
 		ActivityNode aNode = new ActivityNode(aElement, this);
 		anchorPane.getChildren().add(aNode);
+		activityNodes.add(aNode);
 		
 		//move new Activity next to selected Activity if one is selected
 		
@@ -497,7 +509,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 					constraintL.add(c);
 				}
 				for(RelationConstraintElement c : constraintL){
-					deleteRelationConstraint(c.getConstraintNode());
+					deleteRelationConstraint(determineRelationConstraintNode(c));
 					constraintElements.remove(c);
 				}
 				anchorPane.getChildren().remove(aNode);
@@ -513,6 +525,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		}
 		sendMouseReleaseEvent(backgroundPane);
 	}
+	
 	/**
 	 * Creates a new relationConstraint based on 2 ActivityNodes
 	 * Modifies the following lists: 
@@ -577,17 +590,22 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	 */
 	public void addAdditionalActivity(ActivityElement aNode, RelationConstraintNode cNode, int parameterNumber){
 		RelationConstraintElement cElement;
+		RelationConstraintNode rcNode;
 		if(cNode == null) {
 			cElement = ((RelationConstraintNode) selectedElement).getConstraintElement();
+			rcNode = (RelationConstraintNode) selectedElement;
 		}
 		else { 
 			cElement = cNode.getConstraintElement();
+			rcNode = cNode;
 		}
-		LineNode newLine = cElement.addActivityElement(aNode, parameterNumber);
+		cElement.addActivityElement(aNode, parameterNumber);
+		LineNode newLine = rcNode.createAndSetLineNode(determineActivityNode(aNode), parameterNumber);
+		
 		//int position = currentProcessElement.getActivityEList().size() + 1;		// line has to be added after Activities
 		anchorPane.getChildren().add(1,newLine);		// position 0 is BackgroundPane, but has to be behind other Nodes
 	
-		sendMouseReleaseEvent(cElement.getConstraintNode());
+		sendMouseReleaseEvent(cNode);
 	}
 	
 	
@@ -599,11 +617,16 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	 */
 	public void removeActivityFromRelationConstraint(ActivityNode aNode, int parameterNumber){
 		RelationConstraintElement cElement = ((RelationConstraintNode) selectedElement).getConstraintElement();
-		LineNode removedLine = cElement.removeActivity(aNode.getActivityElement(),parameterNumber);
+		cElement.removeActivity(aNode.getActivityElement(),parameterNumber);
+		LineNode removedLine = aNode.getLineNodeByConstraint(cElement);
+		aNode.removeLineNode(removedLine);
+		
+		((RelationConstraintNode) selectedElement).removeActivity(removedLine, parameterNumber);
+		
 		anchorPane.getChildren().remove(removedLine);
 		determineConstraints();
 		
-		sendMouseReleaseEvent(cElement.getConstraintNode());
+		sendMouseReleaseEvent(((RelationConstraintNode) selectedElement));
 	}
 	
 	/**
@@ -631,9 +654,16 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		currentProcessElement.deleteRelationConstraint(constraintNode.getConstraintElement());
 		constraintElements.remove(constraintNode.getConstraintElement());
 		
+		for (ActivityElement aElement : constraintNode.getConstraintElement().getParameter1Elements()) {
+			determineActivityNode(aElement).removeLineNode(determineActivityNode(aElement).getLineNodeByConstraint(constraintNode.getConstraintElement()));
+		}
+		for (ActivityElement aElement : constraintNode.getConstraintElement().getParameter2Elements()) {
+			determineActivityNode(aElement).removeLineNode(determineActivityNode(aElement).getLineNodeByConstraint(constraintNode.getConstraintElement()));
+		}
+		
 		anchorPane.getChildren().remove(constraintNode);
-		anchorPane.getChildren().removeAll(constraintNode.getConstraintElement().getParameter1Lines());
-		anchorPane.getChildren().removeAll(constraintNode.getConstraintElement().getParameter2Lines());
+		anchorPane.getChildren().removeAll(constraintNode.getParameter1Lines());
+		anchorPane.getChildren().removeAll(constraintNode.getParameter2Lines());
 		
 		determineConstraints();
 		
@@ -651,7 +681,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 			alert.showAndWait();
 		} else {
 			ActivityElement selectedActivity = ((ActivityNode) selectedElement).getActivityElement();
-		
+			ActivityNode aNode = (ActivityNode) selectedElement;
 			this.addConstraintMode = AddConstraintMode.NEW_CONSTRAINT;
 			//Disable everything
 			disableAllElements(true);
@@ -659,10 +689,10 @@ public class ModelGeneratorTabController extends AbstractController implements I
 			for (ActivityElement aElem : currentProcessElement.getActivityEList()){
 				//only choose if it is not part of the activation side
 				if (aElem != selectedActivity){
-					aElem.getNode().setDisable(false);
-					eventManager.setActivityToSelectionMode(aElem.getNode(), 2);
+					determineActivityNode(aElem).setDisable(false);
+					eventManager.setActivityToSelectionMode(determineActivityNode(aElem), 2);
 					//Highlight
-					aElem.getNode().getStyleClass().add(highlightedClass);
+					determineActivityNode(aElem).getStyleClass().add(highlightedClass);
 				}
 			}
 		}
@@ -674,7 +704,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	 * @param mode - defines if there will be an exchange of Activies, or an additional Activity
 	 * @param parameterNumber - relevant for Exchange_Activity only to decide the position of the parameter
 	 */
-	public void setSelectionModeToChangeConstraint(ActivityElement oldElement, AddConstraintMode mode, int parameterNumber){
+	public void setSelectionModeToChangeConstraint(ActivityNode oldElement, AddConstraintMode mode, int parameterNumber){
 		RelationConstraintElement selectedConstraint = ((RelationConstraintNode) selectedElement).getConstraintElement();
 		int amountOfConnectedActivities = selectedConstraint.getParameter1Elements().size() + selectedConstraint.getParameter2Elements().size();
 		if (mode == AddConstraintMode.EXCHANGE_ACTIVITY){
@@ -694,20 +724,41 @@ public class ModelGeneratorTabController extends AbstractController implements I
 			for (ActivityElement aElem : currentProcessElement.getActivityEList()){
 				//only enable if it is not part of the constraint already
 				if ((!selectedConstraint.getParameter1Elements().contains(aElem)) && (!selectedConstraint.getParameter2Elements().contains(aElem)) ){
-					aElem.getNode().setDisable(false);
+					determineActivityNode(aElem).setDisable(false);
 					// set eventhandler to allow Activity to be selected
-					eventManager.setActivityToSelectionMode(aElem.getNode(), parameterNumber);
-					aElem.getNode().getStyleClass().add(highlightedClass);
+					eventManager.setActivityToSelectionMode(determineActivityNode(aElem), parameterNumber);
+					determineActivityNode(aElem).getStyleClass().add(highlightedClass);
 				}
 			}
 			//Make old Element also available for selection if there is one
 			if (oldElement != null){
-				oldElement.getNode().setDisable(false);
-				eventManager.setActivityToSelectionMode(oldElement.getNode(), parameterNumber);
-				oldElement.getNode().getStyleClass().add(highlightedClass);
+				oldElement.setDisable(false);
+				eventManager.setActivityToSelectionMode(oldElement, parameterNumber);
+				oldElement.getStyleClass().add(highlightedClass);
 			}
 		}
 	}
+	
+	public ActivityNode determineActivityNode(ActivityElement activityElement) {
+		for(ActivityNode activityNode : activityNodes) {
+			if(activityNode.getActivityElement() == activityElement) {
+				return activityNode;
+			}
+		}
+		
+		return null;
+	}
+	
+	public RelationConstraintNode determineRelationConstraintNode(RelationConstraintElement relationElement) {
+		for(RelationConstraintNode rcNode : constraintNodes) {
+			if(rcNode.getConstraintElement() == relationElement) {
+				return rcNode;
+			}
+		}
+		
+		return null;
+	}
+	
 	
 	/**
 	 * sets all nodes of the process back to normal state after an Activity has been selected. 
@@ -716,10 +767,10 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	public void resetToNormalState() {
 		//remove selectionEventHandler from all Activities and add normal ones
 		for (ActivityElement a : currentProcessElement.getActivityEList()){
-			a.getNode().setOnMouseReleased(null);
-			eventManager.setEventHandler(a.getNode());
-			a.getNode().getStyleClass().clear();
-			a.getNode().getStyleClass().add(activityClass);
+			determineActivityNode(a).setOnMouseReleased(null);
+			eventManager.setEventHandler(determineActivityNode(a));
+			determineActivityNode(a).getStyleClass().clear();
+			determineActivityNode(a).getStyleClass().add(activityClass);
 		}
 		//Enable all Elements
 		disableAllElements(false);
@@ -822,6 +873,22 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		constraintElements.clear(); 
 		constraintElements.addAll(GraphUtil.determineConstraints(activityElements));
 		
+	}
+	
+	public List<ActivityNode> getActivityNodes() {
+		return activityNodes;
+	}
+
+	public void setActivityNodes(List<ActivityNode> activityNodes) {
+		this.activityNodes = activityNodes;
+	}
+
+	public List<RelationConstraintNode> getConstraintNodes() {
+		return constraintNodes;
+	}
+
+	public void setConstraintNodes(List<RelationConstraintNode> constraintNodes) {
+		this.constraintNodes = constraintNodes;
 	}
 
 }

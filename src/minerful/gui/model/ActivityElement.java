@@ -1,24 +1,27 @@
 package minerful.gui.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import minerful.gui.model.xml.XMLExistenceConstraint;
 
-public class ActivityElement {
+public class ActivityElement implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 776270594364082518L;
 	private Integer id;
 	private String taskCharIdentifier;
 	private String identifier;
 	private Double posX;
 	private Double posY;
 	private ArrayList<RelationConstraintElement> constraintList;
-	private ActivityNode aNode;
 	private XMLExistenceConstraint existenceConstraint;
-	private ArrayList<LineNode> lineNodes = new ArrayList<LineNode>();
 	
-	private StringProperty identifierProperty;
+	private transient StringProperty identifierProperty;
 	
 	public ActivityElement(Integer id, String identifier) {
 		super();
@@ -26,7 +29,6 @@ public class ActivityElement {
 		this.id = id;
 		this.identifier = identifier;
 		identifierProperty = new SimpleStringProperty(identifier);
-		
 		
 		// Standard Position if no position was found
 		this.posX = 50.0;
@@ -63,11 +65,11 @@ public class ActivityElement {
 	}
 
 	public String getIdentifier() {
-		return identifierProperty.get();
+		return identifier;
 	}
 
 	public void setIdentifier(String identifier) {
-		identifierProperty.set(identifier);
+		this.identifier = identifier;
 	}
 
 	public Double getPosX() {
@@ -81,14 +83,6 @@ public class ActivityElement {
 
 	public ArrayList<RelationConstraintElement> getConstraintList() {
 		return constraintList;
-	}
-
-	public void setNode(ActivityNode aNode) {
-		this.aNode = aNode;
-	}
-	
-	public ActivityNode getNode(){
-		return this.aNode;
 	}
 
 	public XMLExistenceConstraint getExistenceConstraint() {
@@ -110,48 +104,9 @@ public class ActivityElement {
 	public void setTaskCharIdentifier(String taskCharIdentifier) {
 		this.taskCharIdentifier = taskCharIdentifier;
 	}
-
-	/**
-	 * searches for the LineNode that connects this activity to the given relation Constraint
-	 * @param relationConstraintElement
-	 * @return
-	 */
-	public LineNode getLineNodeByConstraint(RelationConstraintElement relationConstraintElement) {
-		for(LineNode line : lineNodes){
-			if(line.getConstraintElement() == relationConstraintElement){
-				return line;
-			}
-		}
-		return null;
-	}
 	
 	public String toString(){
 		return "ID " + id + ": " + identifier;
-	}
-
-	/**
-	 * adds a LineNode to 
-	 * @param newLine
-	 */
-	public void addLineNode(LineNode newLine) {
-		lineNodes.add(newLine);
-		getNode().addCursor(newLine.getConstraintElement().getConstraintNode());
-		newLine.getConstraintElement().getConstraintNode().updateAfterChanges();
-		newLine.updateLineElementsAfterChanges();
-	}
-	
-	public void removeLineNode(LineNode removedLine){
-		lineNodes.remove(removedLine);
-		getNode().removeCursor(removedLine.getConstraintElement().getConstraintNode());
-		removedLine.updateLineElementsAfterChanges();
-	}
-
-
-	public void updateAllLineNodePositions() {
-		for (LineNode line : lineNodes){
-			line.updateLinePosition();
-		}
-		
 	}
 	
 }
