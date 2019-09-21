@@ -833,6 +833,12 @@ public class DiscoverTabController extends AbstractController implements Initial
 		
 	}
 
+	@Override
+	public void determineActivities() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 	
 }

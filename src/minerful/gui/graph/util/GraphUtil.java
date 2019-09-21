@@ -294,6 +294,8 @@ public class GraphUtil {
 						}
 					} 
 					
+					controller.determineActivityNode(activityElement).updateNode();
+					
 				}
 			} else {
 				// handle RelationConstraints
