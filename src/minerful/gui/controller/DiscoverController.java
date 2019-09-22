@@ -90,6 +90,7 @@ public class DiscoverController extends AbstractController implements Initializa
 	    				tab.setContent(gridPane);
 	    				tab.setText(new File(parseLog.get().getPath()).getName());
 	    				discoverTabPane.getTabs().add(tab);
+	    				discoverTabPane.getSelectionModel().select(tab);
 	    				
 	    				progressForm.closeProgressForm();
 	    				

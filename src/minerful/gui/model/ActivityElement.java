@@ -94,6 +94,9 @@ public class ActivityElement implements Serializable {
 	}
 
 	public StringProperty getIdentifierProperty() {
+		if(identifierProperty == null) {
+			identifierProperty = new SimpleStringProperty(identifier);
+		} 
 		return identifierProperty;
 	}
 

@@ -16,9 +16,9 @@ public class ProcessElement implements Serializable{
 
 	private File filename;
 
-	private ArrayList<RelationConstraintElement> relationConstraintElementList;
-	private ArrayList<ActivityElement> activityElementList;
-	private ArrayList<Template> templateList;
+	private ArrayList<RelationConstraintElement> relationConstraintElementList = new ArrayList<RelationConstraintElement>();
+	private ArrayList<ActivityElement> activityElementList = new ArrayList<ActivityElement>();
+	private ArrayList<Template> templateList = new ArrayList<Template>();;
 
 	private int maxActivityID = 0;
 	private int maxConstraintID = 0;
@@ -27,10 +27,6 @@ public class ProcessElement implements Serializable{
 	 * creates empty ProcessElement and loads default constraint templates
 	 */
 	public ProcessElement() {
-
-		relationConstraintElementList = new ArrayList<RelationConstraintElement>();
-		activityElementList = new ArrayList<ActivityElement>();
-		this.templateList = new ArrayList<Template>();
 		
 		loadDefaultTemplates();
 

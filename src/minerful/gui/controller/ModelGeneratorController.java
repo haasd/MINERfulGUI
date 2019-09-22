@@ -71,6 +71,7 @@ public class ModelGeneratorController extends AbstractController implements Init
 				tab.setContent(gridPane);
 				tab.setText(modelController.getSelectedRow().getSaveName());
 				modelGeneratorTabPane.getTabs().add(tab);
+				modelGeneratorTabPane.getSelectionModel().select(tab);
 				
 		    }
 			
@@ -94,7 +95,8 @@ public class ModelGeneratorController extends AbstractController implements Init
     		
 			tab.setContent(gridPane);
 			tab.setText("New Model");
-			modelGeneratorTabPane.getTabs().add(tab);	
+			modelGeneratorTabPane.getTabs().add(tab);
+			modelGeneratorTabPane.getSelectionModel().select(tab);
 			
 		} catch (IOException e) {
 			logger.info("Problem occured during selection!");

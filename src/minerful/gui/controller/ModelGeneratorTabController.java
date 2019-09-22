@@ -117,7 +117,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	
 	private TaskCharFactory tChFactory = new TaskCharFactory();
 	
-	private ObservableList<ActivityElement> activityElements;
+	private ObservableList<ActivityElement> activityElements = FXCollections.observableArrayList();
 	
 	private ObservableList<RelationConstraintInfo> constraintElements = FXCollections.observableArrayList();
 	
@@ -156,6 +156,8 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	// ProcessNode workaround
 	private List<ActivityNode> activityNodes = new ArrayList<>();
 	private List<RelationConstraintNode> constraintNodes = new ArrayList<>();
+	
+	private Boolean onLoad = false;
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -331,6 +333,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		
 		modelInfo.setProcessModel(processModel);
 		modelInfo.setSaveDate(new Date());
+		modelInfo.setProcessElement(GraphUtil.cloneProcessElement(currentProcessElement));
 		
 		getMainController().addSavedProcessModels(modelInfo);
 
@@ -353,14 +356,9 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	}
 	
 	public void loadGraph() {
-		
+		onLoad = true;
 		currentProcessElement = modelInfo.getProcessElement();
-		
 		createAndAddNodesOfProcessElement();
-		
-		//taskChars.addAll(modelInfo.getProcessModel().getTasks());
-		//constraints.addAll(modelInfo.getProcessModel().getAllUnmarkedConstraints());
-		//GraphUtil.drawProcessModel(currentProcessElement, eventManager, anchorPane, this);
 	}
 	
 	/**
@@ -404,14 +402,16 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	 */
 	private void createAndAddNodesOfProcessElement(){
 		
-		//ArrayList<ActivityNode> activityNodes = new ArrayList<ActivityNode>();
-		//create ActivityNodes (This includes information of ExistenceConstraints)
 		for (ActivityElement a: currentProcessElement.getActivityEList()){
 			ActivityNode aNode = new ActivityNode(a, this);
 			activityNodes.add(aNode);
 			anchorPane.getChildren().add(aNode);
 			eventManager.setEventHandler(aNode);
 		}
+		
+		this.activityElements.addAll(currentProcessElement.getActivityEList());
+		
+		onLoad=false;
 		
 		//create RelationConstraintNodes
 		ArrayList<RelationConstraintNode> relationConstraintNodes = new ArrayList<RelationConstraintNode>();
@@ -876,9 +876,8 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	}
 	
 	public void determineActivities() {
-		activityElements.clear(); 
+		activityElements.clear();
 		activityElements.addAll(currentProcessElement.getActivityEList());
-		
 	}
 	
 	public List<ActivityNode> getActivityNodes() {
