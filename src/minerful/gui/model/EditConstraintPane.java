@@ -280,7 +280,6 @@ public class EditConstraintPane extends ScrollPane {
 	 * part of updatePane method. Sets the selection of the RadioButtons to the currently selected template of the RelationConstraint.
 	 */
 	private void setTypeSelectionRadioButton(){
-		Template template = controller.getCurrentProcessElement().getTemplateByName(selectedConstraint.getConstraintElement().getTemplate().getName());
 		
 		RadioButton button;
 		

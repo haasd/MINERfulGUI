@@ -25,6 +25,7 @@
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.AreaChart?>
 <?import javafx.scene.control.ScrollPane?>
+<?import org.controlsfx.control.ToggleSwitch?>
 <?import javafx.scene.layout.BorderPane?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml/" fx:controller="minerful.gui.controller.DiscoverTabController">
@@ -90,7 +91,7 @@
     			</TableView>
     			
     			<!-- Post Processing Analysis Type -->
-    			<Label styleClass="section-header2" text="Analysis Type" style="-fx-content-display: right">
+    			<Label styleClass="section-header2" text="Pruning Type" style="-fx-content-display: right">
     				<graphic>
               			<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
                		</graphic>
@@ -103,7 +104,10 @@
               			<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
                		</graphic>
     			</Label>
-         		<VBox fx:id="cropType"></VBox>	
+         		<VBox fx:id="cropType">
+         			<ToggleSwitch style="-fx-padding: 5px 0px;" fx:id="negativeConstraints" text="Crop negative Constraints" />
+    				<ToggleSwitch style="-fx-padding: 5px 0px;" fx:id="positiveConstraints" text="Crop positive Constraints" />
+         		</VBox>	
          	</children>
 		</VBox>
 		

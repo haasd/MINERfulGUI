@@ -42,7 +42,7 @@ public class LineNode extends StackPane {
 	private boolean renderingOptimization = config.getBoolean("optimize.rendering");
 	
 
-	private String newNegativeStyle = "lineOptimized";
+	private String newNegativeStyle = "dashedline";
 	private String oldNegativeStyle = "dashedline";
 	private String normalStyle = "line";
 
@@ -135,7 +135,7 @@ public class LineNode extends StackPane {
 		line.getStyleClass().clear();
 		if(type.getNegation()){
 			if (renderingOptimization){
-				constraintLabel.setText("0");
+				constraintLabel.setText("");
 				//constraintLabel.getStyleClass().add(lineOptimizedStyle);
 				if (!getChildren().contains(constraintLabel)){
 					this.getChildren().add(constraintLabel);

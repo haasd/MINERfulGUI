@@ -669,4 +669,12 @@
 .errorMessageLabel{
 	-fx-text-fill: red;
 }
+
+.hide {
+	visibility: hidden;
+}
+
+.display {
+	visibility: visible;
+}
  

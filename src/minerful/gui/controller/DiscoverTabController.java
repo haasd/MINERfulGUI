@@ -41,6 +41,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -148,6 +149,12 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	@FXML
 	TableColumn<Constraint, Double> interestColumn;
+	
+	@FXML
+	ToggleSwitch negativeConstraints;
+	
+	@FXML
+	ToggleSwitch positiveConstraints;
 	
 	@FXML
 	TextField supportThresholdField;
@@ -409,19 +416,22 @@ public class DiscoverTabController extends AbstractController implements Initial
 		     } 
 		});
 		
-		// define cropRedundantAndInconsistentConstraints
-		ToggleSwitch toggleSwitch = new ToggleSwitch("Off");
-		cropType.getChildren().add(toggleSwitch);
-		
-		toggleSwitch.selectedProperty().addListener(it -> {
-			cropRedundantAndInconsistentConstraints = toggleSwitch.isSelected();
-			if(toggleSwitch.isSelected()) {
-				toggleSwitch.setText("On");
+		// define cropNegativeConstraints
+		negativeConstraints.selectedProperty().addListener(it -> {
+			if(negativeConstraints.isSelected()) {
+				GraphUtil.hideConstraints(activityNodes, constraintNodes, false);
 			} else {
-				toggleSwitch.setText("Off");
+				GraphUtil.displayConstraints(activityNodes, constraintNodes, false);
 			}
-			reminingRequired = true;
-			updateModel();
+        });
+		
+		// define cropPositiveConstraints
+		positiveConstraints.selectedProperty().addListener(it -> {
+			if(positiveConstraints.isSelected()) {
+				GraphUtil.hideConstraints(activityNodes, constraintNodes, true);
+			} else {
+				GraphUtil.displayConstraints(activityNodes, constraintNodes, true);
+			}
         });
 		
 		processingType.getChildren().addAll(typeNone,typeHierarchy,typeHierarchyConflict,typeHierarchyConflictRedundancy,typeHierarchyConflictRedundancyDouble);

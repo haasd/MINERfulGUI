@@ -29,6 +29,7 @@ import minerful.gui.controller.DiscoverTabController;
 import minerful.gui.controller.ModelGeneratorTabController;
 import minerful.gui.model.ActivityElement;
 import minerful.gui.model.ActivityNode;
+import minerful.gui.model.ActivityNode.Cursor;
 import minerful.gui.model.Card;
 import minerful.gui.model.EventHandlerManager;
 import minerful.gui.model.ExistenceConstraintEnum;
@@ -293,7 +294,6 @@ public class GraphUtil {
 							activityElement.setExistenceConstraint(new XMLExistenceConstraint(activityElement.getId(), null,conTemplateLabel.equals(ExistenceConstraintEnum.INIT.getTemplateLabel()) ? StructuringElement.INIT : StructuringElement.END));
 						}
 					} 
-					
 					controller.determineActivityNode(activityElement).updateNode();
 					
 				}
@@ -334,6 +334,7 @@ public class GraphUtil {
 				
 				pane.getChildren().add(amountOfLinesOnPane,cNode);
 				
+				cNode.changeConstraintType();
 				
 				eventHandler.setEventHandler(cNode);
 				
@@ -385,8 +386,65 @@ public class GraphUtil {
 		LineNode newLine = cNode.createAndSetLineNode(activityNode, parameterNumber);
 		
 		int position = processElement.getActivityEList().size() + 1;		// line has to be added after Activities
-		System.out.print(position);
 		pane.getChildren().add(1,newLine);		// position 0 is BackgroundPane, but has to be behind other Nodes
 	}
 	
+	public static void hideConstraints(List<ActivityNode> aNodes, List<RelationConstraintNode> rcNodes, Boolean positive) {
+		for(RelationConstraintNode rcNode : rcNodes) {
+			if(RelationConstraintEnum.isPositiveConstraint(rcNode.getConstraintElement().getTemplate().getName()) == positive) {
+				rcNode.getStyleClass().add("hide");
+				
+				for(ActivityNode aNode : aNodes) {
+					Cursor cursor = aNode.getCursorByConstraint(rcNode);
+					if(cursor !=null) {
+						if(cursor.getInsideCursor() != null) {
+							cursor.getInsideCursor().getStyleClass().add("hide");
+						}
+						
+						if(cursor.getOutsideCursor() != null) {
+							cursor.getOutsideCursor().getStyleClass().add("hide");
+						}
+					}
+				}
+				
+				for(LineNode lNode : rcNode.getParameter1Lines()) {
+					lNode.getStyleClass().add("hide");
+				}
+				
+				for(LineNode lNode : rcNode.getParameter2Lines()) {
+					lNode.getStyleClass().add("hide");
+				}
+			}
+		}
+	}
+	
+	public static void displayConstraints(List<ActivityNode> aNodes, List<RelationConstraintNode> rcNodes, Boolean positive) {
+		for(RelationConstraintNode rcNode : rcNodes) {
+			if(RelationConstraintEnum.isPositiveConstraint(rcNode.getConstraintElement().getTemplate().getName()) == positive) {
+				rcNode.getStyleClass().remove("hide");
+				
+				for(ActivityNode aNode : aNodes) {
+					Cursor cursor = aNode.getCursorByConstraint(rcNode);
+					if(cursor !=null) {
+						if(cursor.getInsideCursor() != null) {
+							cursor.getInsideCursor().getStyleClass().remove("hide");
+						}
+						
+						if(cursor.getOutsideCursor() != null) {
+							cursor.getOutsideCursor().getStyleClass().remove("hide");
+						}
+					}
+				}
+				
+				for(LineNode lNode : rcNode.getParameter1Lines()) {
+					lNode.getStyleClass().remove("hide");
+					
+				}
+				
+				for(LineNode lNode : rcNode.getParameter2Lines()) {
+					lNode.getStyleClass().remove("hide");
+				}
+			}
+		}
+	}
 }
