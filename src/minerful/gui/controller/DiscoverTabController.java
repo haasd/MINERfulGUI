@@ -36,7 +36,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.chart.AreaChart;
+import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
@@ -219,13 +221,15 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	private EventHandlerManager eventManager = new EventHandlerManager(this);
 	
-	private Graph graph;
-	
-	private Viewer viewer;
-	
 	private ProcessElement processElement;
 	
 	private ProxyPipe pipe;
+	
+    private String fixedParameter;
+	
+	private Double fixedThreshold;
+	
+	private Boolean fixed = false;
 	
 	private double scrollPanePadding = 250d;
 	private DoubleProperty maxTranslateX = new SimpleDoubleProperty(scrollPanePadding);
@@ -253,21 +257,21 @@ public class DiscoverTabController extends AbstractController implements Initial
 		supportThresholdSlider.setValue(0.95);
 		supportThresholdField.textProperty().addListener(getTextFieldChangeListener(supportThresholdSlider));
 		supportThresholdField.setOnKeyPressed(onEnterPressed());
-		supportThresholdSlider.valueProperty().addListener(getSliderChangeListener(supportThresholdField));
+		supportThresholdSlider.valueProperty().addListener(getSliderChangeListener(supportThresholdField, "support"));
 		supportThresholdSlider.setOnMouseReleased(onMouseReleaseSlider());
 		
 		confidenceThresholdField.setTextFormatter(ValidationEngine.getDoubleFilter(0.25));
 		confidenceThresholdSlider.setValue(0.25);
 		confidenceThresholdField.textProperty().addListener(getTextFieldChangeListener(confidenceThresholdSlider));
 		confidenceThresholdField.setOnKeyPressed(onEnterPressed());
-		confidenceThresholdSlider.valueProperty().addListener(getSliderChangeListener(confidenceThresholdField));
+		confidenceThresholdSlider.valueProperty().addListener(getSliderChangeListener(confidenceThresholdField, "confidence"));
 		confidenceThresholdSlider.setOnMouseReleased(onMouseReleaseSlider());
 		
 		interestThresholdField.setTextFormatter(ValidationEngine.getDoubleFilter(0.125));
 		interestThresholdSlider.setValue(0.125);
 		interestThresholdField.textProperty().addListener(getTextFieldChangeListener(interestThresholdSlider));
 		interestThresholdField.setOnKeyPressed(onEnterPressed());
-		interestThresholdSlider.valueProperty().addListener(getSliderChangeListener(interestThresholdField));
+		interestThresholdSlider.valueProperty().addListener(getSliderChangeListener(interestThresholdField, "interest"));
 		interestThresholdSlider.setOnMouseReleased(onMouseReleaseSlider());
 		
 		constraintColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().toString()));
@@ -484,11 +488,12 @@ public class DiscoverTabController extends AbstractController implements Initial
 		discoveredConstraints.addAll(processModel.getAllUnmarkedConstraints());
 		
 		supportChart.getData().clear();
-		supportChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllUnmarkedConstraints(), "support"));
+		supportChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "support"));
+
 		confidenceChart.getData().clear();
-		confidenceChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllUnmarkedConstraints(), "confidence"));
+		confidenceChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "confidence"));
 		interestChart.getData().clear();
-		interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllUnmarkedConstraints(), "interest"));
+		interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "interest"));
 		
 		if(processModel.getAllUnmarkedConstraints().size() > GuiConstants.NUMBER_CONSTRAINTS_WARNING) {
 			Optional<ButtonType> result = MinerfulGuiUtil.displayAlert("Warning", "Proceed rendering of graph?", "Rendering of Graph was stopped due to a high number of constraints.", AlertType.CONFIRMATION);
@@ -563,16 +568,33 @@ public class DiscoverTabController extends AbstractController implements Initial
 				processModel.addPropertyChangeListener(this);
 			}
 
-			discoveredConstraints.clear();
 			discoveredConstraints.addAll(processModel.getAllUnmarkedConstraints());
 			
-			supportChart.getData().clear();
-			supportChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllUnmarkedConstraints(), "support"));
-			confidenceChart.getData().clear();
-			confidenceChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllUnmarkedConstraints(), "confidence"));
-			interestChart.getData().clear();
-			interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllUnmarkedConstraints(), "interest"));
+			if(!"support".equals(fixedParameter) && fixedParameter != null) {
+				supportChart.getData().clear();
+				supportChart.getData().add(DiscoverUtil.countConstraintForThresholdValueFixed(processModel.getAllConstraints(), "support", fixedParameter, fixedThreshold));
+			} else if(fixedParameter == null) {
+				supportChart.getData().clear();
+				supportChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "support"));
+
+			}
 			
+			if(!"confidence".equals(fixedParameter) && fixedParameter != null) {
+				confidenceChart.getData().clear();
+				confidenceChart.getData().add(DiscoverUtil.countConstraintForThresholdValueFixed(processModel.getAllConstraints(), "confidence", fixedParameter, fixedThreshold));
+			} else if(fixedParameter == null){
+				confidenceChart.getData().clear();
+				confidenceChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "confidence"));
+			}
+			
+			if(!"interest".equals(fixedParameter) && fixedParameter != null) {
+				interestChart.getData().clear();
+				interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValueFixed(processModel.getAllConstraints(), "interest", fixedParameter, fixedThreshold));
+			} else if(fixedParameter == null){
+				interestChart.getData().clear();
+				interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "interest"));
+			}
+							
 			anchorPane.getChildren().remove(1, anchorPane.getChildren().size());
 			processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this);
 			setMaxTranslate();
@@ -592,7 +614,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		};
 	}
 	
-	private ChangeListener<Number> getSliderChangeListener(TextField textField) {
+	private ChangeListener<Number> getSliderChangeListener(TextField textField, String parameter) {
 		return new ChangeListener<Number>() {
 
 			@Override
@@ -601,6 +623,9 @@ public class DiscoverTabController extends AbstractController implements Initial
 				String doubleValue = String.format("%.3f", newValue.doubleValue());
 				doubleValue = doubleValue.replace(",", ".");
 				textField.setText(doubleValue);
+				fixed = true;
+				fixedParameter = parameter;
+				fixedThreshold = newValue.doubleValue();
 			}
 			
 		};

@@ -156,9 +156,9 @@
 	-fx-background-color: transparent;
 	-fx-text-fill: #e8eaf6;
 	-fx-font-family: open sans;
-	-fx-font-size: 16px;
+	-fx-font-size: 14px;
 	-fx-cursor: hand;
-	-fx-graphic-text-gap: 35px;
+	-fx-graphic-text-gap: 25px;
 	-fx-padding: 15px;
 	-fx-font-weight: bold;
 }

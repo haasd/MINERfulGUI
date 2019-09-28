@@ -39,8 +39,8 @@
 				</columnConstraints>
 			</GridPane>
 			<HBox style="-fx-padding: 20px 10px;" spacing="20" alignment="CENTER_RIGHT">
-				<Button styleClass="btn-default" text="Generate Event-Log" onAction="#generateEventLog"/>
-				<Button styleClass="btn-default" text="Export Event-Log" onAction="#exportEventLog"/>
+				<Button styleClass="btn-default" text="Generate" onAction="#generateEventLog"/>
+				<Button styleClass="btn-default" text="Export" onAction="#exportEventLog"/>
 			</HBox>
 		</VBox>
 		<GridPane GridPane.columnIndex="1" GridPane.rowIndex="0">

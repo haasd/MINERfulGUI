@@ -76,7 +76,6 @@ public class DiscoverController extends AbstractController implements Initializa
 	            public void handle(WorkerStateEvent event) {
 	            	try {
 	    				getMainController().addLoadedLogFile(parseLog.get());
-	    				getMainController().addSavedProcessModels(new ModelInfo(parseLog.get().getProcessModel(), new Date(), new File(parseLog.get().getPath()).getName(), null));
 	    				
 	    				Tab tab = new Tab();
 	    				FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/discover/DiscoverTab.fxml"));

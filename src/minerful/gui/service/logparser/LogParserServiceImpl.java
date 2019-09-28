@@ -46,6 +46,7 @@ public class LogParserServiceImpl implements LogParserService  {
 				postParams.supportThreshold = 0.95;
 				postParams.confidenceThreshold = 0.25;
 				postParams.interestFactorThreshold = 0.125;
+				postParams.cropRedundantAndInconsistentConstraints = false;
 
 				inputParams.inputLogFile = new File(path);
 				inputParams.inputLanguage = MinerfulGuiUtil.determineInputEncoding(path);
