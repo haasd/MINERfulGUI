@@ -1,11 +1,13 @@
 package minerful.gui.common;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.deckfour.xes.model.XLog;
 
@@ -26,7 +28,9 @@ public class MinerfulGuiUtil {
 		public static Logger logger = Logger.getLogger(MinerfulGuiUtil.class);
 	
 		// determine File encoding
-		public static InputEncoding determineInputEncoding(String extension) {
+		public static InputEncoding determineInputEncoding(String path) {
+			String extension = FilenameUtils.getExtension(path);
+			
 			switch(extension) {
 				case "txt": return InputEncoding.strings;
 				case "mxml": return InputEncoding.mxml;

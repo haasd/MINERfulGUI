@@ -510,7 +510,12 @@ public class DiscoverTabController extends AbstractController implements Initial
 			if (result.get() == ButtonType.OK){
 				processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this);
 				setMaxTranslate();
-			} 
+			} else {
+				logger.info("Graphrendering was canceled!");
+			}
+		} else {
+			processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this);
+			setMaxTranslate();
 		}
 
 		logInfos.add(GuiConstants.FILENAME+new File(currentEventLog.getPath()).getName());
