@@ -233,6 +233,9 @@ public class ActivityNode extends StackPane implements Selectable {
 	 */
 	public void updateNode(){
 		this.identifier.setText(activityElement.getIdentifier());
+		//Set Position
+		this.setTranslateX(this.activityElement.getPosX());
+		this.setTranslateY(this.activityElement.getPosY());
 		updateExistenceConstraint();
 		processTab.determineActivities();
 		processTab.determineConstraints();

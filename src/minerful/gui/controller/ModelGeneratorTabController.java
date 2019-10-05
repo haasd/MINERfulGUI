@@ -895,5 +895,11 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	public void setConstraintNodes(List<RelationConstraintNode> constraintNodes) {
 		this.constraintNodes = constraintNodes;
 	}
+	
+	@Override
+	public AnchorPane getAnchorPane() {
+		// TODO Auto-generated method stub
+		return anchorPane;
+	}
 
 }

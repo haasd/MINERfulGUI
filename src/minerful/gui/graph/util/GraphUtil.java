@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -41,6 +42,8 @@ import minerful.gui.model.RelationConstraintNode;
 import minerful.gui.model.StructuringElement;
 import minerful.gui.model.Template;
 import minerful.gui.model.xml.XMLExistenceConstraint;
+import minerful.gui.service.FruchtermanReingoldAlgorithm;
+import minerful.gui.service.LayoutAlgorithm;
 import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.util.Config;
 
@@ -159,11 +162,6 @@ public class GraphUtil {
 			
 			RelationConstraintNode rcNode = createConstraintNode(rcElement,controller);
 			controller.getConstraintNodes().add(rcNode);
-
-			int amountOfLinesOnPane = 1; // start with 1 because of backgroundPane
-			for(ActivityElement aElem : processElement.getActivityEList()){
-				amountOfLinesOnPane += aElem.getConstraintList().size();
-			}
 			
 			anchorPane.getChildren().add(rcNode);
 			
@@ -181,6 +179,10 @@ public class GraphUtil {
 		
 		determineActivityElements(processElement, processModel.getTasks(), pane, eventHandler, controller);
 		determineConstraintElements(processElement, processModel.getAllUnmarkedConstraints(), pane, eventHandler, controller);
+		
+		LayoutAlgorithm testAlgorithm = new FruchtermanReingoldAlgorithm(1000, 500, processElement, controller, 1000);
+		
+		testAlgorithm.optimizeLayout();
 		
 		return processElement;
 	}
@@ -217,8 +219,8 @@ public class GraphUtil {
 	private static void determineActivityElements(ProcessElement processElement, Set<TaskChar> activities, AnchorPane pane, EventHandlerManager eventHandler, DiscoverTabController controller) {
 		
 		Integer id = 0;
-		double x = 100d;
-		double y = 100d;
+		double x = 50d;
+		double y = 50d;
 		for(TaskChar taskChar : activities) {
 			id++;
 			ActivityElement activityElement = new ActivityElement(id, taskChar.getName(), taskChar.identifier.toString());
@@ -227,8 +229,8 @@ public class GraphUtil {
 
 			Random random = new Random(); 
 			
-			x += (random.nextDouble() * 800d ) - 400d;
-			y += (random.nextDouble() * 800d ) - 400d;
+			x = (random.nextDouble() * 800d ) - 400d;
+			y = (random.nextDouble() * 800d ) - 400d;
 			
 			if(x < 0) {
 				x+= 400d;
@@ -385,7 +387,6 @@ public class GraphUtil {
 		cElement.addActivityElement(activityNode.getActivityElement(), parameterNumber);
 		LineNode newLine = cNode.createAndSetLineNode(activityNode, parameterNumber);
 		
-		int position = processElement.getActivityEList().size() + 1;		// line has to be added after Activities
 		pane.getChildren().add(1,newLine);		// position 0 is BackgroundPane, but has to be behind other Nodes
 	}
 	

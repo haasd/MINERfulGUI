@@ -801,6 +801,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 	public void setMaxTranslate() {
 		double maxX = scrollPanePadding;
 		double maxY = scrollPanePadding;
+
 		for(Node n : anchorPane.getChildren()){
 			if (n.getTranslateX() + scrollPanePadding > maxX) {
 				maxX = n.getTranslateX() + scrollPanePadding;
@@ -809,6 +810,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 				maxY = n.getTranslateY() + scrollPanePadding;
 			}
 		}
+		
 		maxTranslateX.set(maxX);
 		maxTranslateY.set(maxY);
 	}
@@ -877,6 +879,12 @@ public class DiscoverTabController extends AbstractController implements Initial
 	public void determineActivities() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public AnchorPane getAnchorPane() {
+		// TODO Auto-generated method stub
+		return anchorPane;
 	}
 
 	

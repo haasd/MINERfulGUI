@@ -3,6 +3,7 @@ package minerful.gui.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.layout.AnchorPane;
 import minerful.gui.model.ActivityElement;
 import minerful.gui.model.ActivityNode;
 import minerful.gui.model.RelationConstraintElement;
@@ -21,5 +22,6 @@ public interface ProcessElementInterface {
 	public void determineConstraints();
 	public void determineActivities();
 	public List<RelationConstraintNode> getConstraintNodes();
+	public AnchorPane getAnchorPane();
 
 }
