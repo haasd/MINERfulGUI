@@ -94,32 +94,32 @@
             </ImageView>
             <AnchorPane layoutY="256.0" prefHeight="406.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
-                  <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="13.0" mnemonicParsing="false" prefHeight="54.0" text="Discover" styleClass="menu-button" onAction="#openDiscovery">
+                  <Button fx:id="discoverButton" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="13.0" mnemonicParsing="false" prefHeight="54.0" text="Discover" styleClass="menu-button" onAction="#openDiscovery">
 	              	<graphic>
 	              		<FontIcon iconColor="eaf6ff" iconLiteral="typ-lightbulb" iconSize="30" textAlignment="CENTER" wrappingWidth="26.0" />
 	               	</graphic>
                   </Button>
-                  <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="6.0" layoutY="54.0" mnemonicParsing="false" prefHeight="54.0" text="Generate/Modify Model" styleClass="menu-button" onAction="#openModelGenerator">
+                  <Button fx:id="generateButton" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="6.0" layoutY="54.0" mnemonicParsing="false" prefHeight="54.0" text="Generate/Modify Model" styleClass="menu-button" onAction="#openModelGenerator">
 	                  <graphic>
 	                  	<FontIcon iconColor="eaf6ff" iconLiteral="typ-edit" iconSize="30" layoutX="20.0" layoutY="37.0" textAlignment="CENTER" wrappingWidth="26.0" />
                       </graphic>
                   </Button>
-                  <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutY="108.0" mnemonicParsing="false" prefHeight="54.0" text="Simplify Model" styleClass="menu-button" onAction="#openSimplifier">
+                  <Button fx:id="simplifyButton" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutY="108.0" mnemonicParsing="false" prefHeight="54.0" text="Simplify Model" styleClass="menu-button" onAction="#openSimplifier">
 	                  <graphic>
 	                  		<FontIcon iconColor="eaf6ff" iconLiteral="typ-puzzle" iconSize="30" layoutX="20.0" layoutY="307.0" textAlignment="CENTER" wrappingWidth="26.0" />
                       </graphic>
                   </Button>
-                  <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="7.0" layoutY="162.0" mnemonicParsing="false" prefHeight="54.0" text="Create Event-Log" styleClass="menu-button" onAction="#openEventLogGenerator">
+                  <Button fx:id="eventLogButton" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="7.0" layoutY="162.0" mnemonicParsing="false" prefHeight="54.0" text="Create Event-Log" styleClass="menu-button" onAction="#openEventLogGenerator">
 	                  <graphic>
 	                  		<FontIcon iconColor="eaf6ff" iconLiteral="typ-book" iconSize="30" layoutX="20.0" layoutY="145.0" textAlignment="CENTER" wrappingWidth="26.0" />
               	      </graphic>
                   </Button>
-                  <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="5.0" layoutY="216.0" mnemonicParsing="false" prefHeight="54.0" text="Generate Automata" styleClass="menu-button" onAction="#openAutomataGenerator">
+                  <Button fx:id="automataButton" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="5.0" layoutY="216.0" mnemonicParsing="false" prefHeight="54.0" text="Generate Automata" styleClass="menu-button" onAction="#openAutomataGenerator">
 	                  <graphic>
 	                  		<FontIcon iconColor="eaf6ff" iconLiteral="typ-flash" iconSize="30" layoutX="20.0" layoutY="199.0" textAlignment="CENTER" wrappingWidth="26.0" />
 	                  </graphic>
                   </Button>
-                  <Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="7.0" layoutY="270.0" mnemonicParsing="false" prefHeight="54.0" text="Perform Fitness-Check" styleClass="menu-button" onAction="#openFitnessChecker">
+                  <Button fx:id="fitnessButton" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="7.0" layoutY="270.0" mnemonicParsing="false" prefHeight="54.0" text="Perform Fitness-Check" styleClass="menu-button" onAction="#openFitnessChecker">
 	                  <graphic>
 	                  		<FontIcon iconColor="eaf6ff" iconLiteral="typ-tick" iconSize="30" layoutX="20.0" layoutY="253.0" textAlignment="CENTER" wrappingWidth="26.0" />
                   	  </graphic>

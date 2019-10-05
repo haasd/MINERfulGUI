@@ -163,7 +163,7 @@
 	-fx-font-weight: bold;
 }
 
-.menu-button:hover {
+.menu-button.active-menu, .menu-button:hover {
 	-fx-font-weight: bold;
 	-fx-background-radius: 0px;
 	-fx-background-color: #4bb3fd;
