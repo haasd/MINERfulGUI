@@ -58,21 +58,7 @@ public class ModelGeneratorController extends AbstractController implements Init
 		    stage.showAndWait();
 		    
 		    if(modelController.getSelectedRow() != null) {
-		    	logger.info("User selected " + modelController.getSelectedRow().getSaveName());
-		    	Tab tab = new Tab();
-				loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/modelgenerator/ModelGeneratorTab.fxml"));
-	    		GridPane gridPane = loader.load();
-				ModelGeneratorTabController controller = loader.getController();
-				controller.setStage((Stage)((Node) event.getSource()).getScene().getWindow());
-				controller.setMainController(getMainController());
-				controller.setModelInfo(modelController.getSelectedRow());
-				controller.loadGraph();
-	    		
-				tab.setContent(gridPane);
-				tab.setText(modelController.getSelectedRow().getSaveName());
-				modelGeneratorTabPane.getTabs().add(tab);
-				modelGeneratorTabPane.getSelectionModel().select(tab);
-				
+		    	openModelinNewTab(modelController.getSelectedRow());
 		    }
 			
 		} catch (IOException e) {
@@ -85,7 +71,6 @@ public class ModelGeneratorController extends AbstractController implements Init
 	public void createModel(ActionEvent event) {
 		logger.info("Create Model!");
 		try {
-
 	    	Tab tab = new Tab();
 			FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/modelgenerator/ModelGeneratorTab.fxml"));
     		GridPane gridPane = loader.load();
@@ -100,6 +85,28 @@ public class ModelGeneratorController extends AbstractController implements Init
 			
 		} catch (IOException e) {
 			logger.info("Problem occured during selection!");
+			e.printStackTrace();
+		}
+	}
+	
+	public void openModelinNewTab(ModelInfo modelInfo) {
+		try {
+			logger.info("User selected " + modelInfo.getSaveName());
+	    	Tab tab = new Tab();
+	    	FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/modelgenerator/ModelGeneratorTab.fxml"));
+			GridPane gridPane = loader.load();
+			ModelGeneratorTabController controller = loader.getController();
+			controller.setStage((Stage)((Node) modelGeneratorTabPane).getScene().getWindow());
+			controller.setMainController(getMainController());
+			controller.setModelInfo(modelInfo);
+			controller.loadGraph();
+			
+			tab.setContent(gridPane);
+			tab.setText(modelInfo.getSaveName());
+			modelGeneratorTabPane.getTabs().add(tab);
+			modelGeneratorTabPane.getSelectionModel().select(tab);
+		} catch (IOException e) {
+			logger.info("Problem occured during processing model!");
 			e.printStackTrace();
 		}
 	}

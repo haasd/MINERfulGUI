@@ -26,3 +26,4 @@ models
 /convincialessio/
 /wollendorfer_h1452804_bachelorThesis/
 build/
+*.log

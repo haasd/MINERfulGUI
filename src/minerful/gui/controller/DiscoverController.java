@@ -76,40 +76,46 @@ public class DiscoverController extends AbstractController implements Initializa
 	            public void handle(WorkerStateEvent event) {
 	            	try {
 	    				getMainController().addLoadedLogFile(parseLog.get());
-	    				
-	    				Tab tab = new Tab();
-	    				FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/discover/DiscoverTab.fxml"));
-	    	    		GridPane gridPane = loader.load();
-	    				DiscoverTabController controller = loader.getController();
-	    				controller.setStage((Stage)((Node) actionEvent.getSource()).getScene().getWindow());
-	    				controller.setMainController(getMainController());
-	    				controller.setCurrentEventLog(parseLog.get());
-	    				controller.updateLogInfo();
-	    	    		
-	    				tab.setContent(gridPane);
-	    				tab.setText(new File(parseLog.get().getPath()).getName());
-	    				discoverTabPane.getTabs().add(tab);
-	    				discoverTabPane.getSelectionModel().select(tab);
-	    				
-	    				progressForm.closeProgressForm();
-	    				
+	    				openInfoLogInNewTab(parseLog.get());
+
 	    			} catch (InterruptedException e) {
 	    				// TODO Auto-generated catch block
 	    				e.printStackTrace();
 	    			} catch (ExecutionException e) {
 	    				// TODO Auto-generated catch block
 	    				e.printStackTrace();
-	    			} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+	    			}
 	            }
 	        });
+	        
+	        progressForm.closeProgressForm();
 				
 
 		} else {
 			logger.info("Fileselection canceled!"); 
 		}
     }
+	
+	public void openInfoLogInNewTab(LogInfo logInfo) {
+		try {
+			Tab tab = new Tab();
+			FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/discover/DiscoverTab.fxml"));
+    		GridPane gridPane = loader.load();
+			DiscoverTabController controller = loader.getController();
+			controller.setStage((Stage) ((Node) discoverTabPane).getScene().getWindow());
+			controller.setMainController(getMainController());
+			controller.setCurrentEventLog(logInfo);
+			controller.updateLogInfo();
+    		
+			tab.setContent(gridPane);
+			tab.setText(new File(logInfo.getPath()).getName());
+			discoverTabPane.getTabs().add(tab);
+			discoverTabPane.getSelectionModel().select(tab);
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }

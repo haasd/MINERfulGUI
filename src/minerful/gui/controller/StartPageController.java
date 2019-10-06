@@ -94,6 +94,8 @@ public class StartPageController extends AbstractController implements Initializ
 	
 	private List<Button> buttons = new ArrayList<>();
 	
+	private Map<String,AbstractController> controllerMap = new HashMap<>();
+	
 	@Override
     public void initialize(URL location, ResourceBundle resources) {
 		initDocumentation();
@@ -132,18 +134,19 @@ public class StartPageController extends AbstractController implements Initializ
 	}
     
     @FXML
-    private void openDiscovery(ActionEvent event) {
+    private void openDiscovery() {
     	if(currentView != "discover") {
         	logger.info("Open Discovery");
         	
         	handlePane("discover", "pages/discover/Discover.fxml");
  
         	currentView = "discover";
-        	highlightCurrentMenu(event);
+        	removeHighlightOfMenu();
+        	discoverButton.getStyleClass().add("active-menu");
     	} 
     }
     
-    private GridPane loadContent(String pathToFxml, Boolean newWindow) {
+    private GridPane loadContent(String pathToFxml, Boolean newWindow, String paneName) {
     	try {
     		FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(pathToFxml));
     		GridPane gridPane = loader.load(); 
@@ -151,13 +154,13 @@ public class StartPageController extends AbstractController implements Initializ
     		AbstractController abstractController = loader.getController();
     		abstractController.setMainController(this);
     		
+    		controllerMap.put(paneName, abstractController);
+    		
     		// replace context pane
     		if(!newWindow) {
     			rootPane.getChildren().set(0, gridPane);
     		} 
-    		
-    		
-			
+
 			return gridPane;
 			
 		} catch (IOException e) {
@@ -180,62 +183,67 @@ public class StartPageController extends AbstractController implements Initializ
     }
     
     @FXML
-    private void openModelGenerator(ActionEvent event) {
+    private void openModelGenerator() {
     	if(currentView != "modelgenerator") {
     		logger.info("Open Model Generator");
     		
     		handlePane("modelgenerator", "pages/modelgenerator/ModelGenerator.fxml");
     		
         	currentView = "modelgenerator";
-        	highlightCurrentMenu(event);
+        	removeHighlightOfMenu();
+        	generateButton.getStyleClass().add("active-menu");
     	}
     }
     
     @FXML
-    private void openEventLogGenerator(ActionEvent event) {
+    private void openEventLogGenerator() {
     	if(currentView != "eventloggenerator") {
     		logger.info("Open EventLog Generator");
     		
     		handlePane("eventloggenerator", "pages/eventloggenerator/EventLogGenerator.fxml");
     		
         	currentView = "eventloggenerator";
-        	highlightCurrentMenu(event);
+        	removeHighlightOfMenu();
+        	eventLogButton.getStyleClass().add("active-menu");
     	}
     }
     
     @FXML
-    private void openSimplifier(ActionEvent event) {
+    private void openSimplifier() {
     	if(currentView != "simplifier") {
         	logger.info("Open Simplification");
         	
         	handlePane("simplifier", "pages/simplifier/Simplifier.fxml");
         	
         	currentView = "simplifier";
-        	highlightCurrentMenu(event);
+        	removeHighlightOfMenu();
+        	simplifyButton.getStyleClass().add("active-menu");
     	}
     }
     
     @FXML
-    private void openAutomataGenerator(ActionEvent event) {
+    private void openAutomataGenerator() {
     	if(currentView != "automatagenerator") {
         	logger.info("Open Automata Generator");
         	
         	handlePane("automatagenerator", "pages/automatagenerator/AutomataGenerator.fxml");
 
         	currentView = "automatagenerator";
-        	highlightCurrentMenu(event);
+        	removeHighlightOfMenu();
+        	automataButton.getStyleClass().add("active-menu");
     	}
     }
     
     @FXML
-    private void openFitnessChecker(ActionEvent event) {
+    private void openFitnessChecker() {
     	if(currentView != "fitnesschecker") {
         	logger.info("Open Fitness-Check");
         	
         	handlePane("fitnesschecker", "pages/fitnesschecker/FitnessChecker.fxml");
 
         	currentView = "fitnesschecker";
-        	highlightCurrentMenu(event);
+        	removeHighlightOfMenu();
+        	fitnessButton.getStyleClass().add("active-menu");
     	}
     }
     
@@ -268,9 +276,31 @@ public class StartPageController extends AbstractController implements Initializ
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-
-        
+		} 
+    }
+    
+    public void openLogInArea(String area, LogInfo logInfo) {
+    	
+    	switch(area) {
+	    	case "discover" : 
+	    		openDiscovery();
+		    	DiscoverController controller = (DiscoverController) controllerMap.get("discover");
+		    	controller.openInfoLogInNewTab(logInfo);
+		    	break;
+    	}
+    	
+    }
+    
+    public void openModelInArea(String area, ModelInfo modelInfo) {
+    	
+    	switch(area) {
+	    	case "modelgenerator" : 
+	    		openModelGenerator();
+	    		ModelGeneratorController controller = (ModelGeneratorController) controllerMap.get("modelgenerator");
+		    	controller.openModelinNewTab(modelInfo);
+		    	break;
+    	}
+    	
     }
 
 	public ObservableList<LogInfo> getLoadedLogFiles() {
@@ -292,22 +322,17 @@ public class StartPageController extends AbstractController implements Initializ
     private void handlePane(String paneName, String path) {
     	
     	if(gridPanes.get(paneName) == null) {
-			gridPanes.put(paneName, loadContent(path, false));
+			gridPanes.put(paneName, loadContent(path, false, paneName));
 		} else {
 			rootPane.getChildren().set(0, gridPanes.get(paneName));
 		}
     
     }
     
-    private void highlightCurrentMenu(ActionEvent event) {
+    private void removeHighlightOfMenu() {
     	for(Button btn : buttons) {
-    		if(event.getSource() == btn) {
-    			btn.getStyleClass().add("active-menu");
-    		} else {
-    			btn.getStyleClass().remove("active-menu");
-    		}
+    		btn.getStyleClass().remove("active-menu");
     	}
-    	
     }
     
 }

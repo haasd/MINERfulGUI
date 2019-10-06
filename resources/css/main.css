@@ -492,25 +492,25 @@
 }
 .tab-pane .tab
 {	
-    -fx-background-color: white;
+    -fx-background-color: #4bb3fd;
 	-fx-background-radius: 2 2 0 0, 2 2 0 0, 2 2 0 0;
 }
 
 .tab-pane .tab:selected
 {
-   	-fx-background-color: #4bb3fd;
+   	-fx-background-color: white;
 }
 
 .tab .tab-label { 
     -fx-alignment: CENTER;
-    -fx-text-fill: #393939;
+    -fx-text-fill: white;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
 }
 
 .tab:selected .tab-label { 
     -fx-alignment: CENTER;
-    -fx-text-fill: white;
+    -fx-text-fill: #393939;
 }
 
 .tab:selected .focus-indicator {
