@@ -112,7 +112,7 @@
 		</VBox>
 		
 		<!-- Model -->
-		<HiddenSidesPane GridPane.columnIndex="1" GridPane.rowIndex="0">
+		<HiddenSidesPane fx:id="hiddenSidesPane" GridPane.columnIndex="1" GridPane.rowIndex="0">
 			<content>
 				<GridPane styleClass="section" hgap="30">
 		         	<children>
@@ -124,6 +124,13 @@
 				         			<Label styleClass="section-header1" text="Model" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
 				         			<Button styleClass="btn-default, btn-save" text="Take Snapshot" onAction="#saveSnapshotOfModel" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 				         			<Button styleClass="btn-default" text="Export" onAction="#exportFile" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+				         			<HBox HBox.hgrow="ALWAYS" alignment="CENTER_RIGHT">
+				         				<Label text="Display Constraints" GridPane.columnIndex="3" GridPane.rowIndex="0" style="-fx-content-display: right">
+					         				<graphic>
+			              						<FontIcon iconColor="#393939" iconLiteral="fa-arrow-circle-right" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+			               					</graphic>
+				         				</Label>
+				         			</HBox>
 				         		</HBox>
 			         			<ScrollPane fx:id="scrollPane" styleClass="model-canvas, background" maxHeight="600" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
 		         					<AnchorPane fx:id="anchorPane" styleClass="background">
@@ -222,7 +229,7 @@
 	        </content>
 	        <right>
 	        	<!-- Constraints -->
-      			<GridPane styleClass="constraints-table">
+      			<GridPane fx:id="constraintsTableWrapper" styleClass="constraints-table">
       				<children>
 	        			<Label styleClass="section-header2" text="Constraints" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
 	        			<TableView fx:id="constraintsTable" styleClass="table" GridPane.columnIndex="0" GridPane.rowIndex="1">

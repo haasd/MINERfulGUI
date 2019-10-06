@@ -15,10 +15,9 @@ import java.util.Set;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.controlsfx.control.HiddenSidesPane;
 import org.controlsfx.control.ToggleSwitch;
-import org.graphstream.graph.Graph;
 import org.graphstream.stream.ProxyPipe;
-import org.graphstream.ui.view.Viewer;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
@@ -34,14 +33,12 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.chart.AreaChart;
-import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -60,6 +57,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -112,6 +110,9 @@ public class DiscoverTabController extends AbstractController implements Initial
 	TableView<EventFilter> eventsTable;
 	
 	@FXML
+	HiddenSidesPane hiddenSidesPane;
+	
+	@FXML
 	TableView<Constraint> constraintsTable;
 	
 	@FXML
@@ -119,6 +120,9 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	@FXML
 	AnchorPane anchorPane;
+	
+	@FXML
+	GridPane constraintsTableWrapper;
 	
 	@FXML
 	BorderPane backgroundPane;
@@ -470,6 +474,10 @@ public class DiscoverTabController extends AbstractController implements Initial
 			backgroundPane.setPrefHeight(newValue.doubleValue());
 		});
 		
+		//Keep right side pinned
+		constraintsTableWrapper.setOnMouseEntered(e->hiddenSidesPane.setPinnedSide(Side.RIGHT)); 
+		constraintsTableWrapper.setOnMouseExited(e->hiddenSidesPane.setPinnedSide(null));
+		
 	}
 	
 	public void updateLogInfo() {
@@ -495,6 +503,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		
 		processModel = currentEventLog.getProcessModel();
 		processModel.addPropertyChangeListener(this);
+		discoveredConstraints.clear();
 		discoveredConstraints.addAll(processModel.getAllUnmarkedConstraints());
 		
 		supportChart.getData().clear();
@@ -583,6 +592,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 				processModel.addPropertyChangeListener(this);
 			}
 
+			discoveredConstraints.clear();
 			discoveredConstraints.addAll(processModel.getAllUnmarkedConstraints());
 			
 			if(!"support".equals(fixedParameter) && fixedParameter != null) {
