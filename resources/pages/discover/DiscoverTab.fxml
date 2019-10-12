@@ -23,7 +23,7 @@
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
-<?import javafx.scene.chart.AreaChart?>
+<?import minerful.gui.common.AreaChartWithMarker?>
 <?import javafx.scene.control.ScrollPane?>
 <?import org.controlsfx.control.ToggleSwitch?>
 <?import javafx.scene.layout.BorderPane?>
@@ -192,30 +192,30 @@
 		        			</GridPane>
 		       			</VBox>
 		       			<HBox GridPane.columnIndex="1" GridPane.rowIndex="1">
-		       				<AreaChart fx:id="supportChart" title="Support">
+		       				<AreaChartWithMarker fx:id="supportChart" title="Support">
 				              <xAxis>
 				                <NumberAxis side="BOTTOM" fx:id="supportXAxis" />
 				              </xAxis>
 				              <yAxis>
 				                <NumberAxis side="LEFT" fx:id="supportYAxis" />
 				              </yAxis>
-            				</AreaChart>
-            				<AreaChart fx:id="confidenceChart" title="Confidence">
+            				</AreaChartWithMarker>
+            				<AreaChartWithMarker fx:id="confidenceChart" title="Confidence">
 				              <xAxis>
 				                <NumberAxis side="BOTTOM" fx:id="confidenceXAxis"/>
 				              </xAxis>
 				              <yAxis>
 				                <NumberAxis side="LEFT" fx:id="confidenceYAxis"/>
 				              </yAxis>
-            				</AreaChart>
-            				<AreaChart fx:id="interestChart" title="Interest">
+            				</AreaChartWithMarker>
+            				<AreaChartWithMarker fx:id="interestChart" title="Interest">
 				              <xAxis>
 				                <NumberAxis side="BOTTOM" fx:id="interestXAxis"/>
 				              </xAxis>
 				              <yAxis>
 				                <NumberAxis side="LEFT" fx:id="interestYAxis"/>
 				              </yAxis>
-            				</AreaChart>
+            				</AreaChartWithMarker>
 		       			</HBox>
 		         	</children>
 					<rowConstraints>
