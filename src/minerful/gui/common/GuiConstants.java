@@ -16,4 +16,14 @@ public final class GuiConstants {
 	public static final String GENERATE_AUTOMATA="generateAutomata";
 	public static final String PERFORM_CHECK="performCheck";
 	public static final Integer NUMBER_CONSTRAINTS_WARNING=40;
+	
+	//Tooltips
+	public static final String TOOLTIP_TRACE_FILTER = "Trace Filter tooltip";
+	public static final String TOOLTIP_EVENT_FILTER = "Event Filter tooltip";
+	public static final String TOOLTIP_PRUNING_TYPE = "Pruning Type tooltip";
+	public static final String TOOLTIP_CROP_CONSTANTS = "Pruning Type tooltip";
+	public static final String TOOLTIP_SUPPORT_THRESHOLD = "Support Threshold tooltip";
+	public static final String TOOLTIP_CONFIDENCE_THRESHOLD = "Confidence Threshold tooltip";
+	public static final String TOOLTIP_INTEREST_THRESHOLD = "Interest Threshold tooltip";
+	
 }

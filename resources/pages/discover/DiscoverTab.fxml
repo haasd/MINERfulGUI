@@ -27,8 +27,13 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import org.controlsfx.control.ToggleSwitch?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Tooltip?>
+<?import minerful.gui.common.GuiConstants?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml/" fx:controller="minerful.gui.controller.DiscoverTabController">
+	<fx:define>
+		<GuiConstants fx:id="constants"/>
+ 	</fx:define>
 	<children>
 		<!-- Event-Log  -->
 		<VBox styleClass="section, section-menu" GridPane.columnIndex="0" GridPane.rowIndex="0">
@@ -57,6 +62,13 @@
     				<graphic>
               			<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
                		</graphic>
+               		<tooltip>
+        				<Tooltip>
+        					<text>
+        						<GuiConstants fx:constant="TOOLTIP_TRACE_FILTER" />
+        					</text>
+        				</Tooltip>
+    				</tooltip>
     			</Label>
 				<GridPane vgap="10">
 					<children>
@@ -76,6 +88,13 @@
     				<graphic>
               			<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
                		</graphic>
+               		<tooltip>
+        				<Tooltip>
+        					<text>
+        						<GuiConstants fx:constant="TOOLTIP_EVENT_FILTER" />
+        					</text>
+        				</Tooltip>
+    				</tooltip>
     			</Label>
     			<TableView fx:id="eventsTable" styleClass="table">
 					 <columns>
@@ -95,6 +114,13 @@
     				<graphic>
               			<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
                		</graphic>
+               		<tooltip>
+        				<Tooltip>
+        					<text>
+        						<GuiConstants fx:constant="TOOLTIP_PRUNING_TYPE" />
+        					</text>
+        				</Tooltip>
+    				</tooltip>
     			</Label>
     			<VBox fx:id="processingType" style="-fx-spacing: 10; -fx-padding: 5px; -fx-border-width: 1 0 1 0; -fx-border-color: #A5A39C;"></VBox>
          		
@@ -103,6 +129,13 @@
     				<graphic>
               			<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
                		</graphic>
+               		<tooltip>
+        				<Tooltip>
+        					<text>
+        						<GuiConstants fx:constant="TOOLTIP_CROP_CONSTANTS" />
+        					</text>
+        				</Tooltip>
+    				</tooltip>
     			</Label>
          		<VBox fx:id="cropType">
          			<ToggleSwitch style="-fx-padding: 5px 0px;" fx:id="negativeConstraints" text="Crop negative Constraints" />
@@ -159,6 +192,13 @@
 		         					<graphic>
 		              					<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
 		               				</graphic>
+		               				<tooltip>
+				        				<Tooltip>
+				        					<text>
+				        						<GuiConstants fx:constant="TOOLTIP_SUPPORT_THRESHOLD" />
+				        					</text>
+				        				</Tooltip>
+				    				</tooltip>
 		         				</Label>
 		         				<TextField fx:id="supportThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="1" ></TextField>
 		         				<Slider fx:id="supportThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="1">
@@ -169,6 +209,13 @@
 		         					<graphic>
 		              					<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
 		               				</graphic>
+		               				<tooltip>
+				        				<Tooltip>
+				        					<text>
+				        						<GuiConstants fx:constant="TOOLTIP_CONFIDENCE_THRESHOLD" />
+				        					</text>
+				        				</Tooltip>
+				    				</tooltip>
 		         				</Label>
 		         				<TextField fx:id="confidenceThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="3" ></TextField>
 		         				<Slider fx:id="confidenceThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="3">
@@ -179,6 +226,13 @@
 		         					<graphic>
 		              					<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
 		               				</graphic>
+		               				<tooltip>
+				        				<Tooltip>
+				        					<text>
+				        						<GuiConstants fx:constant="TOOLTIP_INTEREST_THRESHOLD" />
+				        					</text>
+				        				</Tooltip>
+				    				</tooltip>
 		         				</Label>
 		         				<TextField fx:id="interestThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="5" ></TextField>
 		         				<Slider fx:id="interestThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="5">
