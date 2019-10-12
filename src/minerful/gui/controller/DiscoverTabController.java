@@ -35,8 +35,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
 import javafx.scene.Node;
-import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart.Data;
+import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
@@ -68,6 +69,7 @@ import minerful.concept.ProcessModel;
 import minerful.concept.TaskChar;
 import minerful.concept.TaskCharArchive;
 import minerful.concept.constraint.Constraint;
+import minerful.gui.common.AreaChartWithMarker;
 import minerful.gui.common.GuiConstants;
 import minerful.gui.common.MinerfulGuiUtil;
 import minerful.gui.common.ModelInfo;
@@ -79,6 +81,7 @@ import minerful.gui.model.EventHandlerManager;
 import minerful.gui.model.ProcessElement;
 import minerful.gui.model.RelationConstraintElement;
 import minerful.gui.model.RelationConstraintNode;
+import minerful.gui.model.io.XmlModelWriter;
 import minerful.gui.service.DiscoverUtil;
 import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.service.loginfo.EventFilter;
@@ -194,13 +197,13 @@ public class DiscoverTabController extends AbstractController implements Initial
 	VBox canvasBox;
 	
 	@FXML
-	AreaChart<Double, Integer> supportChart;
+	AreaChartWithMarker<Double, Integer> supportChart;
 	
 	@FXML
-	AreaChart<Double, Integer> confidenceChart;
+	AreaChartWithMarker<Double, Integer> confidenceChart;
 	
 	@FXML
-	AreaChart<Double, Integer> interestChart;
+	AreaChartWithMarker<Double, Integer> interestChart;
 	
 	@FXML
 	NumberAxis supportXAxis;
@@ -241,6 +244,10 @@ public class DiscoverTabController extends AbstractController implements Initial
 	private Double fixedThreshold;
 	
 	private Boolean fixed = false;
+	
+	private Series<Double,Integer> supportData;
+	private Series<Double,Integer> interestData;
+	private Series<Double,Integer> confidenceData;
 	
 	private double scrollPanePadding = 250d;
 	private DoubleProperty maxTranslateX = new SimpleDoubleProperty(scrollPanePadding);
@@ -449,6 +456,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		supportXAxis.setAutoRanging(false);
 		supportXAxis.setTickUnit(0.2);
 		supportXAxis.setUpperBound(1.0);
+		supportYAxis.setMinorTickVisible(false);
 		
 		confidenceChart.getXAxis().setLabel("Threshold value");
 		confidenceChart.getYAxis().setLabel("Number of constraints");
@@ -457,6 +465,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		confidenceXAxis.setAutoRanging(false);
 		confidenceXAxis.setTickUnit(0.2);
 		confidenceXAxis.setUpperBound(1.0);
+		confidenceYAxis.setMinorTickVisible(false);
 		
 		interestChart.getXAxis().setLabel("Threshold value");
 		interestChart.getYAxis().setLabel("Number of constraints");
@@ -465,6 +474,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		interestXAxis.setAutoRanging(false);
 		interestXAxis.setTickUnit(0.2);
 		interestXAxis.setUpperBound(1.0);
+		interestYAxis.setMinorTickVisible(false);
 		
 		// add Listeners for Background
 		maxTranslateX.addListener((obs,oldValue,newValue) -> {
@@ -509,10 +519,17 @@ public class DiscoverTabController extends AbstractController implements Initial
 		supportChart.getData().clear();
 		supportChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "support"));
 
+		supportChart.addVerticalValueMarker(new Data<>(Double.parseDouble(supportThresholdField.getText()), 0));
+		
 		confidenceChart.getData().clear();
 		confidenceChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "confidence"));
+		
+		confidenceChart.addVerticalValueMarker(new Data<>(Double.parseDouble(confidenceThresholdField.getText()), 0));
+		
 		interestChart.getData().clear();
 		interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "interest"));
+		
+		interestChart.addVerticalValueMarker(new Data<>(Double.parseDouble(interestThresholdField.getText()), 0));
 		
 		if(processModel.getAllUnmarkedConstraints().size() > GuiConstants.NUMBER_CONSTRAINTS_WARNING) {
 			Optional<ButtonType> result = MinerfulGuiUtil.displayAlert("Warning", "Proceed rendering of graph?", "Rendering of Graph was stopped due to a high number of constraints.", AlertType.CONFIRMATION);
@@ -595,22 +612,29 @@ public class DiscoverTabController extends AbstractController implements Initial
 			discoveredConstraints.clear();
 			discoveredConstraints.addAll(processModel.getAllUnmarkedConstraints());
 			
+			/*
+			 * Handle Graphs
+			 */
 			if(!"support".equals(fixedParameter) && fixedParameter != null) {
 				supportChart.getData().clear();
 				supportChart.getData().add(DiscoverUtil.countConstraintForThresholdValueFixed(processModel.getAllConstraints(), "support", fixedParameter, fixedThreshold));
 			} else if(fixedParameter == null) {
 				supportChart.getData().clear();
 				supportChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "support"));
-
 			}
+
+			supportChart.addVerticalValueMarker(new Data<>(Double.parseDouble(supportThresholdField.getText()), 0));
 			
-			if(!"confidence".equals(fixedParameter) && fixedParameter != null) {
+			
+			if(fixedParameter != null && !"confidence".equals(fixedParameter)) {
 				confidenceChart.getData().clear();
 				confidenceChart.getData().add(DiscoverUtil.countConstraintForThresholdValueFixed(processModel.getAllConstraints(), "confidence", fixedParameter, fixedThreshold));
-			} else if(fixedParameter == null){
+			} else {
 				confidenceChart.getData().clear();
 				confidenceChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "confidence"));
 			}
+			
+			confidenceChart.addVerticalValueMarker(new Data<>(Double.parseDouble(confidenceThresholdField.getText()), 0));
 			
 			if(!"interest".equals(fixedParameter) && fixedParameter != null) {
 				interestChart.getData().clear();
@@ -619,6 +643,8 @@ public class DiscoverTabController extends AbstractController implements Initial
 				interestChart.getData().clear();
 				interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "interest"));
 			}
+			
+			interestChart.addVerticalValueMarker(new Data<>(Double.parseDouble(interestThresholdField.getText()), 0));
 							
 			anchorPane.getChildren().remove(1, anchorPane.getChildren().size());
 			processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this);
@@ -706,6 +732,10 @@ public class DiscoverTabController extends AbstractController implements Initial
 	             new FileChooser.ExtensionFilter("HTML","*.html");
 	    fileChooser.getExtensionFilters().add(extFilter);
 	    
+	    extFilter = 
+	             new FileChooser.ExtensionFilter("ZIP","*.zip");
+	    fileChooser.getExtensionFilters().add(extFilter);
+	    
 	    // open FileChooser and handle response
 		File saveFile = fileChooser.showSaveDialog(new Stage());
 		if(saveFile != null) {
@@ -745,6 +775,10 @@ public class DiscoverTabController extends AbstractController implements Initial
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					return;
+				case "zip": 
+					XmlModelWriter mWriter = new XmlModelWriter(processElement);
+					mWriter.writeXmlsFromProcessModel();
 					return;
 			}
 			

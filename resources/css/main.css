@@ -677,4 +677,6 @@
 .display {
 	visibility: visible;
 }
+
+.chart-area-symbol { -fx-background-color: null, null; }
  

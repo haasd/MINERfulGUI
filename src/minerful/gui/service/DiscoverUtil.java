@@ -3,6 +3,8 @@ package minerful.gui.service;
 import java.util.Collection;
 
 import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Data;
+import javafx.scene.layout.StackPane;
 import minerful.concept.constraint.Constraint;
 
 public class DiscoverUtil {
@@ -14,7 +16,7 @@ public class DiscoverUtil {
 		
 		// TODO ADD LOGIC 		
 		
-		for(int n=0; n <= 100; n+=5) {
+		for(int n=0; n <= 100; n+=1) {
 			double i = n * 0.01;
 			
 			Integer numberOfConstraints = 0;
@@ -25,6 +27,7 @@ public class DiscoverUtil {
 					numberOfConstraints++;
 				}
 			}
+			
 			series.getData().add(new XYChart.Data<Double,Integer>(i,numberOfConstraints));
 		}
 		
