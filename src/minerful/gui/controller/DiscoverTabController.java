@@ -80,6 +80,7 @@ import minerful.gui.model.ActivityNode;
 import minerful.gui.model.EventHandlerManager;
 import minerful.gui.model.ProcessElement;
 import minerful.gui.model.RelationConstraintElement;
+import minerful.gui.model.RelationConstraintEnum;
 import minerful.gui.model.RelationConstraintNode;
 import minerful.gui.model.io.XmlModelWriter;
 import minerful.gui.service.DiscoverUtil;
@@ -608,7 +609,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 				processModel = miFuMiLa.mine();
 				processModel.addPropertyChangeListener(this);
 			}
-
+			
 			discoveredConstraints.clear();
 			discoveredConstraints.addAll(processModel.getAllUnmarkedConstraints());
 			
@@ -649,6 +650,14 @@ public class DiscoverTabController extends AbstractController implements Initial
 			anchorPane.getChildren().remove(1, anchorPane.getChildren().size());
 			processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this);
 			setMaxTranslate();
+			
+			if(negativeConstraints.isSelected()) {
+				GraphUtil.hideConstraints(activityNodes, constraintNodes, false);
+			}
+			
+			if(positiveConstraints.isSelected()) {
+				GraphUtil.hideConstraints(activityNodes, constraintNodes, true);
+			}
 		}
 	}
 	
