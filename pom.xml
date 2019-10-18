@@ -92,6 +92,12 @@
 			<groupId>com.github.graphstream</groupId>
 			<artifactId>gs-algo</artifactId>
 			<version>2.0-alpha</version>
+			<exclusions>
+				<exclusion>
+					<groupId>xml-apis</groupId>
+					<artifactId>xml-apis</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.github.graphstream</groupId>
