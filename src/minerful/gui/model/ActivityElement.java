@@ -3,6 +3,8 @@ package minerful.gui.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import javax.xml.bind.Element;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import minerful.gui.model.xml.XMLExistenceConstraint;

@@ -168,6 +168,45 @@ public class RelationConstraintNode extends StackPane implements Positionable, S
 		setTranslateX(centerPositionX);
 		setTranslateY(centerPositionY);
 		
+		updatePosition();
+		
+		//Update Line Positions on Scene     
+        
+        for(LineNode line : getParameter1Lines()){
+      	   line.updateLinePosition();
+        }
+        for(LineNode line : getParameter2Lines()){
+       	   line.updateLinePosition();
+        }
+		
+	}
+	
+	public void moveConstraintBetweenActivities(Integer diff) {
+		ActivityNode activity1 = controller.determineActivityNode(constraintElement.getParameter1Elements().get(0));
+		ActivityNode activity2 = controller.determineActivityNode(constraintElement.getParameter2Elements().get(0));
+		
+		double activity1CenterX = activity1.getTranslateX() + activityRadius;
+		double activity2CenterX = activity2.getTranslateX() + activityRadius;
+		double activity1CenterY = activity1.getTranslateY() + activityRadius;
+		double activity2CenterY = activity2.getTranslateY() + activityRadius;
+		
+		double offsetPixels = 5.0;
+		
+		double L = Math.sqrt((activity1CenterX-activity2CenterX)*(activity1CenterX-activity2CenterX)+(activity1CenterY-activity2CenterY)*(activity1CenterY-activity2CenterY));
+		
+		double parallel1CenterX = activity1.getTranslateX() + activityRadius + offsetPixels * diff * (activity2CenterY-activity1CenterY) / L;
+		double parallel2CenterX = activity2.getTranslateX() + activityRadius + offsetPixels * diff * (activity2CenterY-activity1CenterY) / L;
+		double parallel1CenterY = activity1.getTranslateY() + activityRadius + offsetPixels * diff * (activity1CenterX-activity2CenterX) / L;
+		double parallel2CenterY = activity2.getTranslateY() + activityRadius + offsetPixels * diff * (activity1CenterX-activity2CenterX) / L;
+		
+		double centerPositionX = ((parallel1CenterX + parallel2CenterX) / 2 - constraintRadius);
+		double centerPositionY = ((parallel1CenterY + parallel2CenterY) / 2 - constraintRadius);
+		
+		setTranslateX(centerPositionX);
+		setTranslateY(centerPositionY);
+		
+		updatePosition();
+		
 		//Update Line Positions on Scene     
         
         for(LineNode line : getParameter1Lines()){
