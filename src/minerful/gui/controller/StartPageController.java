@@ -116,6 +116,7 @@ public class StartPageController extends AbstractController implements Initializ
 	private void initDocumentation() {
 		try {
 	        Scene scene = new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("pages/Documentation.fxml")), 600, 400);
+	        scene.getStylesheets().add(getClass().getClassLoader().getResource("css/main.css").toExternalForm());
 	        infoStage.setTitle("Documentation");
 	        infoStage.setScene(scene);
 	    } catch (IOException e) {
