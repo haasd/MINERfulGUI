@@ -153,13 +153,16 @@ public class FruchtermanReingoldAlgorithm extends LayoutAlgorithm {
 		for(ActivityElement node : nodes) {
 			ActivityNode aNode = this.getProcessElementInterface().determineActivityNode(node);
 			aNode.updateNode();
-			
+		}
+		
+		for(ActivityElement node : nodes) {
+			ActivityNode aNode = this.getProcessElementInterface().determineActivityNode(node);
+			int constraintCounter = 0;
 			for (RelationConstraintElement cElem : aNode.getActivityElement().getConstraintList()){
-	        	this.getProcessElementInterface().determineRelationConstraintNode(cElem).moveConstraintBetweenActivities(); 
+				constraintCounter++;
+	        	this.getProcessElementInterface().determineRelationConstraintNode(cElem).moveConstraintBetweenActivities(constraintCounter);
 	        }
-			
 			aNode.updateAllLineNodePositions();
-	        
 		}
 		
 	}
