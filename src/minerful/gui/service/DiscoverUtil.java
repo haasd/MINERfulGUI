@@ -40,7 +40,7 @@ public class DiscoverUtil {
 		
 		// TODO ADD LOGIC 		
 		
-		for(int n=0; n <= 100; n+=5) {
+		for(int n=0; n <= 100; n+=1) {
 			double i = n * 0.01;
 			
 			Integer numberOfConstraints = 0;

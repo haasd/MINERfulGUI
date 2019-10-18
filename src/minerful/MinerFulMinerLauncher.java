@@ -127,6 +127,12 @@ public class MinerFulMinerLauncher {
 				} else {
 					logParser = new StringLogParser(inputParams.inputLogFile, ClassificationType.NAME);
 				}
+				
+				// Remove from the analysed alphabet those activities that are
+				// specified in a user-defined list
+				if (minerFulParams != null && minerFulParams.activitiesToExcludeFromResult != null && minerFulParams.activitiesToExcludeFromResult.size() > 0) {
+					logParser.excludeTasksByName(minerFulParams.activitiesToExcludeFromResult);
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(1);
