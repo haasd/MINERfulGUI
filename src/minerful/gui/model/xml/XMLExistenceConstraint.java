@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import minerful.gui.model.Card;
-import minerful.gui.model.StructuringElement;
+import minerful.gui.model.StructureElement;
 
 public class XMLExistenceConstraint implements Serializable {
 	
@@ -16,7 +16,8 @@ public class XMLExistenceConstraint implements Serializable {
 	private static final long serialVersionUID = 5243357124521361465L;
 	private Integer activityID;
 	private Card card;						// optional: may choose from PARTICIPATION and ATMOSTON
-	private StructuringElement struct;					// optional: may choose from INIT and ENDE
+	private StructureElement initConstraint;
+	private StructureElement endConstraint;
 	
 	/**
 	 * constructor to create Existence Constraints from XML File while loading
@@ -27,10 +28,11 @@ public class XMLExistenceConstraint implements Serializable {
 	 * constructor for creating new Existence Constraints from UI
 	 * @param activityID
 	 */
-	public XMLExistenceConstraint(Integer activityID, Card card, StructuringElement struct){
+	public XMLExistenceConstraint(Integer activityID, Card card, StructureElement initConstraint, StructureElement endConstraint){
 		this.activityID = activityID;
 		this.card = card;
-		this.struct = struct;
+		this.initConstraint = initConstraint;
+		this.endConstraint = endConstraint;
 	}
 	
 	@XmlAttribute(required=true)
@@ -50,13 +52,22 @@ public class XMLExistenceConstraint implements Serializable {
 	public void setCard(Card card) {
 		this.card = card;
 	}
-	
-	@XmlElement(name="struct")
-	public StructuringElement getStruct() {
-		return struct;
+
+	public StructureElement getInitConstraint() {
+		return initConstraint;
 	}
 
-	public void setStruct(StructuringElement struct) {
-		this.struct = struct;
+	public void setInitConstraint(StructureElement initConstraint) {
+		this.initConstraint = initConstraint;
 	}
+
+	public StructureElement getEndConstraint() {
+		return endConstraint;
+	}
+
+	public void setEndConstraint(StructureElement endConstraint) {
+		this.endConstraint = endConstraint;
+	}
+	
+	
 }

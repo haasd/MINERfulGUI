@@ -4,7 +4,9 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-public class Card implements Serializable {
+import minerful.concept.constraint.Constraint;
+
+public class Card extends ConstraintElement implements Serializable {
 	
 	/**
 	 * 
@@ -17,8 +19,6 @@ public class Card implements Serializable {
 	 * Cardinality Constructor for JAXB
 	 */
 	public Card(){}
-	
-	
 	
 	/**
 	 * Cardinality Constructor to create valid cardinalities

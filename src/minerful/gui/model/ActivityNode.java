@@ -266,7 +266,7 @@ public class ActivityNode extends StackPane implements Selectable {
 				}
 			}
 			
-			if (activityElement.getExistenceConstraint().getStruct() == StructuringElement.INITEND){
+			if (activityElement.getExistenceConstraint().getEndConstraint().isActive() && activityElement.getExistenceConstraint().getInitConstraint().isActive()){
 				if (!getChildren().contains(initShape)){
 					getChildren().add(existenceConstraintPosition, initShape);
 				}
@@ -281,7 +281,7 @@ public class ActivityNode extends StackPane implements Selectable {
 				}
 			}
 			else {
-				if(activityElement.getExistenceConstraint().getStruct() == StructuringElement.INIT){
+				if(!activityElement.getExistenceConstraint().getEndConstraint().isActive() && activityElement.getExistenceConstraint().getInitConstraint().isActive()){
 					if (!getChildren().contains(initShape)){
 						getChildren().add(existenceConstraintPosition, initShape);
 					}
@@ -297,7 +297,7 @@ public class ActivityNode extends StackPane implements Selectable {
 					}
 					}
 				
-				if(activityElement.getExistenceConstraint().getStruct() == StructuringElement.END){
+				if(activityElement.getExistenceConstraint().getEndConstraint().isActive() && !activityElement.getExistenceConstraint().getInitConstraint().isActive()){
 					if (!getChildren().contains(endShape)){
 						getChildren().add(existenceConstraintPosition, endShape);
 					}

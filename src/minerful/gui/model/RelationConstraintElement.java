@@ -3,8 +3,7 @@ package minerful.gui.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import javafx.beans.property.Property;
-import javafx.beans.property.StringProperty;
+import minerful.concept.constraint.Constraint;
 
 /**
  * This class holds all information that is needed to draw a new Node and to save it. Every change that is being made by the GUI should be applied to here to always have the latest information.
@@ -12,7 +11,7 @@ import javafx.beans.property.StringProperty;
  * @author Lukas
  *
  */
-public class RelationConstraintElement implements Serializable {
+public class RelationConstraintElement extends ConstraintElement implements Serializable {
 	
 	//private final static Logger logger = Logger.getLogger(RelationConstraintElement.class);
 	

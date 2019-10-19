@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -24,6 +23,7 @@ import javafx.scene.layout.AnchorPane;
 import minerful.concept.ProcessModel;
 import minerful.concept.TaskChar;
 import minerful.concept.constraint.Constraint;
+import minerful.concept.constraint.ConstraintsBag;
 import minerful.gui.common.RelationConstraintInfo;
 import minerful.gui.common.ValidationEngine;
 import minerful.gui.controller.DiscoverTabController;
@@ -39,7 +39,7 @@ import minerful.gui.model.ProcessElement;
 import minerful.gui.model.RelationConstraintElement;
 import minerful.gui.model.RelationConstraintEnum;
 import minerful.gui.model.RelationConstraintNode;
-import minerful.gui.model.StructuringElement;
+import minerful.gui.model.StructureElement;
 import minerful.gui.model.Template;
 import minerful.gui.model.xml.XMLExistenceConstraint;
 import minerful.gui.service.FruchtermanReingoldAlgorithm;
@@ -112,16 +112,17 @@ public class GraphUtil {
 		for(ActivityElement sourceElement : activityElements) {
 			
 			if(sourceElement.getExistenceConstraint() != null) {
-				StructuringElement struct = sourceElement.getExistenceConstraint().getStruct();
-				if(struct != null) {
-					if(struct == StructuringElement.END) {
-						constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), null, "End"));
-					} else if (struct == StructuringElement.INIT) {
-						constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), null, "Init"));
-					} else if (struct == StructuringElement.INITEND) {
-						constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), null, "Init"));
-						constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), null, "End"));
-					}
+				
+				boolean init = sourceElement.getExistenceConstraint().getInitConstraint().isActive();
+				boolean end = sourceElement.getExistenceConstraint().getEndConstraint().isActive();
+				
+				if(end && !init) {
+					constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), null, "End"));
+				} else if (!end && init) {
+					constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), null, "Init"));
+				} else if (end && init) {
+					constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), null, "Init"));
+					constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), null, "End"));
 				}
 			
 				Card card = sourceElement.getExistenceConstraint().getCard();
@@ -170,6 +171,15 @@ public class GraphUtil {
 		}
 	}
 	
+	/*
+	 * Create ProcessModel based on a ProcessElement
+	 */
+	public static ProcessModel transformProcessElementIntoProcessModel(ProcessElement processElement) {
+		ConstraintsBag bag = new ConstraintsBag();
+		ProcessModel processModel = new ProcessModel(bag);
+		
+		return processModel;
+	}
 	
 	/*
 	 * Create ProcessElement based on a ProcessModel 
@@ -277,23 +287,31 @@ public class GraphUtil {
 							 card = new Card("0", "*");
 						}
 						
+						card.setSupport(constraint.getSupport());
+						card.setInterest(constraint.getInterestFactor());
+						card.setConfidence(constraint.getConfidence());
+						
 						if(activityElement.getExistenceConstraint() != null) {
 							activityElement.getExistenceConstraint().setCard(card);
 						} else {
-							activityElement.setExistenceConstraint(new XMLExistenceConstraint(activityElement.getId(), card, null));
+							activityElement.setExistenceConstraint(new XMLExistenceConstraint(activityElement.getId(), card, new StructureElement(false), new StructureElement(false)));
 						}
 						
 					} else if (conTemplateLabel.equals(ExistenceConstraintEnum.INIT.getTemplateLabel()) || conTemplateLabel.equals(ExistenceConstraintEnum.END.getTemplateLabel())) {
 						
 						// If INIT or END was already set replace it with INITEND
 						if(activityElement.getExistenceConstraint() != null) {
-							if(activityElement.getExistenceConstraint().getStruct() == StructuringElement.END || activityElement.getExistenceConstraint().getStruct() == StructuringElement.INIT) {
-								activityElement.getExistenceConstraint().setStruct(StructuringElement.INITEND);
+							if(conTemplateLabel.equals(ExistenceConstraintEnum.INIT.getTemplateLabel())) {
+								activityElement.getExistenceConstraint().setInitConstraint(new StructureElement(true, constraint.getSupport(), constraint.getConfidence(), constraint.getInterestFactor()));
 							} else {
-								activityElement.getExistenceConstraint().setStruct(conTemplateLabel.equals(ExistenceConstraintEnum.INIT.getTemplateLabel()) ? StructuringElement.INIT : StructuringElement.END);
+								activityElement.getExistenceConstraint().setEndConstraint(new StructureElement(true, constraint.getSupport(), constraint.getConfidence(), constraint.getInterestFactor()));
 							}
 						} else {
-							activityElement.setExistenceConstraint(new XMLExistenceConstraint(activityElement.getId(), null,conTemplateLabel.equals(ExistenceConstraintEnum.INIT.getTemplateLabel()) ? StructuringElement.INIT : StructuringElement.END));
+							if(conTemplateLabel.equals(ExistenceConstraintEnum.INIT.getTemplateLabel())) {			
+								activityElement.setExistenceConstraint(new XMLExistenceConstraint(activityElement.getId(), null,new StructureElement(true, constraint.getSupport(), constraint.getConfidence(), constraint.getInterestFactor()),new StructureElement(false)));
+							} else {
+								activityElement.setExistenceConstraint(new XMLExistenceConstraint(activityElement.getId(), null,new StructureElement(false),new StructureElement(true, constraint.getSupport(), constraint.getConfidence(), constraint.getInterestFactor())));
+							}
 						}
 					} 
 					controller.determineActivityNode(activityElement).updateNode();
@@ -305,6 +323,10 @@ public class GraphUtil {
 				Integer maxConstraintID = processElement.getMaxConstraintId();
 
 				RelationConstraintElement cElement = new RelationConstraintElement(maxConstraintID, template);
+				
+				cElement.setSupport(constraint.getSupport());
+				cElement.setInterest(constraint.getInterestFactor());
+				cElement.setConfidence(constraint.getConfidence());
 				
 				String taskId1 = constraint.getBase().getJoinedStringOfIdentifiers();
 				String taskId2 = constraint.getImplied().getJoinedStringOfIdentifiers();
