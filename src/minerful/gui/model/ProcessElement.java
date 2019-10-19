@@ -130,7 +130,7 @@ public class ProcessElement implements Serializable{
 	}
 
 	public void addExistenceConstraint(ActivityElement aNode) {
-		XMLExistenceConstraint eConstraint = new XMLExistenceConstraint(aNode.getId(), null, null);
+		XMLExistenceConstraint eConstraint = new XMLExistenceConstraint(aNode.getId(), null, new StructureElement(false), new StructureElement(false));
 		aNode.setExistenceConstraint(eConstraint);
 	}
 

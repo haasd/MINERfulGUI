@@ -278,30 +278,39 @@ public class EditActivityPane extends ScrollPane {
 
 		initCB.selectedProperty().addListener((obs, oldValue, newValue) -> {
 			if (endCB.isSelected()) {
-				if (newValue)
-					editedActivityNode.getExistenceConstraint().setStruct(StructuringElement.INITEND);
-				else
-					editedActivityNode.getExistenceConstraint().setStruct(StructuringElement.END);
+				if (newValue) {
+					editedActivityNode.getExistenceConstraint().setInitConstraint(new StructureElement(true));
+					editedActivityNode.getExistenceConstraint().setEndConstraint(new StructureElement(true));
+				} else {
+					editedActivityNode.getExistenceConstraint().setEndConstraint(new StructureElement(true));
+				}
+					
 			} else {
-				if (newValue)
-					editedActivityNode.getExistenceConstraint().setStruct(StructuringElement.INIT);
-				else
-					editedActivityNode.getExistenceConstraint().setStruct(null);
+				if (newValue) {
+					editedActivityNode.getExistenceConstraint().setInitConstraint(new StructureElement(true));
+				} else {
+					editedActivityNode.getExistenceConstraint().setInitConstraint(null);
+					editedActivityNode.getExistenceConstraint().setInitConstraint(null);
+				}
 			}
 			editedActivityNode.updateNode();
 		});
 
 		endCB.selectedProperty().addListener((obs, oldValue, newValue) -> {
 			if (initCB.isSelected()) {
-				if (newValue)
-					editedActivityNode.getExistenceConstraint().setStruct(StructuringElement.INITEND);
-				else
-					editedActivityNode.getExistenceConstraint().setStruct(StructuringElement.INIT);
+				if (newValue) {
+					editedActivityNode.getExistenceConstraint().setInitConstraint(new StructureElement(true));
+					editedActivityNode.getExistenceConstraint().setEndConstraint(new StructureElement(true));
+				} else {
+					editedActivityNode.getExistenceConstraint().setInitConstraint(new StructureElement(true));
+				}
 			} else {
-				if (newValue)
-					editedActivityNode.getExistenceConstraint().setStruct(StructuringElement.END);
-				else
-					editedActivityNode.getExistenceConstraint().setStruct(null);
+				if (newValue) {
+					editedActivityNode.getExistenceConstraint().setEndConstraint(new StructureElement(true));
+				} else {
+					editedActivityNode.getExistenceConstraint().setInitConstraint(null);
+					editedActivityNode.getExistenceConstraint().setInitConstraint(null);
+				}	
 			}
 			editedActivityNode.updateNode();
 		});
@@ -472,16 +481,9 @@ public class EditActivityPane extends ScrollPane {
 		}
 
 		if (existenceConstraintIsSet) {
-			boolean initEnd = editedActivityNode.getExistenceConstraint().getStruct() == StructuringElement.INITEND;
-			boolean init = editedActivityNode.getExistenceConstraint().getStruct() == StructuringElement.INIT;
-			boolean end = editedActivityNode.getExistenceConstraint().getStruct() == StructuringElement.END;
-			if (initEnd) {
-				initCB.setSelected(true);
-				endCB.setSelected(true);
-			} else {
-				initCB.setSelected(init);
-				endCB.setSelected(end);
-			}
+			
+			initCB.setSelected(editedActivityNode.getExistenceConstraint().getInitConstraint().isActive());
+			endCB.setSelected(editedActivityNode.getExistenceConstraint().getEndConstraint().isActive());
 
 			if (editedActivityNode.getExistenceConstraint().getCard() == null) {
 				cardMaxAnyRB.setSelected(true);

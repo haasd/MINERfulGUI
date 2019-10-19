@@ -729,6 +729,10 @@ public class DiscoverTabController extends AbstractController implements Initial
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open Event-Log");
 		FileChooser.ExtensionFilter extFilter = 
+	             new FileChooser.ExtensionFilter("ZIP","*.zip");
+	    fileChooser.getExtensionFilters().add(extFilter);
+		
+		extFilter = 
 	             new FileChooser.ExtensionFilter("XML", "*.xml");
 	    fileChooser.getExtensionFilters().add(extFilter);
 		extFilter = 
@@ -737,12 +741,11 @@ public class DiscoverTabController extends AbstractController implements Initial
 		extFilter = 
 	             new FileChooser.ExtensionFilter("CSV","*.csv");
 	    fileChooser.getExtensionFilters().add(extFilter);
+	    extFilter = 
+	             new FileChooser.ExtensionFilter("DeclareMap","*.decl");
+	    fileChooser.getExtensionFilters().add(extFilter);
 		extFilter = 
 	             new FileChooser.ExtensionFilter("HTML","*.html");
-	    fileChooser.getExtensionFilters().add(extFilter);
-	    
-	    extFilter = 
-	             new FileChooser.ExtensionFilter("ZIP","*.zip");
 	    fileChooser.getExtensionFilters().add(extFilter);
 	    
 	    // open FileChooser and handle response
@@ -762,14 +765,16 @@ public class DiscoverTabController extends AbstractController implements Initial
 			
 			switch(fileExtension.toLowerCase()) {
 				case "xml": 
-					//outParams.fileToSaveAsXML = new File(saveFile.getAbsolutePath());
-					outParams.fileToSaveAsConDec = outputFile;		
+					outParams.fileToSaveAsXML = outputFile;		
 					break;
 				case "json":
 					outParams.fileToSaveAsJSON = outputFile;
 					break;
 				case "csv":
 					outParams.fileToSaveConstraintsAsCSV = outputFile;
+					break;
+				case "decl": 
+					outParams.fileToSaveAsConDec = outputFile;
 					break;
 				case "html":
 					File htmlTemplateFile = new File(getClass().getClassLoader().getResource("templates/export.html").getFile());
@@ -787,7 +792,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 					return;
 				case "zip": 
 					XmlModelWriter mWriter = new XmlModelWriter(processElement);
-					mWriter.writeXmlsFromProcessModel();
+					mWriter.writeXmlsFromProcessModel(path);
 					return;
 			}
 			
