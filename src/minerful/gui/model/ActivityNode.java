@@ -266,53 +266,56 @@ public class ActivityNode extends StackPane implements Selectable {
 				}
 			}
 			
-			if (activityElement.getExistenceConstraint().getEndConstraint().isActive() && activityElement.getExistenceConstraint().getInitConstraint().isActive()){
-				if (!getChildren().contains(initShape)){
-					getChildren().add(existenceConstraintPosition, initShape);
-				}
-				if (!getChildren().contains(initLabel)){
-					getChildren().add(existenceConstraintPosition + 1, initLabel);
-				}
-				if (!getChildren().contains(endShape)){
-					getChildren().add(existenceConstraintPosition, endShape);
-				}
-				if (!getChildren().contains(endLabel)){
-					getChildren().add(existenceConstraintPosition + 1, endLabel);
-				}
-			}
-			else {
-				if(!activityElement.getExistenceConstraint().getEndConstraint().isActive() && activityElement.getExistenceConstraint().getInitConstraint().isActive()){
+			if(activityElement.getExistenceConstraint().getEndConstraint() != null && activityElement.getExistenceConstraint().getInitConstraint() != null) {
+				
+				if (activityElement.getExistenceConstraint().getEndConstraint().isActive() && activityElement.getExistenceConstraint().getInitConstraint().isActive()){
 					if (!getChildren().contains(initShape)){
 						getChildren().add(existenceConstraintPosition, initShape);
 					}
 					if (!getChildren().contains(initLabel)){
 						getChildren().add(existenceConstraintPosition + 1, initLabel);
 					}
-				} else { 
-					if (getChildren().contains(initShape)){
-						getChildren().remove(initShape);
-					}
-					if (getChildren().contains(initLabel)){
-						getChildren().remove(initLabel);
-					}
-					}
-				
-				if(activityElement.getExistenceConstraint().getEndConstraint().isActive() && !activityElement.getExistenceConstraint().getInitConstraint().isActive()){
 					if (!getChildren().contains(endShape)){
 						getChildren().add(existenceConstraintPosition, endShape);
 					}
 					if (!getChildren().contains(endLabel)){
 						getChildren().add(existenceConstraintPosition + 1, endLabel);
 					}
-				} else { 
-					if (getChildren().contains(endShape)){
-						getChildren().remove(endShape);
-					}
-					if (getChildren().contains(endLabel)){
-						getChildren().remove(endLabel);
+				} else {
+					if(!activityElement.getExistenceConstraint().getEndConstraint().isActive() && activityElement.getExistenceConstraint().getInitConstraint().isActive()){
+						if (!getChildren().contains(initShape)){
+							getChildren().add(existenceConstraintPosition, initShape);
+						}
+						if (!getChildren().contains(initLabel)){
+							getChildren().add(existenceConstraintPosition + 1, initLabel);
+						}
+					} else { 
+						if (getChildren().contains(initShape)){
+							getChildren().remove(initShape);
+						}
+						if (getChildren().contains(initLabel)){
+							getChildren().remove(initLabel);
+						}
+						}
+					
+					if(activityElement.getExistenceConstraint().getEndConstraint().isActive() && !activityElement.getExistenceConstraint().getInitConstraint().isActive()){
+						if (!getChildren().contains(endShape)){
+							getChildren().add(existenceConstraintPosition, endShape);
+						}
+						if (!getChildren().contains(endLabel)){
+							getChildren().add(existenceConstraintPosition + 1, endLabel);
+						}
+					} else { 
+						if (getChildren().contains(endShape)){
+							getChildren().remove(endShape);
+						}
+						if (getChildren().contains(endLabel)){
+							getChildren().remove(endLabel);
+						}
 					}
 				}
 			}
+
 		} else {
 			if (getChildren().contains(cardLabel)){
 				getChildren().remove(cardLabel);

@@ -277,40 +277,19 @@ public class EditActivityPane extends ScrollPane {
 		});
 
 		initCB.selectedProperty().addListener((obs, oldValue, newValue) -> {
-			if (endCB.isSelected()) {
-				if (newValue) {
-					editedActivityNode.getExistenceConstraint().setInitConstraint(new StructureElement(true));
-					editedActivityNode.getExistenceConstraint().setEndConstraint(new StructureElement(true));
-				} else {
-					editedActivityNode.getExistenceConstraint().setEndConstraint(new StructureElement(true));
-				}
-					
+			if (newValue) {
+				editedActivityNode.getExistenceConstraint().getInitConstraint().setActive(true);
 			} else {
-				if (newValue) {
-					editedActivityNode.getExistenceConstraint().setInitConstraint(new StructureElement(true));
-				} else {
-					editedActivityNode.getExistenceConstraint().setInitConstraint(null);
-					editedActivityNode.getExistenceConstraint().setInitConstraint(null);
-				}
+				editedActivityNode.getExistenceConstraint().getInitConstraint().setActive(false);
 			}
 			editedActivityNode.updateNode();
 		});
 
 		endCB.selectedProperty().addListener((obs, oldValue, newValue) -> {
-			if (initCB.isSelected()) {
-				if (newValue) {
-					editedActivityNode.getExistenceConstraint().setInitConstraint(new StructureElement(true));
-					editedActivityNode.getExistenceConstraint().setEndConstraint(new StructureElement(true));
-				} else {
-					editedActivityNode.getExistenceConstraint().setInitConstraint(new StructureElement(true));
-				}
+			if (newValue) {
+				editedActivityNode.getExistenceConstraint().getEndConstraint().setActive(true);
 			} else {
-				if (newValue) {
-					editedActivityNode.getExistenceConstraint().setEndConstraint(new StructureElement(true));
-				} else {
-					editedActivityNode.getExistenceConstraint().setInitConstraint(null);
-					editedActivityNode.getExistenceConstraint().setInitConstraint(null);
-				}	
+				editedActivityNode.getExistenceConstraint().getEndConstraint().setActive(false);
 			}
 			editedActivityNode.updateNode();
 		});
@@ -481,9 +460,13 @@ public class EditActivityPane extends ScrollPane {
 		}
 
 		if (existenceConstraintIsSet) {
+			if(editedActivityNode.getExistenceConstraint().getInitConstraint() != null) {
+				initCB.setSelected(editedActivityNode.getExistenceConstraint().getInitConstraint().isActive());
+			}
 			
-			initCB.setSelected(editedActivityNode.getExistenceConstraint().getInitConstraint().isActive());
-			endCB.setSelected(editedActivityNode.getExistenceConstraint().getEndConstraint().isActive());
+			if(editedActivityNode.getExistenceConstraint().getEndConstraint() != null) {
+				endCB.setSelected(editedActivityNode.getExistenceConstraint().getEndConstraint().isActive());
+			}
 
 			if (editedActivityNode.getExistenceConstraint().getCard() == null) {
 				cardMaxAnyRB.setSelected(true);

@@ -16,8 +16,8 @@ public class XMLExistenceConstraint implements Serializable {
 	private static final long serialVersionUID = 5243357124521361465L;
 	private Integer activityID;
 	private Card card;						// optional: may choose from PARTICIPATION and ATMOSTON
-	private StructureElement initConstraint;
-	private StructureElement endConstraint;
+	private StructureElement initConstraint = new StructureElement(false);
+	private StructureElement endConstraint = new StructureElement(false);
 	
 	/**
 	 * constructor to create Existence Constraints from XML File while loading

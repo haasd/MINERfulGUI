@@ -262,7 +262,7 @@
 				                <NumberAxis side="LEFT" fx:id="confidenceYAxis"/>
 				              </yAxis>
             				</AreaChartWithMarker>
-            				<AreaChartWithMarker fx:id="interestChart" title="Interest">
+            				<AreaChartWithMarker fx:id="interestChart" title="Interest-Factor">
 				              <xAxis>
 				                <NumberAxis side="BOTTOM" fx:id="interestXAxis"/>
 				              </xAxis>
