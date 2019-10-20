@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.SortedSet;
@@ -22,8 +24,29 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import minerful.concept.ProcessModel;
 import minerful.concept.TaskChar;
+import minerful.concept.TaskCharArchive;
+import minerful.concept.TaskCharFactory;
 import minerful.concept.constraint.Constraint;
 import minerful.concept.constraint.ConstraintsBag;
+import minerful.concept.constraint.MetaConstraintUtils;
+import minerful.concept.constraint.existence.AtMostOne;
+import minerful.concept.constraint.existence.End;
+import minerful.concept.constraint.existence.Init;
+import minerful.concept.constraint.existence.Participation;
+import minerful.concept.constraint.relation.AlternatePrecedence;
+import minerful.concept.constraint.relation.AlternateResponse;
+import minerful.concept.constraint.relation.AlternateSuccession;
+import minerful.concept.constraint.relation.ChainPrecedence;
+import minerful.concept.constraint.relation.ChainResponse;
+import minerful.concept.constraint.relation.ChainSuccession;
+import minerful.concept.constraint.relation.CoExistence;
+import minerful.concept.constraint.relation.NotChainSuccession;
+import minerful.concept.constraint.relation.NotCoExistence;
+import minerful.concept.constraint.relation.NotSuccession;
+import minerful.concept.constraint.relation.Precedence;
+import minerful.concept.constraint.relation.RespondedExistence;
+import minerful.concept.constraint.relation.Response;
+import minerful.concept.constraint.relation.Succession;
 import minerful.gui.common.RelationConstraintInfo;
 import minerful.gui.common.ValidationEngine;
 import minerful.gui.controller.DiscoverTabController;
@@ -180,12 +203,103 @@ public class GraphUtil {
 	 * Create ProcessModel based on a ProcessElement
 	 */
 	public static ProcessModel transformProcessElementIntoProcessModel(ProcessElement processElement) {
-		ConstraintsBag bag = new ConstraintsBag();
-		ProcessModel processModel = new ProcessModel(bag);
+		TaskCharFactory tChFactory = new TaskCharFactory();
+		List<TaskChar> taskChars = new ArrayList<>();
 		
-		return processModel;
+		Map<ActivityElement, TaskChar> aElementMap = new HashMap<>();
+		
+		for(ActivityElement aElement : processElement.getActivityEList()) {
+			TaskChar taskChar = tChFactory.makeTaskChar(aElement.getIdentifier());
+			taskChars.add(taskChar);
+			aElementMap.put(aElement, taskChar);
+		}
+		
+		// Create the tasks archive to store the "process alphabet"
+		TaskCharArchive taChaAr = new TaskCharArchive(taskChars);
+		ConstraintsBag bag = new ConstraintsBag(taChaAr.getTaskChars());
+		
+		List<LineElement> alreadyAddedLineElements = new ArrayList<>();
+		
+		for(ActivityElement aElement : processElement.getActivityEList()) {
+			
+			if(aElement.getExistenceConstraint() != null) {
+				// transform position constraints
+				if(aElement.getExistenceConstraint().getInitConstraint() != null && aElement.getExistenceConstraint().getInitConstraint().isActive()) {
+					bag.add(new Init(aElementMap.get(aElement), aElement.getExistenceConstraint().getInitConstraint().getSupport()));
+				}
+				
+				if(aElement.getExistenceConstraint().getEndConstraint() != null && aElement.getExistenceConstraint().getEndConstraint().isActive()) {
+					bag.add(new End(aElementMap.get(aElement), aElement.getExistenceConstraint().getEndConstraint().getSupport()));
+				}
+				
+				// Transform card. constraints 
+				if(aElement.getExistenceConstraint().getCard() != null) {
+					Card card = aElement.getExistenceConstraint().getCard();
+					
+					if("0".equals(card.getMin()) && "1".equals(card.getMin())) {
+						bag.add(new AtMostOne(aElementMap.get(aElement), card.getSupport()));
+					} else {
+						bag.add(new Participation(aElementMap.get(aElement), card.getSupport()));
+					}
+				}
+			}
+			
+			// transform relation constraints
+			for(RelationConstraintElement rcElement : aElement.getConstraintList()) {
+				for(LineElement lineElement : rcElement.getLineElements()) {
+					if(!alreadyAddedLineElements.contains(lineElement)) {
+						alreadyAddedLineElements.add(lineElement);
+						bag.add(mapTemplateToRelationConstraint(aElementMap, rcElement.getTemplate().getName(), lineElement));
+					}
+				}
+			}
+			
+			
+		}
+		
+		return new ProcessModel(bag);
 	}
 	
+	private static Constraint mapTemplateToRelationConstraint(Map<ActivityElement, TaskChar> aElementMap, String templateName, LineElement lineElement) {
+		
+		TaskChar source = aElementMap.get(lineElement.getSourceElement()); 
+		TaskChar target = aElementMap.get(lineElement.getTargetElement());
+		
+		switch(templateName) {
+			// RelationConstraints
+			case "respondedExistence" :
+				return new RespondedExistence(source, target, lineElement.getSupport());			
+			case "response":
+				return new Response(source, target, lineElement.getSupport());
+			case "alternateResponse":
+				return new AlternateResponse(source, target, lineElement.getSupport());
+			case "chainResponse":
+				return new ChainResponse(source, target, lineElement.getSupport());
+			case "precedence":
+				return new Precedence(source, target, lineElement.getSupport());
+			case "alternatePrecedence":
+				return new AlternatePrecedence(source, target, lineElement.getSupport());
+			case "chainPrecedence":
+				return new ChainPrecedence(source, target, lineElement.getSupport());
+			case "coExistence":
+				return new CoExistence(source, target, lineElement.getSupport());
+			case "succession":
+				return new Succession(source, target, lineElement.getSupport());
+			case "alternateSuccession":
+				return new AlternateSuccession(source, target, lineElement.getSupport());
+			case "chainSuccession":
+				return new ChainSuccession(source, target, lineElement.getSupport());
+			case "notChainSuccession":
+				return new NotChainSuccession(source, target, lineElement.getSupport());
+			case "notSuccession":
+				return new NotSuccession(source, target, lineElement.getSupport());
+			case "notCoExistence":
+				return new NotCoExistence(source, target, lineElement.getSupport());
+		}
+		
+		return null;
+	}
+
 	/*
 	 * Create ProcessElement based on a ProcessModel 
 	 */
