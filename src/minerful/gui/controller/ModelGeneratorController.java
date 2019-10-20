@@ -2,6 +2,7 @@ package minerful.gui.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import org.apache.log4j.Logger;
@@ -19,6 +20,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import minerful.gui.common.ModelInfo;
+import minerful.gui.graph.util.GraphUtil;
 
 public class ModelGeneratorController extends AbstractController implements Initializable	{
 	
@@ -91,18 +93,25 @@ public class ModelGeneratorController extends AbstractController implements Init
 	
 	public void openModelinNewTab(ModelInfo modelInfo) {
 		try {
-			logger.info("User selected " + modelInfo.getSaveName());
+
+	    	ModelInfo newModelInfo = new ModelInfo();
+	    	newModelInfo.setSaveName(modelInfo.getSaveName());
+	    	newModelInfo.setProcessModel(modelInfo.getProcessModel());
+	    	newModelInfo.setSaveDate((Date) modelInfo.getSaveDate().clone());
+	    	newModelInfo.setProcessElement(GraphUtil.cloneProcessElement(modelInfo.getProcessElement()));
+			
+			logger.info("User selected " + newModelInfo.getSaveName());
 	    	Tab tab = new Tab();
 	    	FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/modelgenerator/ModelGeneratorTab.fxml"));
 			GridPane gridPane = loader.load();
 			ModelGeneratorTabController controller = loader.getController();
 			controller.setStage((Stage)((Node) modelGeneratorTabPane).getScene().getWindow());
 			controller.setMainController(getMainController());
-			controller.setModelInfo(modelInfo);
+			controller.setModelInfo(newModelInfo);
 			controller.loadGraph();
 			
 			tab.setContent(gridPane);
-			tab.setText(modelInfo.getSaveName());
+			tab.setText(newModelInfo.getSaveName());
 			modelGeneratorTabPane.getTabs().add(tab);
 			modelGeneratorTabPane.getSelectionModel().select(tab);
 		} catch (IOException e) {
