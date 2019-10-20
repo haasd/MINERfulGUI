@@ -334,7 +334,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		
 		// TODO: Write Transform of ProcessElement into ProcessModel
 		 
-		modelInfo.setProcessModel(processModel);
+		modelInfo.setProcessModel(GraphUtil.transformProcessElementIntoProcessModel(currentProcessElement));
 		modelInfo.setSaveDate(new Date());
 		modelInfo.setProcessElement(GraphUtil.cloneProcessElement(currentProcessElement));
 		
