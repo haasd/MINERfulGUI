@@ -34,6 +34,7 @@ import minerful.gui.model.ActivityNode.Cursor;
 import minerful.gui.model.Card;
 import minerful.gui.model.EventHandlerManager;
 import minerful.gui.model.ExistenceConstraintEnum;
+import minerful.gui.model.LineElement;
 import minerful.gui.model.LineNode;
 import minerful.gui.model.ProcessElement;
 import minerful.gui.model.RelationConstraintElement;
@@ -108,13 +109,14 @@ public class GraphUtil {
 	
 	public static List<RelationConstraintInfo> determineConstraints(List<ActivityElement> activityElements) {
 		List<RelationConstraintInfo> constraintElements = new ArrayList<>();
+		List<LineElement> alreadyAddedLineElements = new ArrayList<>();
 		
 		for(ActivityElement sourceElement : activityElements) {
 			
 			if(sourceElement.getExistenceConstraint() != null) {
 				
-				boolean init = sourceElement.getExistenceConstraint().getInitConstraint().isActive();
-				boolean end = sourceElement.getExistenceConstraint().getEndConstraint().isActive();
+				boolean init = sourceElement.getExistenceConstraint().getInitConstraint() != null ? sourceElement.getExistenceConstraint().getInitConstraint().isActive() : false;
+				boolean end = sourceElement.getExistenceConstraint().getEndConstraint() != null ? sourceElement.getExistenceConstraint().getEndConstraint().isActive() : false;
 				
 				if(end && !init) {
 					constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), null, "End"));
@@ -135,11 +137,14 @@ public class GraphUtil {
 					}
 				}
 			}
+			
 			for(RelationConstraintElement constraint : sourceElement.getConstraintList()) {
-				for(ActivityElement targetElement : constraint.getParameter2Elements()) {
+				
+				for(LineElement lineElement: constraint.getLineElements()) {
 					
-					if(targetElement != sourceElement) {
-						constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), targetElement.getIdentifier(), constraint.getTemplate().getName()));
+					if(!alreadyAddedLineElements.contains(lineElement)) {
+						alreadyAddedLineElements.add(lineElement);
+						constraintElements.add(new RelationConstraintInfo(lineElement.getSourceElement().getIdentifier(), lineElement.getTargetElement().getIdentifier(), constraint.getTemplate().getName()));
 					}
 				}
 			}
@@ -324,10 +329,6 @@ public class GraphUtil {
 
 				RelationConstraintElement cElement = new RelationConstraintElement(maxConstraintID, template);
 				
-				cElement.setSupport(constraint.getSupport());
-				cElement.setInterest(constraint.getInterestFactor());
-				cElement.setConfidence(constraint.getConfidence());
-				
 				String taskId1 = constraint.getBase().getJoinedStringOfIdentifiers();
 				String taskId2 = constraint.getImplied().getJoinedStringOfIdentifiers();
 				
@@ -348,8 +349,8 @@ public class GraphUtil {
 				controller.determineActivityNode(aElement1);
 				
 				RelationConstraintNode cNode = createConstraintNode(cElement , controller);
-				addAdditionalActivity(controller.determineActivityNode(aElement1), cNode, 1, pane, processElement);
-				addAdditionalActivity(controller.determineActivityNode(aElement2), cNode, 2, pane, processElement);
+				addAdditionalActivity(controller.determineActivityNode(aElement1), cNode, 1, pane, processElement , constraint.getSupport(), constraint.getConfidence(), constraint.getInterestFactor());
+				addAdditionalActivity(controller.determineActivityNode(aElement2), cNode, 2, pane, processElement , constraint.getSupport(), constraint.getConfidence(), constraint.getInterestFactor());
 
 				int amountOfLinesOnPane = 1; // start with 1 because of backgroundPane
 				for(ActivityElement aElem : processElement.getActivityEList()){
@@ -402,11 +403,11 @@ public class GraphUtil {
 	 * @param aNode defines the ActivityNode
 	 * @param cNode defines the ConstraintNode, if NULL the selectedElement has to be a ConstraintNode and will be connected
 	 */
-	public static void addAdditionalActivity(ActivityNode activityNode, RelationConstraintNode cNode, int parameterNumber,AnchorPane pane, ProcessElement processElement){
+	public static void addAdditionalActivity(ActivityNode activityNode, RelationConstraintNode cNode, int parameterNumber,AnchorPane pane, ProcessElement processElement, double support, double confidence, double interest){
 		RelationConstraintElement cElement;
 		cElement = cNode.getConstraintElement();
 		
-		cElement.addActivityElement(activityNode.getActivityElement(), parameterNumber);
+		cElement.addActivityElement(activityNode.getActivityElement(), parameterNumber, support, confidence, interest);
 		LineNode newLine = cNode.createAndSetLineNode(activityNode, parameterNumber);
 		
 		pane.getChildren().add(1,newLine);		// position 0 is BackgroundPane, but has to be behind other Nodes

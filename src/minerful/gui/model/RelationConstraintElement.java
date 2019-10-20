@@ -2,8 +2,7 @@ package minerful.gui.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-
-import minerful.concept.constraint.Constraint;
+import java.util.List;
 
 /**
  * This class holds all information that is needed to draw a new Node and to save it. Every change that is being made by the GUI should be applied to here to always have the latest information.
@@ -11,7 +10,7 @@ import minerful.concept.constraint.Constraint;
  * @author Lukas
  *
  */
-public class RelationConstraintElement extends ConstraintElement implements Serializable {
+public class RelationConstraintElement implements Serializable {
 	
 	//private final static Logger logger = Logger.getLogger(RelationConstraintElement.class);
 	
@@ -27,6 +26,7 @@ public class RelationConstraintElement extends ConstraintElement implements Seri
 	private boolean positionFixed = false;
 	
 	//connectedElements and Nodes
+	private ArrayList<LineElement> lineElements = new ArrayList<LineElement>();
 	private ArrayList<ActivityElement> parameter1Elements = new ArrayList<ActivityElement>();
 	private ArrayList<ActivityElement> parameter2Elements = new ArrayList<ActivityElement>();
 		
@@ -78,6 +78,10 @@ public class RelationConstraintElement extends ConstraintElement implements Seri
 		return parameter2Elements;
 	}
 	
+	public ArrayList<LineElement> getLineElements() {
+		return lineElements;
+	}
+	
 	/**
 	 * adds an ActivityElement to the list of Activities of the RelationConstraint and the other way around.
 	 * creates a new LineNode and returns it.
@@ -86,15 +90,52 @@ public class RelationConstraintElement extends ConstraintElement implements Seri
 	 * @param activityElement
 	 * @return - the lineNode which has to be added to the contentPane
 	 */
-	public void addActivityElement(ActivityElement activityElement, int parameterNumber) {
+	public void addActivityElement(ActivityElement activityElement, int parameterNumber, double support, double confidence, double interest) {
+		
 		if(parameterNumber == 1){
 			parameter1Elements.add(activityElement);
-		} else {
-			if (parameterNumber == 2){
-				parameter2Elements.add(activityElement);
+		} else if(parameterNumber == 2){
+			parameter2Elements.add(activityElement);
+		}
+		
+		addLineElements(activityElement,parameterNumber, support, confidence, interest);
+		
+		activityElement.getConstraintList().add(this);
+	}
+	
+	
+	private void addLineElements(ActivityElement activityElement, int parameterNumber, double support, double confidence, double interest) {
+		if(parameterNumber == 1) {
+			for(ActivityElement aElement2 : parameter2Elements) {
+				lineElements.add(new LineElement(activityElement, aElement2, support, confidence, interest));
+			}
+		} else if(parameterNumber == 2) {
+			for(ActivityElement aElement1 : parameter1Elements) {
+				lineElements.add(new LineElement(aElement1, activityElement, support, confidence, interest));
 			}
 		}
-		activityElement.getConstraintList().add(this);
+	}
+	
+	private void removeLineElements(ActivityElement activityElement, int parameterNumber) {
+		List<LineElement> deletedLineElements = new ArrayList<>();
+		
+		if(parameterNumber == 1) {
+			for(LineElement lineElement : lineElements) {
+				if(lineElement.getSourceElement() == activityElement) {
+					deletedLineElements.add(lineElement);
+				}
+			}
+			
+		} else if(parameterNumber == 2) {
+			for(LineElement lineElement : lineElements) {
+				if(lineElement.getTargetElement() == activityElement) {
+					deletedLineElements.add(lineElement);
+					
+				}
+			}
+		}
+		
+		lineElements.removeAll(deletedLineElements);
 	}
 	
 	/**
@@ -112,6 +153,8 @@ public class RelationConstraintElement extends ConstraintElement implements Seri
 				parameter2Elements.remove(activityElement);
 			}
 		}
+		
+		removeLineElements(activityElement,parameterNumber);
 	}
 		
 	

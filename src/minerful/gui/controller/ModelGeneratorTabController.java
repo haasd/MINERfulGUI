@@ -331,6 +331,9 @@ public class ModelGeneratorTabController extends AbstractController implements I
 			return;
 		}
 		
+		
+		// TODO: Write Transform of ProcessElement into ProcessModel
+		 
 		modelInfo.setProcessModel(processModel);
 		modelInfo.setSaveDate(new Date());
 		modelInfo.setProcessElement(GraphUtil.cloneProcessElement(currentProcessElement));
@@ -407,8 +410,10 @@ public class ModelGeneratorTabController extends AbstractController implements I
 			activityNodes.add(aNode);
 			anchorPane.getChildren().add(aNode);
 			eventManager.setEventHandler(aNode);
+			this.determineActivityNode(a).updateNode();
 		}
 		
+		this.activityElements.clear();		
 		this.activityElements.addAll(currentProcessElement.getActivityEList());
 		
 		onLoad=false;
@@ -427,6 +432,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 				lineNodes.add(rcNode.createAndSetLineNode(determineActivityNode(a),2));
 			}
 			eventManager.setEventHandler(rcNode);
+			rcNode.changeConstraintType();
 		}
 		
 		anchorPane.getChildren().addAll(1, relationConstraintNodes);
@@ -599,7 +605,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 			cElement = cNode.getConstraintElement();
 			rcNode = cNode;
 		}
-		cElement.addActivityElement(aNode, parameterNumber);
+		cElement.addActivityElement(aNode, parameterNumber, 0d, 0d, 0d);
 		LineNode newLine = rcNode.createAndSetLineNode(determineActivityNode(aNode), parameterNumber);
 		
 		//int position = currentProcessElement.getActivityEList().size() + 1;		// line has to be added after Activities

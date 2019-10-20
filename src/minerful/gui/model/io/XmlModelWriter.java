@@ -29,6 +29,7 @@ import org.w3c.dom.Element;
 import minerful.gui.model.ActivityElement;
 import minerful.gui.model.ConstraintElement;
 import minerful.gui.model.ExistenceConstraintEnum;
+import minerful.gui.model.LineElement;
 import minerful.gui.model.ProcessElement;
 import minerful.gui.model.RelationConstraintElement;
 
@@ -200,8 +201,10 @@ public class XmlModelWriter {
 		Element relationConstraintRootElement = constraintDoc.createElement("RelationConstraints");
 		rootElement.appendChild(relationConstraintRootElement);
 		
+		List<LineElement> alreadyCreatedLineElements = new ArrayList<>();
+		
 		for(RelationConstraintElement rcElement : processElement.getConstraintEList()) {
-			relationConstraintRootElement.appendChild(createRelationConstraintElement(rcElement));
+			createRelationConstraintElement(relationConstraintRootElement, rcElement , alreadyCreatedLineElements);
 		}
 		
 		createXMLFile(constraintDoc, "Constraints");
@@ -261,20 +264,25 @@ public class XmlModelWriter {
 		return existenceConstraint;
 	}
 	
-	private Element createRelationConstraintElement(RelationConstraintElement rcElement) {
-		Element relationConstraint = constraintDoc.createElement("RelationPosition");
-		relationConstraint.setAttribute("template", rcElement.getTemplate().getName());
+	private void createRelationConstraintElement(Element rootElement, RelationConstraintElement rcElement , List<LineElement> alreadyCreatedLineElements) {
 		
-		// add activities and parameters
-		Element source = constraintDoc.createElement("sourceActivity");
-		source.setTextContent(rcElement.getParameter1Elements().get(0).getTaskCharIdentifier());
-		relationConstraint.appendChild(source);
-		Element target = constraintDoc.createElement("targetActivity");
-		target.setTextContent(rcElement.getParameter2Elements().get(0).getTaskCharIdentifier());
-		relationConstraint.appendChild(target);
-		addParameterElements(relationConstraint, rcElement);
-		
-		return relationConstraint;
+		for(LineElement lineElement: rcElement.getLineElements()) {
+			
+			Element relationConstraint = constraintDoc.createElement("constraint");
+			relationConstraint.setAttribute("template", rcElement.getTemplate().getName());
+			
+			// add activities and parameters
+			Element source = constraintDoc.createElement("sourceActivity");
+			source.setTextContent(lineElement.getSourceElement().getIdentifier());
+			relationConstraint.appendChild(source);
+			Element target = constraintDoc.createElement("targetActivity");
+			target.setTextContent(lineElement.getTargetElement().getIdentifier());
+			relationConstraint.appendChild(target);
+			addParameterElements(relationConstraint, lineElement);
+			
+			rootElement.appendChild(relationConstraint);
+		}
+
 	}
 	
 	private void zipDocuments(String path) throws IOException {
