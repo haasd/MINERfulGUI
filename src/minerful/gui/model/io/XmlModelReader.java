@@ -129,11 +129,11 @@ public class XmlModelReader {
 					aElement.getExistenceConstraint().setEndConstraint(new StructureElement(true,cElement.getSupport(), cElement.getConfidence(), cElement.getInterest()));
 				} else if(ExistenceConstraintEnum.AT_MOST_ONE.getTemplateLabel().equals(cElement.getTemplate())) {
 					if(aElement.getExistenceConstraint().getCard() == null) {
-						aElement.getExistenceConstraint().setCard(new Card("0","1",cElement.getSupport(), cElement.getConfidence(), cElement.getInterest()));
+						aElement.getExistenceConstraint().setCard(new Card(cElement.getMin(),cElement.getMax(),cElement.getSupport(), cElement.getConfidence(), cElement.getInterest()));
 					}
 				} else if(ExistenceConstraintEnum.PARTICIPATION.getTemplateLabel().equals(cElement.getTemplate())) {
 					if(aElement.getExistenceConstraint().getCard() == null) {
-						aElement.getExistenceConstraint().setCard(new Card("0","*", cElement.getSupport(), cElement.getConfidence(), cElement.getInterest()));
+						aElement.getExistenceConstraint().setCard(new Card(cElement.getMin(),cElement.getMax(), cElement.getSupport(), cElement.getConfidence(), cElement.getInterest()));
 					}
 				} 
 			} else {
@@ -275,7 +275,12 @@ public class XmlModelReader {
 			Element confidence = (Element) existenceConstraint.getElementsByTagName("confidence").item(0);
 			Element interest = (Element) existenceConstraint.getElementsByTagName("interest").item(0);
 			Element activity = (Element) existenceConstraint.getElementsByTagName("activity").item(0);
-			constraintMap.add(new ConstraintElement(activity.getTextContent(), template, activity.getTextContent(), null, Double.parseDouble(support.getTextContent()), Double.parseDouble(confidence.getTextContent()), Double.parseDouble(interest.getTextContent()), true));
+			Element minElement = (Element) existenceConstraint.getElementsByTagName("min").item(0);
+			Element maxElement = (Element) existenceConstraint.getElementsByTagName("max").item(0);
+			
+			String min = minElement != null ? minElement.getTextContent() : null;
+			String max = minElement != null ? maxElement.getTextContent() : null;
+			constraintMap.add(new ConstraintElement(activity.getTextContent(), template, activity.getTextContent(), null, Double.parseDouble(support.getTextContent()), Double.parseDouble(confidence.getTextContent()), Double.parseDouble(interest.getTextContent()), true, min, max));
 			logger.debug("Found ExistenceConstraint of " + activity.getTextContent() + " Template " + template +  " Support: " + support.getTextContent() + " Confidence: " + confidence.getTextContent() + " Interest: " + interest.getTextContent());
 
 		}
@@ -292,7 +297,7 @@ public class XmlModelReader {
 			Element interest = (Element) relationConstraint.getElementsByTagName("interest").item(0);
 			Element sourceActivity = (Element) relationConstraint.getElementsByTagName("sourceActivity").item(0);
 			Element targetActivity = (Element) relationConstraint.getElementsByTagName("targetActivity").item(0);
-			constraintMap.add(new ConstraintElement(identifier, template, sourceActivity.getTextContent(), targetActivity.getTextContent(), Double.parseDouble(support.getTextContent()), Double.parseDouble(confidence.getTextContent()), Double.parseDouble(interest.getTextContent()), false));
+			constraintMap.add(new ConstraintElement(identifier, template, sourceActivity.getTextContent(), targetActivity.getTextContent(), Double.parseDouble(support.getTextContent()), Double.parseDouble(confidence.getTextContent()), Double.parseDouble(interest.getTextContent()), false, null, null));
 			logger.debug("Found RelConstraint " + identifier + " Template " + template + " Support: " + support.getTextContent() + " Confidence: " + confidence.getTextContent() + " Interest: " + interest.getTextContent() + " Source: " + sourceActivity.getTextContent() + " Target: " + targetActivity.getTextContent());
 
 		}
@@ -338,9 +343,11 @@ public class XmlModelReader {
 		double confidence;
 		double interest;
 		boolean existenceConstraint;
+		String min;
+		String max;
 
 		public ConstraintElement(String identifier, String template, String sourceIdentifier, String targetIdentifier, double support,
-				double confidence, double interest, boolean existenceConstraint) {
+				double confidence, double interest, boolean existenceConstraint, String min, String max) {
 			super();
 			this.identifier = identifier;
 			this.template = template;
@@ -350,8 +357,26 @@ public class XmlModelReader {
 			this.confidence = confidence;
 			this.interest = interest;
 			this.existenceConstraint = existenceConstraint;
+			this.min = min;
+			this.max = max;
 		}
 		
+		public String getMin() {
+			return min;
+		}
+
+		public void setMin(String min) {
+			this.min = min;
+		}
+
+		public String getMax() {
+			return max;
+		}
+
+		public void setMax(String max) {
+			this.max = max;
+		}
+
 		public String getIdentifier() {
 			return identifier;
 		}
