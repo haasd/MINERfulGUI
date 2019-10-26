@@ -767,6 +767,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 			String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1, saveFile.getName().length());
 			
 			logger.info("Saving...");
+			boolean customOutput = false;
 			
 			switch(fileExtension.toLowerCase()) {
 				case "xml": 
@@ -794,15 +795,20 @@ public class DiscoverTabController extends AbstractController implements Initial
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					return;
+					customOutput = true;
 				case "zip": 
 					XmlModelWriter mWriter = new XmlModelWriter(processElement);
 					mWriter.writeXmlsFromProcessModel(path);
-					return;
+					customOutput = true;
 				case "svg": 
 					JFXToSVGConverter svgWriter = new JFXToSVGConverter(this);
 					svgWriter.createDocument(outputFile);
-					return;
+					customOutput = true;
+			}
+			
+			if(customOutput) {
+				Optional<ButtonType> result = MinerfulGuiUtil.displayAlert("Information", "Finished export", "Finished export of: " + outputFile, AlertType.CONFIRMATION);
+				return;
 			}
 			
 			MinerFulOutputManagementLauncher outputMgt = new MinerFulOutputManagementLauncher();
