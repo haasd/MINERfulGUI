@@ -64,6 +64,10 @@ public class XmlModelReader {
 			} else {
 				logger.error("Folder content doesn't fit requirements");
 			}
+			
+			if(!file.delete()) {
+				logger.error("Error during deletion of temp File: " + file.getName());
+			}
 		}
 		
 		Map<String, RelationConstraintElement> constraints = processConstraintList(constraintList, activities);
