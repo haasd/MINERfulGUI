@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.controlsfx.control.HiddenSidesPane;
 import org.controlsfx.control.ToggleSwitch;
 import org.graphstream.stream.ProxyPipe;
+import org.jfree.util.Log;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
@@ -224,6 +225,9 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	@FXML
 	NumberAxis interestYAxis;
+	
+	@FXML
+	Label numberOfConstraints;
 	
 	private ProcessModel processModel; 
 	
@@ -433,9 +437,12 @@ public class DiscoverTabController extends AbstractController implements Initial
 		negativeConstraints.selectedProperty().addListener(it -> {
 			if(negativeConstraints.isSelected()) {
 				GraphUtil.hideConstraints(activityNodes, constraintNodes, false);
+				
 			} else {
 				GraphUtil.displayConstraints(activityNodes, constraintNodes, false);
 			}
+			
+			setConstraintsTable();
         });
 		
 		// define cropPositiveConstraints
@@ -445,10 +452,11 @@ public class DiscoverTabController extends AbstractController implements Initial
 			} else {
 				GraphUtil.displayConstraints(activityNodes, constraintNodes, true);
 			}
+			
+			setConstraintsTable();
         });
 		
 		processingType.getChildren().addAll(typeNone,typeHierarchy,typeHierarchyConflict,typeHierarchyConflictRedundancy,typeHierarchyConflictRedundancyDouble);
-		
 		
 		//init Charts
 		supportChart.getXAxis().setLabel("Threshold value");
@@ -545,6 +553,8 @@ public class DiscoverTabController extends AbstractController implements Initial
 			processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this);
 			setMaxTranslate();
 		}
+		
+		numberOfConstraints.setText(String.valueOf(discoveredConstraints.size()));
 
 		logInfos.add(GuiConstants.FILENAME+new File(currentEventLog.getPath()).getName());
 		logInfos.add(GuiConstants.NUMBER_OF_EVENTS+currentEventLog.getLogParser().numberOfEvents());
@@ -556,6 +566,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 	}
 	
 	private void updateModel() {
+		
 		if(processModel != null) {
 			logger.info("Update Parameters: " + supportThresholdField.getText() + " " + confidenceThresholdField.getText() + " " + interestThresholdField.getText() + " " + postProcessingType);
 			
@@ -659,7 +670,36 @@ public class DiscoverTabController extends AbstractController implements Initial
 			if(positiveConstraints.isSelected()) {
 				GraphUtil.hideConstraints(activityNodes, constraintNodes, true);
 			}
+			
 		}
+		
+		numberOfConstraints.setText(String.valueOf(discoveredConstraints.size()));
+	}
+	
+	private void setConstraintsTable() {
+		List<Constraint> selectedConstraints = new ArrayList<>();
+		discoveredConstraints.clear();
+		for(Constraint constraint : processModel.getAllUnmarkedConstraints()) {
+			if(RelationConstraintEnum.findTemplateByTemplateLabel(constraint.getTemplateName()) == null) {
+				selectedConstraints.add(constraint);
+			}
+			
+			if(!negativeConstraints.isSelected() && !positiveConstraints.isSelected()) {
+				selectedConstraints.add(constraint);
+			} else if(negativeConstraints.isSelected() && !positiveConstraints.isSelected()) {
+				if(RelationConstraintEnum.isPositiveConstraint(constraint.getTemplateName())) {
+					selectedConstraints.add(constraint);
+				}
+			} else if(!negativeConstraints.isSelected() && positiveConstraints.isSelected()) {
+				if(!RelationConstraintEnum.isPositiveConstraint(constraint.getTemplateName())) {
+					selectedConstraints.add(constraint);
+				}
+			}
+		
+		}
+		
+		discoveredConstraints.addAll(selectedConstraints);
+		numberOfConstraints.setText(String.valueOf(discoveredConstraints.size()));
 	}
 	
 	private ChangeListener<String> getTextFieldChangeListener(Slider slider) {
@@ -969,6 +1009,12 @@ public class DiscoverTabController extends AbstractController implements Initial
 	@Override
 	public BorderPane getBackgroundPane() {
 		return backgroundPane;
+	}
+
+	@Override
+	public ScrollPane getScrollPane() {
+		// TODO Auto-generated method stub
+		return scrollPane;
 	}
 
 	

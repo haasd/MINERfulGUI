@@ -238,6 +238,11 @@
 		         				<Slider fx:id="interestThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="5">
 		         				</Slider>
 		         				
+		         				<HBox GridPane.columnIndex="0" GridPane.rowIndex="6" GridPane.columnSpan="2" alignment="CENTER" style="-fx-padding: 15px 0 0 0; -fx-font-size: 16px">
+		         					<Label text="Displayed Constraints: " />
+		         					<Label fx:id="numberOfConstraints" text="0" style="-fx-font-weight: bold"/>
+		         				</HBox>
+		         				
 		        				</children>
 		        				<columnConstraints>
 							        <ColumnConstraints percentWidth="20.0" />
