@@ -30,6 +30,12 @@ public class Card extends ConstraintElement implements Serializable {
 		this.max = max;
 	}
 	
+	public Card(String min, String max, double support, double confidence, double interest){
+		super(support, confidence, interest);
+		this.min = min;
+		this.max = max;
+	}
+	
 	@XmlAttribute(required=true)
 	public String getMin() {
 		return min;

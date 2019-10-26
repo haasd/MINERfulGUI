@@ -5,17 +5,12 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.implementations.MultiGraph;
-import org.graphstream.ui.view.Viewer;
-import org.graphstream.ui.view.util.InteractiveElement;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import javafx.beans.Observable;
@@ -53,13 +48,14 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import minerful.MinerFulOutputManagementLauncher;
 import minerful.concept.ProcessModel;
+import minerful.concept.TaskChar;
+import minerful.concept.TaskCharArchive;
 import minerful.concept.TaskCharFactory;
 import minerful.concept.constraint.ConstraintsBag;
 import minerful.gui.common.MinerfulGuiUtil;
 import minerful.gui.common.ModelInfo;
 import minerful.gui.common.RelationConstraintInfo;
 import minerful.gui.graph.util.GraphUtil;
-import minerful.gui.graph.util.ModelGeneratorGraphMouseManager;
 import minerful.gui.model.ActivityElement;
 import minerful.gui.model.ActivityNode;
 import minerful.gui.model.AddConstraintMode;
@@ -72,6 +68,7 @@ import minerful.gui.model.RelationConstraintElement;
 import minerful.gui.model.RelationConstraintNode;
 import minerful.gui.model.Selectable;
 import minerful.gui.model.Template;
+import minerful.gui.model.io.XmlModelWriter;
 import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.util.Config;
 import minerful.io.params.OutputModelParameters;
@@ -113,17 +110,11 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	
 	private ProcessModel processModel = new ProcessModel(bag);
 	
-	private Graph graph = new MultiGraph("MINERful");
-	
 	private TaskCharFactory tChFactory = new TaskCharFactory();
 	
 	private ObservableList<ActivityElement> activityElements = FXCollections.observableArrayList();
 	
 	private ObservableList<RelationConstraintInfo> constraintElements = FXCollections.observableArrayList();
-	
-	private Viewer viewer;
-	
-	private ModelGeneratorGraphMouseManager ggmm = new ModelGeneratorGraphMouseManager(EnumSet.of(InteractiveElement.EDGE, InteractiveElement.NODE, InteractiveElement.SPRITE), this);
 	
 	private Config config = new Config("config");
 	
@@ -158,6 +149,9 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	private List<RelationConstraintNode> constraintNodes = new ArrayList<>();
 	
 	private Boolean onLoad = false;
+	
+	private TaskCharFactory taChar = new TaskCharFactory();
+	private TaskCharArchive taCharAr = new TaskCharArchive();
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -254,7 +248,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open Event-Log");
 		FileChooser.ExtensionFilter extFilter = 
-	             new FileChooser.ExtensionFilter("XML/JSON/CSV/HTML", "*.xml", "*.json", "*.csv", "*.html");
+	             new FileChooser.ExtensionFilter("XML/JSON/CSV/HTML/ZIP","*.zip", "*.xml", "*.json", "*.csv","*.decl", "*.html");
 	    fileChooser.getExtensionFilters().add(extFilter);
 	    
 	    // open FileChooser and handle response
@@ -274,14 +268,16 @@ public class ModelGeneratorTabController extends AbstractController implements I
 			
 			switch(fileExtension.toLowerCase()) {
 				case "xml": 
-					//outParams.fileToSaveAsXML = new File(saveFile.getAbsolutePath());
-					outParams.fileToSaveAsConDec = outputFile;		
+					outParams.fileToSaveAsXML = outputFile;	
 					break;
 				case "json":
 					outParams.fileToSaveAsJSON = outputFile;
 					break;
 				case "csv":
 					outParams.fileToSaveConstraintsAsCSV = outputFile;
+					break;
+				case "decl":
+					outParams.fileToSaveAsConDec = outputFile;
 					break;
 				case "html":
 					File htmlTemplateFile = new File(getClass().getClassLoader().getResource("templates/export.html").getFile());
@@ -296,6 +292,10 @@ public class ModelGeneratorTabController extends AbstractController implements I
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					return;
+				case "zip": 
+					XmlModelWriter mWriter = new XmlModelWriter(currentProcessElement);
+					mWriter.writeXmlsFromProcessModel(path);
 					return;
 			}
 			
@@ -361,6 +361,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	public void loadGraph() {
 		onLoad = true;
 		currentProcessElement = modelInfo.getProcessElement();
+		
 		createAndAddNodesOfProcessElement();
 	}
 	
@@ -462,10 +463,18 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		Integer id = currentProcessElement.getMaxActivityID();
 		String taskName = "new Activity " + id;
 		
-		ActivityElement aElement = new ActivityElement(id, taskName);
+		for(ActivityElement aElement : currentProcessElement.getActivityEList()) {
+			TaskChar taskChar = taChar.makeTaskChar(aElement.getIdentifier());
+			aElement.setTaskCharIdentifier(taskChar.identifier.toString());
+		}
+		
+		TaskChar taskChar = taChar.makeTaskChar(taskName);
+		
+		ActivityElement aElement = new ActivityElement(id, taskName, taskChar.identifier.toString());
 		
 		// add Activity to process model
 		currentProcessElement.addActivity(aElement);
+		
 		activityElements.add(aElement);
 		
 		//create Node and add it to Pane

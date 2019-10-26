@@ -81,17 +81,17 @@ public class XmlModelWriter {
 		
 		logger.info("Start Creation of Position-Document!");
 		
-		Element rootElement = positionDoc.createElement("Positions");
+		Element rootElement = positionDoc.createElement("positions");
 		positionDoc.appendChild(rootElement);
 		
-		Element activityRootElement = positionDoc.createElement("ActivityPositions");
+		Element activityRootElement = positionDoc.createElement("activityPositions");
 		rootElement.appendChild(activityRootElement);
 		
 		for(ActivityElement aElement : processElement.getActivityEList()) {
 			activityRootElement.appendChild(createActivityPositionElement(aElement));
 		}
 		
-		Element relationRootElement = positionDoc.createElement("RelationPositions");
+		Element relationRootElement = positionDoc.createElement("relationPositions");
 		rootElement.appendChild(relationRootElement);
 		
 		for(RelationConstraintElement rcElement : processElement.getConstraintEList()) {
@@ -104,7 +104,7 @@ public class XmlModelWriter {
 	}
 	
 	private Element createActivityPositionElement(ActivityElement aElement) {
-		Element activityPosition = positionDoc.createElement("ActivityPosition");
+		Element activityPosition = positionDoc.createElement("activityPosition");
 		activityPosition.setAttribute("identifier", aElement.getTaskCharIdentifier());
 		
 		Element positionX = positionDoc.createElement("positionX");
@@ -119,7 +119,7 @@ public class XmlModelWriter {
 	}
 	
 	private Element createRelationPositionElement(RelationConstraintElement rcElement) {
-		Element relationPosition = positionDoc.createElement("RelationPosition");
+		Element relationPosition = positionDoc.createElement("relationPosition");
 		relationPosition.setAttribute("identifier", "C" + rcElement.getId().toString());
 		
 		Element positionX = positionDoc.createElement("positionX");
@@ -162,7 +162,7 @@ public class XmlModelWriter {
 	private void createActivityDoc() {
 		logger.info("Start Creation of Activity-Document!");
 		
-		Element rootElement = activityDoc.createElement("Activities");
+		Element rootElement = activityDoc.createElement("activities");
 		activityDoc.appendChild(rootElement);
 		
 		for(ActivityElement aElement : processElement.getActivityEList()) {
@@ -175,7 +175,7 @@ public class XmlModelWriter {
 	}
 	
 	private Element createActivityElement(ActivityElement aElement) {
-		Element activity = activityDoc.createElement("Activity");
+		Element activity = activityDoc.createElement("activity");
 		activity.setAttribute("identifier", aElement.getTaskCharIdentifier());
 		
 		Element label = activityDoc.createElement("label");
@@ -188,17 +188,17 @@ public class XmlModelWriter {
 	private void createConstraintDoc() {
 		logger.info("Start Creation of Constraints-Document!");
 		
-		Element rootElement = constraintDoc.createElement("Constraints");
+		Element rootElement = constraintDoc.createElement("constraints");
 		constraintDoc.appendChild(rootElement);
 		
-		Element existenceConstraintRootElement = constraintDoc.createElement("ExistenceConstraints");
+		Element existenceConstraintRootElement = constraintDoc.createElement("existenceConstraints");
 		rootElement.appendChild(existenceConstraintRootElement);
 		
 		for(ActivityElement aElement : processElement.getActivityEList()) {
-			existenceConstraintRootElement.appendChild(createExistenceConstraintElement(aElement));
+			createExistenceConstraintElement(existenceConstraintRootElement,aElement);
 		}
 		
-		Element relationConstraintRootElement = constraintDoc.createElement("RelationConstraints");
+		Element relationConstraintRootElement = constraintDoc.createElement("relationConstraints");
 		rootElement.appendChild(relationConstraintRootElement);
 		
 		List<LineElement> alreadyCreatedLineElements = new ArrayList<>();
@@ -212,71 +212,74 @@ public class XmlModelWriter {
 		logger.info("Finished Creation of Constraints-Document!");
 	}
 	
-	private Element createExistenceConstraintElement(ActivityElement aElement) {
-		Element existenceConstraint = constraintDoc.createElement("ExistenceConstraint");
-		
-		// add corresponding activity
-		Element activity = constraintDoc.createElement("activity");
-		activity.setTextContent(aElement.getTaskCharIdentifier());
-		existenceConstraint.appendChild(activity);
+	private void createExistenceConstraintElement(Element rootElement, ActivityElement aElement) {
 		
 		// handle position constraints
 		if(aElement.getExistenceConstraint() != null) {
 			
 			if(aElement.getExistenceConstraint().getInitConstraint() != null && aElement.getExistenceConstraint().getInitConstraint().isActive()) {
-				Element positionConstraint = constraintDoc.createElement("constraint");
-				positionConstraint.setAttribute("template", ExistenceConstraintEnum.INIT.getTemplateLabel());
-				addParameterElements(positionConstraint,aElement.getExistenceConstraint().getInitConstraint());
-				existenceConstraint.appendChild(positionConstraint);
+				Element existenceConstraint = constraintDoc.createElement("existenceConstraint");
+				Element activity = constraintDoc.createElement("activity");
+				activity.setTextContent(aElement.getTaskCharIdentifier());
+				existenceConstraint.appendChild(activity);
+				existenceConstraint.setAttribute("template", ExistenceConstraintEnum.INIT.getTemplateLabel());
+				addParameterElements(existenceConstraint,aElement.getExistenceConstraint().getInitConstraint());
+				rootElement.appendChild(existenceConstraint);
 			}
 			
 			if(aElement.getExistenceConstraint().getEndConstraint() != null && aElement.getExistenceConstraint().getEndConstraint().isActive()) {
-				Element positionConstraint = constraintDoc.createElement("constraint");
-				positionConstraint.setAttribute("template", ExistenceConstraintEnum.END.getTemplateLabel());
-				addParameterElements(positionConstraint,aElement.getExistenceConstraint().getEndConstraint());
-				existenceConstraint.appendChild(positionConstraint);
+				Element existenceConstraint = constraintDoc.createElement("existenceConstraint");
+				Element activity = constraintDoc.createElement("activity");
+				activity.setTextContent(aElement.getTaskCharIdentifier());
+				existenceConstraint.appendChild(activity);
+				existenceConstraint.setAttribute("template", ExistenceConstraintEnum.END.getTemplateLabel());
+				addParameterElements(existenceConstraint,aElement.getExistenceConstraint().getEndConstraint());
+				rootElement.appendChild(existenceConstraint);
 			}
 			
 		}
 		
 		// handle cardinality constraints
 		if(aElement.getExistenceConstraint() != null && aElement.getExistenceConstraint().getCard() != null) {
-			Element cardinalityConstraint = constraintDoc.createElement("constraint");
+			Element existenceConstraint = constraintDoc.createElement("existenceConstraint");
+			Element activity = constraintDoc.createElement("activity");
+			activity.setTextContent(aElement.getTaskCharIdentifier());
+			existenceConstraint.appendChild(activity);
 			
 			if( "0".equals(aElement.getExistenceConstraint().getCard().getMin()) && "1".equals(aElement.getExistenceConstraint().getCard().getMax())) {
-				cardinalityConstraint.setAttribute("template", ExistenceConstraintEnum.AT_MOST_ONE.getTemplateLabel());
+				existenceConstraint.setAttribute("template", ExistenceConstraintEnum.AT_MOST_ONE.getTemplateLabel());
 			} else {
-				cardinalityConstraint.setAttribute("template", ExistenceConstraintEnum.PARTICIPATION.getTemplateLabel());
+				existenceConstraint.setAttribute("template", ExistenceConstraintEnum.PARTICIPATION.getTemplateLabel());
 			}
 			
 			Element minValue = constraintDoc.createElement("min");
 			minValue.setTextContent(aElement.getExistenceConstraint().getCard().getMin());
-			cardinalityConstraint.appendChild(minValue);
+			existenceConstraint.appendChild(minValue);
 			
 			Element maxValue = constraintDoc.createElement("max");
 			maxValue.setTextContent(aElement.getExistenceConstraint().getCard().getMax());
-			cardinalityConstraint.appendChild(maxValue);
+			existenceConstraint.appendChild(maxValue);
 			
-			addParameterElements(cardinalityConstraint,aElement.getExistenceConstraint().getCard());
-			existenceConstraint.appendChild(cardinalityConstraint);
+			addParameterElements(existenceConstraint,aElement.getExistenceConstraint().getCard());
+			rootElement.appendChild(existenceConstraint);
 		}
-		
-		return existenceConstraint;
+
 	}
 	
 	private void createRelationConstraintElement(Element rootElement, RelationConstraintElement rcElement , List<LineElement> alreadyCreatedLineElements) {
 		
 		for(LineElement lineElement: rcElement.getLineElements()) {
 			
-			Element relationConstraint = constraintDoc.createElement("constraint");
+			Element relationConstraint = constraintDoc.createElement("relationConstraint");
 			relationConstraint.setAttribute("template", rcElement.getTemplate().getName());
+			relationConstraint.setAttribute("identifier", "C" + rcElement.getId().toString());
 			
 			// add activities and parameters
 			Element source = constraintDoc.createElement("sourceActivity");
-			source.setTextContent(lineElement.getSourceElement().getIdentifier());
+			source.setTextContent(lineElement.getSourceElement().getTaskCharIdentifier());
 			relationConstraint.appendChild(source);
 			Element target = constraintDoc.createElement("targetActivity");
-			target.setTextContent(lineElement.getTargetElement().getIdentifier());
+			target.setTextContent(lineElement.getTargetElement().getTaskCharIdentifier());
 			relationConstraint.appendChild(target);
 			addParameterElements(relationConstraint, lineElement);
 			
