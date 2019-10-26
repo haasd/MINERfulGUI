@@ -68,6 +68,7 @@ import minerful.gui.model.RelationConstraintElement;
 import minerful.gui.model.RelationConstraintNode;
 import minerful.gui.model.Selectable;
 import minerful.gui.model.Template;
+import minerful.gui.model.io.JFXToSVGConverter;
 import minerful.gui.model.io.XmlModelWriter;
 import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.util.Config;
@@ -248,7 +249,27 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open Event-Log");
 		FileChooser.ExtensionFilter extFilter = 
-	             new FileChooser.ExtensionFilter("XML/JSON/CSV/HTML/ZIP","*.zip", "*.xml", "*.json", "*.csv","*.decl", "*.html");
+	             new FileChooser.ExtensionFilter("ZIP","*.zip");
+	    fileChooser.getExtensionFilters().add(extFilter);
+		
+		extFilter = 
+	             new FileChooser.ExtensionFilter("XML", "*.xml");
+	    fileChooser.getExtensionFilters().add(extFilter);
+		extFilter = 
+	             new FileChooser.ExtensionFilter("JSON","*.json");
+	    fileChooser.getExtensionFilters().add(extFilter);
+		extFilter = 
+	             new FileChooser.ExtensionFilter("CSV","*.csv");
+	    fileChooser.getExtensionFilters().add(extFilter);
+	    extFilter = 
+	             new FileChooser.ExtensionFilter("DeclareMap","*.decl");
+	    fileChooser.getExtensionFilters().add(extFilter);
+		extFilter = 
+	             new FileChooser.ExtensionFilter("HTML","*.html");
+	    fileChooser.getExtensionFilters().add(extFilter);
+	    
+	    extFilter = 
+	             new FileChooser.ExtensionFilter("SVG","*.svg");
 	    fileChooser.getExtensionFilters().add(extFilter);
 	    
 	    // open FileChooser and handle response
@@ -296,6 +317,10 @@ public class ModelGeneratorTabController extends AbstractController implements I
 				case "zip": 
 					XmlModelWriter mWriter = new XmlModelWriter(currentProcessElement);
 					mWriter.writeXmlsFromProcessModel(path);
+					return;
+				case "svg": 
+					JFXToSVGConverter svgWriter = new JFXToSVGConverter(this);
+					svgWriter.createDocument(outputFile);
 					return;
 			}
 			

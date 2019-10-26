@@ -82,6 +82,7 @@ import minerful.gui.model.ProcessElement;
 import minerful.gui.model.RelationConstraintElement;
 import minerful.gui.model.RelationConstraintEnum;
 import minerful.gui.model.RelationConstraintNode;
+import minerful.gui.model.io.JFXToSVGConverter;
 import minerful.gui.model.io.XmlModelWriter;
 import minerful.gui.service.DiscoverUtil;
 import minerful.gui.service.ProcessElementInterface;
@@ -748,6 +749,10 @@ public class DiscoverTabController extends AbstractController implements Initial
 	             new FileChooser.ExtensionFilter("HTML","*.html");
 	    fileChooser.getExtensionFilters().add(extFilter);
 	    
+	    extFilter = 
+	             new FileChooser.ExtensionFilter("SVG","*.svg");
+	    fileChooser.getExtensionFilters().add(extFilter);
+	    
 	    // open FileChooser and handle response
 		File saveFile = fileChooser.showSaveDialog(new Stage());
 		if(saveFile != null) {
@@ -793,6 +798,10 @@ public class DiscoverTabController extends AbstractController implements Initial
 				case "zip": 
 					XmlModelWriter mWriter = new XmlModelWriter(processElement);
 					mWriter.writeXmlsFromProcessModel(path);
+					return;
+				case "svg": 
+					JFXToSVGConverter svgWriter = new JFXToSVGConverter(this);
+					svgWriter.createDocument(outputFile);
 					return;
 			}
 			
@@ -943,6 +952,17 @@ public class DiscoverTabController extends AbstractController implements Initial
 	public AnchorPane getAnchorPane() {
 		// TODO Auto-generated method stub
 		return anchorPane;
+	}
+
+	@Override
+	public ProcessElement getCurrentProcessElement() {
+		// TODO Auto-generated method stub
+		return processElement;
+	}
+
+	@Override
+	public BorderPane getBackgroundPane() {
+		return backgroundPane;
 	}
 
 	
