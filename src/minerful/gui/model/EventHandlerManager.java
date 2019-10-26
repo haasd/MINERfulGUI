@@ -33,7 +33,7 @@ public class EventHandlerManager {
 		@Override
         public void handle(MouseEvent t) {
            ActivityNode aNode = (ActivityNode)(t.getSource());
-           //System.out.println("ActivityNode was selected: ID: " + aNode.getActivityElement().getId());
+           
            //Update activityElement
            aNode.updateActivityElement();
        

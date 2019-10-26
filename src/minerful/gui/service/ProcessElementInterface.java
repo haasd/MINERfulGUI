@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import minerful.gui.model.ActivityElement;
 import minerful.gui.model.ActivityNode;
+import minerful.gui.model.ProcessElement;
 import minerful.gui.model.RelationConstraintElement;
 import minerful.gui.model.RelationConstraintNode;
 
@@ -23,5 +25,7 @@ public interface ProcessElementInterface {
 	public void determineActivities();
 	public List<RelationConstraintNode> getConstraintNodes();
 	public AnchorPane getAnchorPane();
+	public ProcessElement getCurrentProcessElement();
+	public BorderPane getBackgroundPane();
 
 }

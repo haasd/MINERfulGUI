@@ -184,6 +184,7 @@ public class ActivityNode extends StackPane implements Selectable {
 		initLabel.getStyleClass().add("constraintText");
 		endLabel.getStyleClass().add("constraintText");
 		cardLabel.getStyleClass().add("constraintText");
+		clickable.getStyleClass().add("activity");
 		//deleteButton.getStyleClass().add("actionButton");
 		
 		setEditable(false);
@@ -210,8 +211,7 @@ public class ActivityNode extends StackPane implements Selectable {
 				
 				getChildren().addAll(deleteButton, addConstraintButton);
 			}
-			
-			clickable.getStyleClass().clear();
+		
 			clickable.getStyleClass().add("selectedActivity");
 			if(processTab != null) {
 				processTab.editActivity(this);
@@ -223,8 +223,7 @@ public class ActivityNode extends StackPane implements Selectable {
 				imgAddConstraint = null;
 				getChildren().removeAll(deleteButton, addConstraintButton);
 			}
-			clickable.getStyleClass().clear();
-			clickable.getStyleClass().add("activity");
+			clickable.getStyleClass().remove("selectedActivity");
 		}
 	}
 
