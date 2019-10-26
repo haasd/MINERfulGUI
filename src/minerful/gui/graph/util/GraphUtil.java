@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.stream.Collectors;
 
+import org.apache.log4j.Logger;
 import org.springframework.util.FastByteArrayOutputStream;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -74,6 +75,7 @@ import minerful.gui.util.Config;
 public class GraphUtil {
 	
 	private static Config config = new Config("config");
+	private static Logger logger = Logger.getLogger(GraphUtil.class);
 	
 	public static TableView<Constraint> getConstraintsForActivity(ProcessModel processModel, String activity, Boolean outgoing){
 		TableView<Constraint> constraints = new TableView<>();
@@ -494,8 +496,7 @@ public class GraphUtil {
 		ArrayList<ActivityElement> parameter2List = cElement.getParameter2Elements();
 		
 		if (parameter1List == null || parameter2List == null){
-			//TODO Dialog WARNING
-			System.out.println("Inconsistent Files: Constraint connects not existing Activity.");
+			logger.error("Inconsistent Files: Constraint connects not existing Activity.");
 		}
 		
 		ArrayList<ActivityElement> tempList = new ArrayList<ActivityElement>();
