@@ -32,6 +32,11 @@
            			<FontIcon iconColor="white" iconLiteral="typ-flow-children" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
             	</graphic>
 			</Button>
+			<Button styleClass="btn-default, btn-header" text="Import Process Model" onAction="#importModel">
+				<graphic>
+           			<FontIcon iconColor="white" iconLiteral="typ-flow-merge" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+            	</graphic>
+			</Button>
 		</HBox>
 		
 		<!-- TabPane -->

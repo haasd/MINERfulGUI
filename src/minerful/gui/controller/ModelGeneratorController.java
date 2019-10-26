@@ -1,5 +1,6 @@
 package minerful.gui.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
@@ -17,10 +18,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import minerful.gui.common.ModelInfo;
 import minerful.gui.graph.util.GraphUtil;
+import minerful.gui.model.ProcessElement;
+import minerful.gui.model.io.XmlModelReader;
 
 public class ModelGeneratorController extends AbstractController implements Initializable	{
 	
@@ -89,6 +93,29 @@ public class ModelGeneratorController extends AbstractController implements Init
 			logger.info("Problem occured during selection!");
 			e.printStackTrace();
 		}
+	}
+	
+	@FXML
+	public void importModel(ActionEvent event) {
+		// init FileChooser and set extension-filter
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Import Model");
+		FileChooser.ExtensionFilter extFilter = 
+	             new FileChooser.ExtensionFilter("ZIP", "*.zip");
+	    fileChooser.getExtensionFilters().add(extFilter);
+	    
+	    File openFile = fileChooser.showOpenDialog(new Stage());
+		if(openFile != null) {
+			ModelInfo modelInfo = new ModelInfo();
+			XmlModelReader modelReader = new XmlModelReader(openFile.getAbsolutePath());
+			modelInfo.setProcessElement(modelReader.importXmlsAsProcessModel());
+			modelInfo.setSaveDate(new Date());
+			modelInfo.setSaveName(openFile.getName());
+ 
+			openModelinNewTab(modelInfo);
+		}
+	    
+	    
 	}
 	
 	public void openModelinNewTab(ModelInfo modelInfo) {
