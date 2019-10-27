@@ -169,11 +169,6 @@
 	-fx-background-color: #4bb3fd;
 }
 
-.content {
-	-fx-border-width: 0 0 0 1px;
-	-fx-border-color: #393939;
-}
-
 .area-content {
 	-fx-padding: 0 0 15px 0;
 }
@@ -349,7 +344,7 @@
  * Buttons
  */
 
-.btn-default {
+.btn-default, .dialog-pane .button {
 	-fx-border-width: 2px;
 	-fx-border-color: #393939;
 	-fx-font-weight: bold;
@@ -379,7 +374,7 @@
 	-fx-font-size: 14px;
 }
 
-.btn-default:hover {
+.btn-default:hover, .dialog-pane .button:hover {
 	-fx-background-color: white;
 	-fx-text-fill: #393939;
 }
@@ -679,6 +674,28 @@
 }
 
 .chart-area-symbol { -fx-background-color: null, null; }
+
+.dialog-pane {
+    -fx-background-color: white;
+}
+
+.dialog-pane .label {
+    -fx-text-fill: #393939;
+}
+
+.dialog-pane:header .header-panel {
+    -fx-background-color: white;
+}
+
+.dialog-pane:header .header-panel .label {
+    -fx-text-fill: #393939;
+    -fx-font-size: 2em;
+}
+
+.dialog-pane > *.label.content{
+    -fx-font-size: 14px;
+    -fx-padding: 20px;
+}
 
 .documentation-section-header1,.documentation-section-header2  {
 	-fx-font-weight: bold;
