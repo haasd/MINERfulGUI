@@ -73,6 +73,7 @@ public class DiscoverController extends AbstractController implements Initializa
 	            	try {
 	    				getMainController().addLoadedLogFile(parseLog.get());
 	    				openInfoLogInNewTab(parseLog.get());
+	    				progressForm.closeProgressForm();
 
 	    			} catch (InterruptedException e) {
 	    				// TODO Auto-generated catch block
@@ -83,9 +84,6 @@ public class DiscoverController extends AbstractController implements Initializa
 	    			}
 	            }
 	        });
-	        
-	        progressForm.closeProgressForm();
-				
 
 		} else {
 			logger.info("Fileselection canceled!"); 

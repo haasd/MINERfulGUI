@@ -1,10 +1,13 @@
 package minerful.logparser;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.deckfour.xes.in.XMxmlGZIPParser;
 import org.deckfour.xes.in.XMxmlParser;
 import org.deckfour.xes.in.XParser;
@@ -18,6 +21,9 @@ import minerful.concept.TaskCharArchive;
 import minerful.io.encdec.TaskCharEncoderDecoder;
 
 public class XesLogParser extends AbstractLogParser implements LogParser {
+	
+	Logger logger = Logger.getLogger(XesLogParser.class);
+	
     protected XParser parser;
     protected XesEventClassifier xesEventClassifier;
     protected List<XLog> xLogs = null;
@@ -98,7 +104,11 @@ public class XesLogParser extends AbstractLogParser implements LogParser {
 	
     @Override
 	protected Collection<AbstractTaskClass> parseLog(File xesFile) throws Exception {
-        this.xLogs = parser.parse(xesFile);
+    	
+    	InputStream inputstream = new FileInputStream(xesFile);
+    	logger.info("Start parsing XES-File");
+        this.xLogs = parser.parse(inputstream);
+        logger.info("Finished parsing XES-File");
 
         for (XLog xLog : xLogs) {
         	this.parseLog(xLog);

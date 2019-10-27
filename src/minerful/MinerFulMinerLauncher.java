@@ -20,6 +20,7 @@ import minerful.postprocessing.params.PostProcessingCmdParameters;
 import minerful.utils.MessagePrinter;
 
 public class MinerFulMinerLauncher {
+
 	public static MessagePrinter logger = MessagePrinter.getInstance(MinerFulMinerLauncher.class);
 
 	private InputLogCmdParameters inputParams;
@@ -143,6 +144,10 @@ public class MinerFulMinerLauncher {
 					+ inputParams.inputLanguage + ") is not yet supported");
 		}
 
+		return logParser;
+	}
+	
+	public LogParser getLogParser() {
 		return logParser;
 	}
 }

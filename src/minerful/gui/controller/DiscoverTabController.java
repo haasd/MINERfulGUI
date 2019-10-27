@@ -3,7 +3,6 @@ package minerful.gui.controller;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,13 +11,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.controlsfx.control.HiddenSidesPane;
 import org.controlsfx.control.ToggleSwitch;
 import org.graphstream.stream.ProxyPipe;
-import org.jfree.util.Log;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
@@ -29,6 +27,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -61,10 +61,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import minerful.MinerFulMinerLauncher;
-import minerful.MinerFulOutputManagementLauncher;
 import minerful.MinerFulSimplificationLauncher;
 import minerful.concept.ProcessModel;
 import minerful.concept.TaskChar;
@@ -74,6 +71,7 @@ import minerful.gui.common.AreaChartWithMarker;
 import minerful.gui.common.GuiConstants;
 import minerful.gui.common.MinerfulGuiUtil;
 import minerful.gui.common.ModelInfo;
+import minerful.gui.common.ProgressForm;
 import minerful.gui.common.ValidationEngine;
 import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.model.ActivityElement;
@@ -83,13 +81,10 @@ import minerful.gui.model.ProcessElement;
 import minerful.gui.model.RelationConstraintElement;
 import minerful.gui.model.RelationConstraintEnum;
 import minerful.gui.model.RelationConstraintNode;
-import minerful.gui.model.io.JFXToSVGConverter;
-import minerful.gui.model.io.XmlModelWriter;
 import minerful.gui.service.DiscoverUtil;
 import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.service.loginfo.EventFilter;
 import minerful.gui.service.loginfo.LogInfo;
-import minerful.io.params.OutputModelParameters;
 import minerful.miner.params.MinerFulCmdParameters;
 import minerful.params.InputLogCmdParameters;
 import minerful.params.SystemCmdParameters;
@@ -613,12 +608,58 @@ public class DiscoverTabController extends AbstractController implements Initial
 			
 			if(!reminingRequired) {
 				MinerFulSimplificationLauncher miFuSiLa = new MinerFulSimplificationLauncher(processModel, postParams);
-				processModel = miFuSiLa.simplify();
+				
+				// set up ProgressForm
+				ProgressForm progressForm = new ProgressForm("Update Model!");
+				Task<ProcessModel> task = MinerfulGuiUtil.updateModel(miFuSiLa);
+				
+				progressForm.activateProgress(task);
+				new Thread(task).start();
+				
+		        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+		            @Override
+		            public void handle(WorkerStateEvent event) {
+		            	try {
+		    				processModel = task.get();
+		    				progressForm.closeProgressForm();
+		    			} catch (InterruptedException e) {
+		    				// TODO Auto-generated catch block
+		    				e.printStackTrace();
+		    			} catch (ExecutionException e) {
+		    				// TODO Auto-generated catch block
+		    				e.printStackTrace();
+		    			}
+		            }
+		        });
+				
 				processModel.addPropertyChangeListener(this);
 			} else {
 				reminingRequired = false;
 				MinerFulMinerLauncher miFuMiLa = new MinerFulMinerLauncher(inputParams, minerFulParams, postParams, systemParams);
-				processModel = miFuMiLa.mine();
+				
+				// set up ProgressForm
+				ProgressForm progressForm = new ProgressForm("Update Model!");
+				Task<ProcessModel> task = MinerfulGuiUtil.updateModel(miFuMiLa);
+				
+				progressForm.activateProgress(task);
+				new Thread(task).start();
+				
+		        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+		            @Override
+		            public void handle(WorkerStateEvent event) {
+		            	try {
+		    				processModel = task.get();
+		    				progressForm.closeProgressForm();
+
+		    			} catch (InterruptedException e) {
+		    				// TODO Auto-generated catch block
+		    				e.printStackTrace();
+		    			} catch (ExecutionException e) {
+		    				// TODO Auto-generated catch block
+		    				e.printStackTrace();
+		    			}
+		            }
+		        });
 				processModel.addPropertyChangeListener(this);
 			}
 			
