@@ -1,15 +1,15 @@
 package minerful.gui.common;
 
+import com.sun.glass.ui.Screen;
+
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /*
  * Simple PopUp-Window that displays progress of a task
@@ -26,6 +26,9 @@ public class ProgressForm {
 		dialogStage.setResizable(false);
 		dialogStage.setHeight(100);
 		dialogStage.setWidth(250);
+		dialogStage.initStyle(StageStyle.UNDECORATED);
+		dialogStage.setX(Screen.getMainScreen().getWidth() - 300);
+		dialogStage.setY(100);
 		progressIndicator = new ProgressIndicator();
 		progressIndicator.setProgress(0);
         progressIndicator.progressProperty().unbind();
@@ -35,8 +38,10 @@ public class ProgressForm {
 	    hBox.setSpacing(5);
 	    hBox.setAlignment(Pos.CENTER);
 	    hBox.getChildren().addAll(new Label(progressText), progressIndicator);
+	    hBox.getStyleClass().add("loading");
 
 	    Scene scene = new Scene(hBox);
+	    scene.getStylesheets().add(getClass().getClassLoader().getResource("css/main.css").toExternalForm());
 	    dialogStage.setScene(scene);
 	    dialogStage.show();
 	    

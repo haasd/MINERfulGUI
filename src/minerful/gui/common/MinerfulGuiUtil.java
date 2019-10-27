@@ -21,7 +21,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import minerful.MinerFulMinerLauncher;
 import minerful.MinerFulOutputManagementLauncher;
+import minerful.MinerFulSimplificationLauncher;
 import minerful.checking.relevance.dao.ModelFitnessEvaluation;
 import minerful.concept.ProcessModel;
 import minerful.concept.constraint.Constraint;
@@ -29,6 +31,7 @@ import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.model.io.JFXToSVGConverter;
 import minerful.gui.model.io.XmlModelWriter;
 import minerful.gui.service.ProcessElementInterface;
+import minerful.gui.service.loginfo.LogInfo;
 import minerful.io.params.OutputModelParameters;
 import minerful.logmaker.MinerFulLogMaker;
 import minerful.logmaker.params.LogMakerParameters.Encoding;
@@ -215,6 +218,28 @@ public class MinerfulGuiUtil {
 			} else {
 				logger.info("Modelsaving canceled!"); 
 			}
+			
+		}
+		
+		public static Task<ProcessModel> updateModel(MinerFulSimplificationLauncher miFuSiLa) {
+			Task<ProcessModel> task = new Task<ProcessModel>() {
+			    @Override public ProcessModel call() {
+			    	return miFuSiLa.simplify();
+			    }		    
+			};
+			
+			return task;
+			
+		}
+		
+		public static Task<ProcessModel> updateModel(MinerFulMinerLauncher miFuMiLa) {
+			Task<ProcessModel> task = new Task<ProcessModel>() {
+			    @Override public ProcessModel call() {
+			    	return miFuMiLa.mine();
+			    }		    
+			};
+			
+			return task;
 			
 		}
 }

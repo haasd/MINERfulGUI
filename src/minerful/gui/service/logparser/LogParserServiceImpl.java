@@ -50,24 +50,16 @@ public class LogParserServiceImpl implements LogParserService  {
 
 				inputParams.inputLogFile = new File(path);
 				inputParams.inputLanguage = MinerfulGuiUtil.determineInputEncoding(path);
-
-				logger.info("Start parsing Log-File");
-				long start = System.currentTimeMillis();
-				LogParser logParser = MinerFulMinerLauncher.deriveLogParserFromLogFile(inputParams, minerFulParams);
-				long time = System.currentTimeMillis() - start;
-				logger.info("Finished parsing Log-File!");
-				logger.info("Parsing Time: "+ TimeUnit.MILLISECONDS.toSeconds(time) + " Found traces: " + logParser.length());
-
 				
-				logger.info("Start mine Process-Model");
-				start = System.currentTimeMillis();
+				logger.info("Start parsing of Logfile and mining of Process-Model");
+				long start = System.currentTimeMillis();
 				MinerFulMinerLauncher miFuMiLa = new MinerFulMinerLauncher(inputParams, minerFulParams, postParams, systemParams);
 				ProcessModel processModel = miFuMiLa.mine();
-				time = System.currentTimeMillis() - start;
-				logger.info("Finished mine Process-Model");
+				long time = System.currentTimeMillis() - start;
+				logger.info("Finished parsing of Logfile and mining of Process-Model");
 				logger.info("Mining Time: "+ TimeUnit.MILLISECONDS.toSeconds(time));
 		   
-		        return new LogInfo(logParser,path,new Date(),processModel);
+		        return new LogInfo(miFuMiLa.getLogParser(),path,new Date(),processModel);
 		    }
 		};
 		

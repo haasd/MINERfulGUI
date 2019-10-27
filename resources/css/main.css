@@ -743,4 +743,19 @@
 	-fx-border-width: 1px 0 0 0;
 	-fx-border-color: #393939;
 }
+
+.loading {
+	-fx-background-color: #4bb3fd;
+}
+
+.loading .label {
+	-fx-text-fill: white;
+	-fx-font-weight: bold;
+	-fx-padding: 0 20px 0 0;
+}
+
+.loading .progress-indicator {
+	-fx-progress-color: white;
+}
+
  

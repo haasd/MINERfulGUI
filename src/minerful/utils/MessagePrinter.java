@@ -43,13 +43,13 @@ public class MessagePrinter {
     		break;
     	}
 
-        Properties debugProperties = new Properties();
-        debugProperties.setProperty("log4j.rootLogger", threshold + ", A1");
-        debugProperties.setProperty("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
-        debugProperties.setProperty("log4j.appender.A1.Threshold", threshold);
-        debugProperties.setProperty("log4j.appender.A1.layout", "org.apache.log4j.PatternLayout");
-        debugProperties.setProperty("log4j.appender.A1.layout.ConversionPattern", "%p [%t] %c{2} (%M:%L) - %m%n");
-        PropertyConfigurator.configure(debugProperties);
+//        Properties debugProperties = new Properties();
+//        debugProperties.setProperty("log4j.rootLogger", threshold + ", A1");
+//        debugProperties.setProperty("log4j.appender.A1", "org.apache.log4j.ConsoleAppender");
+//        debugProperties.setProperty("log4j.appender.A1.Threshold", threshold);
+//        debugProperties.setProperty("log4j.appender.A1.layout", "org.apache.log4j.PatternLayout");
+//        debugProperties.setProperty("log4j.appender.A1.layout.ConversionPattern", "%p [%t] %c{2} (%M:%L) - %m%n");
+//        PropertyConfigurator.configure(debugProperties);
     }
     
     protected MessagePrinter(Class<?> invokingClass) {
