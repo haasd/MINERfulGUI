@@ -765,103 +765,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	@FXML
 	private void exportFile() {
-		
-		// init FileChooser and set extension-filter
-		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Open Event-Log");
-		FileChooser.ExtensionFilter extFilter = 
-	             new FileChooser.ExtensionFilter("ZIP","*.zip");
-	    fileChooser.getExtensionFilters().add(extFilter);
-		
-		extFilter = 
-	             new FileChooser.ExtensionFilter("XML", "*.xml");
-	    fileChooser.getExtensionFilters().add(extFilter);
-		extFilter = 
-	             new FileChooser.ExtensionFilter("JSON","*.json");
-	    fileChooser.getExtensionFilters().add(extFilter);
-		extFilter = 
-	             new FileChooser.ExtensionFilter("CSV","*.csv");
-	    fileChooser.getExtensionFilters().add(extFilter);
-	    extFilter = 
-	             new FileChooser.ExtensionFilter("DeclareMap","*.decl");
-	    fileChooser.getExtensionFilters().add(extFilter);
-		extFilter = 
-	             new FileChooser.ExtensionFilter("HTML","*.html");
-	    fileChooser.getExtensionFilters().add(extFilter);
-	    
-	    extFilter = 
-	             new FileChooser.ExtensionFilter("SVG","*.svg");
-	    fileChooser.getExtensionFilters().add(extFilter);
-	    
-	    // open FileChooser and handle response
-		File saveFile = fileChooser.showSaveDialog(new Stage());
-		if(saveFile != null) {
-			
-			OutputModelParameters outParams = new OutputModelParameters();
-			String path = saveFile.getAbsolutePath();
-			File outputFile = new File(path);
-
-			logger.info("Save as File: " + path);
-			
-			String fileName = saveFile.getName();           
-			String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1, saveFile.getName().length());
-			
-			logger.info("Saving...");
-			boolean customOutput = false;
-			
-			switch(fileExtension.toLowerCase()) {
-				case "xml": 
-					outParams.fileToSaveAsXML = outputFile;		
-					break;
-				case "json":
-					outParams.fileToSaveAsJSON = outputFile;
-					break;
-				case "csv":
-					outParams.fileToSaveConstraintsAsCSV = outputFile;
-					break;
-				case "decl": 
-					outParams.fileToSaveAsConDec = outputFile;
-					break;
-				case "html":
-					File htmlTemplateFile = new File(getClass().getClassLoader().getResource("templates/export.html").getFile());
-					
-					try {
-						String htmlString = FileUtils.readFileToString(htmlTemplateFile,"UTF-8");
-						String title = "New Page";
-						htmlString = htmlString.replace("$title", title);
-						File newHtmlFile = new File(saveFile.getAbsolutePath());
-						FileUtils.writeStringToFile(newHtmlFile, htmlString, "UTF-8");
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					customOutput = true;
-				case "zip": 
-					XmlModelWriter mWriter = new XmlModelWriter(processElement);
-					mWriter.writeXmlsFromProcessModel(path);
-					customOutput = true;
-				case "svg": 
-					JFXToSVGConverter svgWriter = new JFXToSVGConverter(this);
-					svgWriter.createDocument(outputFile);
-					customOutput = true;
-			}
-			
-			if(customOutput) {
-				Optional<ButtonType> result = MinerfulGuiUtil.displayAlert("Information", "Finished export", "Finished export of: " + outputFile, AlertType.CONFIRMATION);
-				return;
-			}
-			
-			MinerFulOutputManagementLauncher outputMgt = new MinerFulOutputManagementLauncher();
-			outputMgt.manageOutput(processModel, outParams);
-
-			ModelInfo modelInfo = new ModelInfo(processModel,new Date(),outputFile.getName(), processElement);
-			
-			getMainController().addSavedProcessModels(modelInfo);
-
-		} else {
-			logger.info("Modelsaving canceled!"); 
-		}
-
+		MinerfulGuiUtil.exportFile(this, getMainController().getSavedProcessModels());
 	}
 
 
@@ -1015,6 +919,12 @@ public class DiscoverTabController extends AbstractController implements Initial
 	public ScrollPane getScrollPane() {
 		// TODO Auto-generated method stub
 		return scrollPane;
+	}
+
+	@Override
+	public ProcessModel getCurrentProcessModel() {
+		// TODO Auto-generated method stub
+		return processModel;
 	}
 
 	

@@ -1,12 +1,15 @@
 package minerful.gui.common;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.deckfour.xes.model.XLog;
@@ -16,9 +19,17 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import minerful.MinerFulOutputManagementLauncher;
 import minerful.checking.relevance.dao.ModelFitnessEvaluation;
 import minerful.concept.ProcessModel;
 import minerful.concept.constraint.Constraint;
+import minerful.gui.graph.util.GraphUtil;
+import minerful.gui.model.io.JFXToSVGConverter;
+import minerful.gui.model.io.XmlModelWriter;
+import minerful.gui.service.ProcessElementInterface;
+import minerful.io.params.OutputModelParameters;
 import minerful.logmaker.MinerFulLogMaker;
 import minerful.logmaker.params.LogMakerParameters.Encoding;
 import minerful.params.InputLogCmdParameters.InputEncoding;
@@ -105,5 +116,105 @@ public class MinerfulGuiUtil {
 			
 			return task;
 		}
+		
+		public static void exportFile(ProcessElementInterface peInterface, List<ModelInfo> savedModels) {
+			// init FileChooser and set extension-filter
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Open Event-Log");
+			FileChooser.ExtensionFilter extFilter = 
+		             new FileChooser.ExtensionFilter("ZIP","*.zip");
+		    fileChooser.getExtensionFilters().add(extFilter);
+			
+			extFilter = 
+		             new FileChooser.ExtensionFilter("XML", "*.xml");
+		    fileChooser.getExtensionFilters().add(extFilter);
+			extFilter = 
+		             new FileChooser.ExtensionFilter("JSON","*.json");
+		    fileChooser.getExtensionFilters().add(extFilter);
+			extFilter = 
+		             new FileChooser.ExtensionFilter("CSV","*.csv");
+		    fileChooser.getExtensionFilters().add(extFilter);
+		    extFilter = 
+		             new FileChooser.ExtensionFilter("DeclareMap","*.decl");
+		    fileChooser.getExtensionFilters().add(extFilter);
+			extFilter = 
+		             new FileChooser.ExtensionFilter("HTML","*.html");
+		    fileChooser.getExtensionFilters().add(extFilter);
+		    
+		    extFilter = 
+		             new FileChooser.ExtensionFilter("SVG","*.svg");
+		    fileChooser.getExtensionFilters().add(extFilter);
+		    
+		    // open FileChooser and handle response
+			File saveFile = fileChooser.showSaveDialog(new Stage());
+			if(saveFile != null) {
+				
+				OutputModelParameters outParams = new OutputModelParameters();
+				String path = saveFile.getAbsolutePath();
+				File outputFile = new File(path);
 
+				logger.info("Save as File: " + path);
+				
+				String fileName = saveFile.getName();           
+				String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1, saveFile.getName().length());
+				
+				logger.info("Saving...");
+				boolean customOutput = false;
+				
+				switch(fileExtension.toLowerCase()) {
+					case "xml": 
+						outParams.fileToSaveAsXML = outputFile;	
+						break;
+					case "json":
+						outParams.fileToSaveAsJSON = outputFile;
+						break;
+					case "csv":
+						outParams.fileToSaveConstraintsAsCSV = outputFile;
+						break;
+					case "decl":
+						outParams.fileToSaveAsConDec = outputFile;
+						break;
+					case "html":
+						File htmlTemplateFile = new File(MinerfulGuiUtil.class.getClassLoader().getResource("templates/export.html").getFile());
+						
+						try {
+							String htmlString = FileUtils.readFileToString(htmlTemplateFile,"UTF-8");
+							String title = "New Page";
+							htmlString = htmlString.replace("$title", title);
+							File newHtmlFile = new File(saveFile.getAbsolutePath());
+							FileUtils.writeStringToFile(newHtmlFile, htmlString, "UTF-8");
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						customOutput = true;
+						break;
+					case "zip": 
+						XmlModelWriter mWriter = new XmlModelWriter(peInterface.getCurrentProcessElement());
+						mWriter.writeXmlsFromProcessModel(path);
+						customOutput = true;
+						break;
+					case "svg": 
+						JFXToSVGConverter svgWriter = new JFXToSVGConverter(peInterface);
+						svgWriter.createDocument(outputFile);
+						customOutput = true;
+						break;
+				}
+				
+				if(customOutput) {
+					MinerfulGuiUtil.displayAlert("Information", "Finished export", "Finished export of: " + outputFile, AlertType.INFORMATION);
+					return;
+				}
+				
+				MinerFulOutputManagementLauncher outputMgt = new MinerFulOutputManagementLauncher();
+				outputMgt.manageOutput(peInterface.getCurrentProcessModel(), outParams);
+				
+				ModelInfo modelInfo = new ModelInfo(peInterface.getCurrentProcessModel(),new Date(),outputFile.getName(), GraphUtil.cloneProcessElement(peInterface.getCurrentProcessElement()));
+				savedModels.add(modelInfo);
+				
+			} else {
+				logger.info("Modelsaving canceled!"); 
+			}
+			
+		}
 }

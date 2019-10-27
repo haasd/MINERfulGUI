@@ -3,8 +3,10 @@ package minerful.gui.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import minerful.concept.ProcessModel;
 import minerful.gui.model.ActivityElement;
 import minerful.gui.model.ActivityNode;
 import minerful.gui.model.ProcessElement;
@@ -26,6 +28,9 @@ public interface ProcessElementInterface {
 	public List<RelationConstraintNode> getConstraintNodes();
 	public AnchorPane getAnchorPane();
 	public ProcessElement getCurrentProcessElement();
+	public ProcessModel getCurrentProcessModel();
 	public BorderPane getBackgroundPane();
+	public ScrollPane getScrollPane();
+	public void setMaxTranslate();
 
 }
