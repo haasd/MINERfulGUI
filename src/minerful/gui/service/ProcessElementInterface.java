@@ -3,6 +3,7 @@ package minerful.gui.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -32,5 +33,6 @@ public interface ProcessElementInterface {
 	public BorderPane getBackgroundPane();
 	public ScrollPane getScrollPane();
 	public void setMaxTranslate();
-
+	public DoubleProperty getMaxTranslateY();
+	public DoubleProperty getMaxTranslateX();
 }
