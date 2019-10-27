@@ -864,4 +864,15 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		return scrollPane;
 	}
 
+	@Override
+	public DoubleProperty getMaxTranslateX() {
+		return maxTranslateX;
+	}
+
+	@Override
+	public DoubleProperty getMaxTranslateY() {
+		return maxTranslateY;
+	}
+	
+
 }

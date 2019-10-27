@@ -927,6 +927,13 @@ public class DiscoverTabController extends AbstractController implements Initial
 		return processModel;
 	}
 
-	
-	
+	public DoubleProperty getMaxTranslateX() {
+		return maxTranslateX;
+	}
+
+
+	public DoubleProperty getMaxTranslateY() {
+		return maxTranslateY;
+	}
+
 }
