@@ -331,13 +331,13 @@ public class DiscoverTabController extends AbstractController implements Initial
 
             return cell;
         });
-
-	    setHeight(eventLogTable, 150);
+		
+		MinerfulGuiUtil.setHeight(eventLogTable, 150);
 	    eventLogTable.managedProperty().bind(eventLogTable.visibleProperty());
 	    eventLogTable.visibleProperty().bind(Bindings.isEmpty(eventLogTable.getItems()).not());
 	    
-	    setHeight(logInfoList, 125);
-	    setHeight(eventsTable, 250);
+	    MinerfulGuiUtil.setHeight(logInfoList, 125);
+	    MinerfulGuiUtil.setHeight(eventsTable, 250);
 		
 		// define date-column and set format
 		dateColumn.setCellValueFactory(
@@ -393,28 +393,10 @@ public class DiscoverTabController extends AbstractController implements Initial
 		// define eventTable
 		filterColumn.setCellValueFactory(new PropertyValueFactory<EventFilter, Boolean>("selected"));
 		
+		
 		// define Post Analysis Type
 		ToggleGroup togglePostAnalysisGroup = new ToggleGroup();
-		RadioButton typeNone = new RadioButton("None");
-		typeNone.setToggleGroup(togglePostAnalysisGroup);
-		typeNone.setUserData(PostProcessingAnalysisType.NONE);
-		typeNone.setSelected(false);
-		RadioButton typeHierarchy = new RadioButton("Hierarchy");
-		typeHierarchy.setToggleGroup(togglePostAnalysisGroup);
-		typeHierarchy.setUserData(PostProcessingAnalysisType.HIERARCHY);
-		typeHierarchy.setSelected(true);
-		RadioButton typeHierarchyConflict = new RadioButton("HierarchyConflict");
-		typeHierarchyConflict.setToggleGroup(togglePostAnalysisGroup);
-		typeHierarchyConflict.setUserData(PostProcessingAnalysisType.HIERARCHYCONFLICT);
-		typeHierarchyConflict.setSelected(false);
-		RadioButton typeHierarchyConflictRedundancy = new RadioButton("HierarchyConflictRedundancy");
-		typeHierarchyConflictRedundancy.setToggleGroup(togglePostAnalysisGroup);
-		typeHierarchyConflictRedundancy.setUserData(PostProcessingAnalysisType.HIERARCHYCONFLICTREDUNDANCY);
-		typeHierarchyConflictRedundancy.setSelected(false);
-		RadioButton typeHierarchyConflictRedundancyDouble = new RadioButton("HierarchyConflictRedundancyDouble");
-		typeHierarchyConflictRedundancyDouble.setToggleGroup(togglePostAnalysisGroup);
-		typeHierarchyConflictRedundancyDouble.setUserData(PostProcessingAnalysisType.HIERARCHYCONFLICTREDUNDANCYDOUBLE);
-		typeHierarchyConflictRedundancyDouble.setSelected(false);
+		MinerfulGuiUtil.initPostProcessingType(processingType, togglePostAnalysisGroup);
 		
 		togglePostAnalysisGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>(){
 		    public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle) {
@@ -426,7 +408,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		         }
 
 		     } 
-		});
+		});		
 		
 		// define cropNegativeConstraints
 		negativeConstraints.selectedProperty().addListener(it -> {
@@ -450,8 +432,6 @@ public class DiscoverTabController extends AbstractController implements Initial
 			
 			setConstraintsTable();
         });
-		
-		processingType.getChildren().addAll(typeNone,typeHierarchy,typeHierarchyConflict,typeHierarchyConflictRedundancy,typeHierarchyConflictRedundancyDouble);
 		
 		//init Charts
 		supportChart.getXAxis().setLabel("Threshold value");
@@ -714,6 +694,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 			
 		}
 		
+		setConstraintsTable();
 		numberOfConstraints.setText(String.valueOf(discoveredConstraints.size()));
 	}
 	
@@ -723,9 +704,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		for(Constraint constraint : processModel.getAllUnmarkedConstraints()) {
 			if(RelationConstraintEnum.findTemplateByTemplateLabel(constraint.getTemplateName()) == null) {
 				selectedConstraints.add(constraint);
-			}
-			
-			if(!negativeConstraints.isSelected() && !positiveConstraints.isSelected()) {
+			} else if(!negativeConstraints.isSelected() && !positiveConstraints.isSelected()) {
 				selectedConstraints.add(constraint);
 			} else if(negativeConstraints.isSelected() && !positiveConstraints.isSelected()) {
 				if(RelationConstraintEnum.isPositiveConstraint(constraint.getTemplateName())) {
@@ -771,14 +750,6 @@ public class DiscoverTabController extends AbstractController implements Initial
 			}
 			
 		};
-	}
-	
-	private void setHeight(Control tableView, Integer height) {
-		DoubleBinding heightBinding = new SimpleDoubleProperty().add(height);
-		
-		tableView.minHeightProperty().bind(heightBinding);
-		tableView.prefHeightProperty().bind(heightBinding);
-		tableView.maxHeightProperty().bind(heightBinding);
 	}
 	
 	private EventHandler<KeyEvent> onEnterPressed() {

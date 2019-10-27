@@ -21,8 +21,18 @@
 	<children>
 		
 		<!-- Area-Header -->
-		<HBox styleClass="area-header" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" >
+		<HBox spacing="5" styleClass="area-header" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" >
 			<Label styleClass="area-header-label" text="Simplify" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
+			<Button styleClass="btn-default, btn-header" text="Modify Process Model" onAction="#selectModel">
+				<graphic>
+           			<FontIcon iconColor="white" iconLiteral="typ-flow-switch" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+            	</graphic>
+			</Button>
+			<Button styleClass="btn-default, btn-header" text="Import Process Model" onAction="#importModel">
+				<graphic>
+           			<FontIcon iconColor="white" iconLiteral="typ-flow-merge" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+            	</graphic>
+			</Button>
 		</HBox>
 		
 		<!-- TabPane -->

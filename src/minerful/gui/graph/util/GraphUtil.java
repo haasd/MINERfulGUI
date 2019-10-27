@@ -29,7 +29,6 @@ import minerful.concept.TaskCharArchive;
 import minerful.concept.TaskCharFactory;
 import minerful.concept.constraint.Constraint;
 import minerful.concept.constraint.ConstraintsBag;
-import minerful.concept.constraint.MetaConstraintUtils;
 import minerful.concept.constraint.existence.AtMostOne;
 import minerful.concept.constraint.existence.End;
 import minerful.concept.constraint.existence.Init;
@@ -50,7 +49,6 @@ import minerful.concept.constraint.relation.Response;
 import minerful.concept.constraint.relation.Succession;
 import minerful.gui.common.RelationConstraintInfo;
 import minerful.gui.common.ValidationEngine;
-import minerful.gui.controller.DiscoverTabController;
 import minerful.gui.controller.ModelGeneratorTabController;
 import minerful.gui.model.ActivityElement;
 import minerful.gui.model.ActivityNode;
@@ -227,11 +225,17 @@ public class GraphUtil {
 			if(aElement.getExistenceConstraint() != null) {
 				// transform position constraints
 				if(aElement.getExistenceConstraint().getInitConstraint() != null && aElement.getExistenceConstraint().getInitConstraint().isActive()) {
-					bag.add(new Init(aElementMap.get(aElement), aElement.getExistenceConstraint().getInitConstraint().getSupport()));
+					Init constraint = new Init(aElementMap.get(aElement), aElement.getExistenceConstraint().getInitConstraint().getSupport());
+					constraint.setConfidence(aElement.getExistenceConstraint().getInitConstraint().getConfidence());
+					constraint.setInterestFactor(aElement.getExistenceConstraint().getInitConstraint().getInterest());
+					bag.add(constraint);
 				}
 				
 				if(aElement.getExistenceConstraint().getEndConstraint() != null && aElement.getExistenceConstraint().getEndConstraint().isActive()) {
-					bag.add(new End(aElementMap.get(aElement), aElement.getExistenceConstraint().getEndConstraint().getSupport()));
+					End constraint = new End(aElementMap.get(aElement), aElement.getExistenceConstraint().getEndConstraint().getSupport());
+					constraint.setConfidence(aElement.getExistenceConstraint().getEndConstraint().getConfidence());
+					constraint.setInterestFactor(aElement.getExistenceConstraint().getEndConstraint().getInterest());
+					bag.add(constraint);
 				}
 				
 				// Transform card. constraints 
@@ -239,9 +243,15 @@ public class GraphUtil {
 					Card card = aElement.getExistenceConstraint().getCard();
 					
 					if("0".equals(card.getMin()) && "1".equals(card.getMin())) {
-						bag.add(new AtMostOne(aElementMap.get(aElement), card.getSupport()));
+						AtMostOne constraint = new AtMostOne(aElementMap.get(aElement), card.getSupport());
+						constraint.setConfidence(card.getConfidence());
+						constraint.setInterestFactor(card.getInterest());
+						bag.add(constraint);
 					} else {
-						bag.add(new Participation(aElementMap.get(aElement), card.getSupport()));
+						Participation constraint = new Participation(aElementMap.get(aElement), card.getSupport());
+						constraint.setConfidence(card.getConfidence());
+						constraint.setInterestFactor(card.getInterest());
+						bag.add(constraint);
 					}
 				}
 			}
@@ -266,37 +276,80 @@ public class GraphUtil {
 		
 		TaskChar source = aElementMap.get(lineElement.getSourceElement()); 
 		TaskChar target = aElementMap.get(lineElement.getTargetElement());
+
 		
 		switch(templateName) {
 			// RelationConstraints
 			case "respondedExistence" :
-				return new RespondedExistence(source, target, lineElement.getSupport());			
+				RespondedExistence rExist = new RespondedExistence(source, target, lineElement.getSupport());
+				rExist.setConfidence(lineElement.getConfidence());
+				rExist.setInterestFactor(lineElement.getInterest());
+				return rExist;
 			case "response":
-				return new Response(source, target, lineElement.getSupport());
+				Response response = new Response(source, target, lineElement.getSupport());
+				response.setConfidence(lineElement.getConfidence());
+				response.setInterestFactor(lineElement.getInterest());
+				return response;
 			case "alternateResponse":
-				return new AlternateResponse(source, target, lineElement.getSupport());
+				AlternateResponse alternateResponse = new AlternateResponse(source, target, lineElement.getSupport());
+				alternateResponse.setConfidence(lineElement.getConfidence());
+				alternateResponse.setInterestFactor(lineElement.getInterest());
+				return alternateResponse;
 			case "chainResponse":
-				return new ChainResponse(source, target, lineElement.getSupport());
+				ChainResponse chainResponse = new ChainResponse(source, target, lineElement.getSupport());
+				chainResponse.setConfidence(lineElement.getConfidence());
+				chainResponse.setInterestFactor(lineElement.getInterest());
+				return chainResponse;
 			case "precedence":
-				return new Precedence(source, target, lineElement.getSupport());
+				Precedence precendence = new Precedence(source, target, lineElement.getSupport());
+				precendence.setConfidence(lineElement.getConfidence());
+				precendence.setInterestFactor(lineElement.getInterest());
+				return precendence;
 			case "alternatePrecedence":
-				return new AlternatePrecedence(source, target, lineElement.getSupport());
+				AlternatePrecedence altPrec = new AlternatePrecedence(source, target, lineElement.getSupport());
+				altPrec.setConfidence(lineElement.getConfidence());
+				altPrec.setInterestFactor(lineElement.getInterest());
+				return altPrec;
 			case "chainPrecedence":
-				return new ChainPrecedence(source, target, lineElement.getSupport());
+				ChainPrecedence chainPre = new ChainPrecedence(source, target, lineElement.getSupport());
+				chainPre.setConfidence(lineElement.getConfidence());
+				chainPre.setInterestFactor(lineElement.getInterest());
+				return chainPre;
 			case "coExistence":
-				return new CoExistence(source, target, lineElement.getSupport());
+				CoExistence coExist = new CoExistence(source, target, lineElement.getSupport());
+				coExist.setConfidence(lineElement.getConfidence());
+				coExist.setInterestFactor(lineElement.getInterest());
+				return coExist;
 			case "succession":
-				return new Succession(source, target, lineElement.getSupport());
+				Succession succession = new Succession(source, target, lineElement.getSupport());
+				succession.setConfidence(lineElement.getConfidence());
+				succession.setInterestFactor(lineElement.getInterest());
+				return succession;
 			case "alternateSuccession":
-				return new AlternateSuccession(source, target, lineElement.getSupport());
+				AlternateSuccession alternateSuccession = new AlternateSuccession(source, target, lineElement.getSupport());
+				alternateSuccession.setConfidence(lineElement.getConfidence());
+				alternateSuccession.setInterestFactor(lineElement.getInterest());
+				return alternateSuccession;
 			case "chainSuccession":
-				return new ChainSuccession(source, target, lineElement.getSupport());
+				ChainSuccession chainSuccession = new ChainSuccession(source, target, lineElement.getSupport());
+				chainSuccession.setConfidence(lineElement.getConfidence());
+				chainSuccession.setInterestFactor(lineElement.getInterest());
+				return chainSuccession;
 			case "notChainSuccession":
-				return new NotChainSuccession(source, target, lineElement.getSupport());
+				NotChainSuccession notChainSuccession = new NotChainSuccession(source, target, lineElement.getSupport());
+				notChainSuccession.setConfidence(lineElement.getConfidence());
+				notChainSuccession.setInterestFactor(lineElement.getInterest());
+				return notChainSuccession;
 			case "notSuccession":
-				return new NotSuccession(source, target, lineElement.getSupport());
+				NotSuccession notSuccession = new NotSuccession(source, target, lineElement.getSupport());
+				notSuccession.setConfidence(lineElement.getConfidence());
+				notSuccession.setInterestFactor(lineElement.getInterest());
+				return notSuccession;
 			case "notCoExistence":
-				return new NotCoExistence(source, target, lineElement.getSupport());
+				NotCoExistence notCoExistence = new NotCoExistence(source, target, lineElement.getSupport());
+				notCoExistence.setConfidence(lineElement.getConfidence());
+				notCoExistence.setInterestFactor(lineElement.getInterest());
+				return notCoExistence;
 		}
 		
 		return null;
@@ -305,7 +358,7 @@ public class GraphUtil {
 	/*
 	 * Create ProcessElement based on a ProcessModel 
 	 */
-	public static ProcessElement transformProcessModelIntoProcessElement(ProcessModel processModel, AnchorPane pane, EventHandlerManager eventHandler, DiscoverTabController controller) {
+	public static ProcessElement transformProcessModelIntoProcessElement(ProcessModel processModel, AnchorPane pane, EventHandlerManager eventHandler, ProcessElementInterface controller) {
 		ProcessElement processElement = new ProcessElement();
 		
 		determineActivityElements(processElement, processModel.getTasks(), pane, eventHandler, controller);
@@ -347,7 +400,7 @@ public class GraphUtil {
 		return newProcessElement;
 	}
 	
-	private static void determineActivityElements(ProcessElement processElement, Set<TaskChar> activities, AnchorPane pane, EventHandlerManager eventHandler, DiscoverTabController controller) {
+	private static void determineActivityElements(ProcessElement processElement, Set<TaskChar> activities, AnchorPane pane, EventHandlerManager eventHandler, ProcessElementInterface controller) {
 		
 		Integer id = 0;
 		double x = 50d;
@@ -384,7 +437,7 @@ public class GraphUtil {
 	/*
 	 * Transform ProcessModel constraints into ExistenceConstraints and RelationConstraints
 	 */
-	private static void determineConstraintElements(ProcessElement processElement, SortedSet<Constraint> constraints, AnchorPane pane, EventHandlerManager eventHandler,DiscoverTabController controller) {
+	private static void determineConstraintElements(ProcessElement processElement, SortedSet<Constraint> constraints, AnchorPane pane, EventHandlerManager eventHandler,ProcessElementInterface controller) {
 	
 		for(Constraint constraint : constraints) {
 			

@@ -35,4 +35,5 @@ public interface ProcessElementInterface {
 	public void setMaxTranslate();
 	public DoubleProperty getMaxTranslateY();
 	public DoubleProperty getMaxTranslateX();
+	public List<ActivityNode> getActivityNodes();
 }
