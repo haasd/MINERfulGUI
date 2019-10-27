@@ -96,9 +96,6 @@ public class EventHandlerManager {
             double newTranslateX = Math.max(config.getDouble("sheet.padding"), activityTranslateX + offsetX);
             double newTranslateY = Math.max(config.getDouble("sheet.padding"), activityTranslateY + offsetY);
             ActivityNode aNode = (ActivityNode)(t.getSource());
-                  
-
-            
              
             //Update ActivityNode Position on Screen
             ((Node)((ActivityNode)(t.getSource()))).setTranslateX(newTranslateX);
@@ -111,9 +108,8 @@ public class EventHandlerManager {
             }
             
             aNode.updateAllLineNodePositions();
-            if(processTab instanceof ModelGeneratorTabController) {
-            	((ModelGeneratorTabController) processTab).setMaxTranslate();
-            }
+            processTab.setMaxTranslate();
+
         }
     };
     
@@ -207,10 +203,7 @@ public class EventHandlerManager {
            	   line.updateLinePosition();
             }
 
-            if(processTab instanceof ModelGeneratorTabController) {
-	            //Update BackgroundTab (Sheet)
-            	((ModelGeneratorTabController) processTab).setMaxTranslate();
-            }
+            processTab.setMaxTranslate();
         }
     };
 	
