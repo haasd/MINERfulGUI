@@ -14,11 +14,20 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.deckfour.xes.model.XLog;
 
+import javafx.beans.binding.DoubleBinding;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Control;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import minerful.MinerFulMinerLauncher;
@@ -31,11 +40,11 @@ import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.model.io.JFXToSVGConverter;
 import minerful.gui.model.io.XmlModelWriter;
 import minerful.gui.service.ProcessElementInterface;
-import minerful.gui.service.loginfo.LogInfo;
 import minerful.io.params.OutputModelParameters;
 import minerful.logmaker.MinerFulLogMaker;
 import minerful.logmaker.params.LogMakerParameters.Encoding;
 import minerful.params.InputLogCmdParameters.InputEncoding;
+import minerful.postprocessing.params.PostProcessingCmdParameters.PostProcessingAnalysisType;
 
 public class MinerfulGuiUtil {
 	
@@ -241,5 +250,38 @@ public class MinerfulGuiUtil {
 			
 			return task;
 			
+		}
+		
+		public static void setHeight(Control tableView, Integer height) {
+			DoubleBinding heightBinding = new SimpleDoubleProperty().add(height);
+			
+			tableView.minHeightProperty().bind(heightBinding);
+			tableView.prefHeightProperty().bind(heightBinding);
+			tableView.maxHeightProperty().bind(heightBinding);
+		}
+		
+		public static void initPostProcessingType(VBox processingType, ToggleGroup togglePostAnalysisGroup) {
+			RadioButton typeNone = new RadioButton("None");
+			typeNone.setToggleGroup(togglePostAnalysisGroup);
+			typeNone.setUserData(PostProcessingAnalysisType.NONE);
+			typeNone.setSelected(false);
+			RadioButton typeHierarchy = new RadioButton("Hierarchy");
+			typeHierarchy.setToggleGroup(togglePostAnalysisGroup);
+			typeHierarchy.setUserData(PostProcessingAnalysisType.HIERARCHY);
+			typeHierarchy.setSelected(true);
+			RadioButton typeHierarchyConflict = new RadioButton("HierarchyConflict");
+			typeHierarchyConflict.setToggleGroup(togglePostAnalysisGroup);
+			typeHierarchyConflict.setUserData(PostProcessingAnalysisType.HIERARCHYCONFLICT);
+			typeHierarchyConflict.setSelected(false);
+			RadioButton typeHierarchyConflictRedundancy = new RadioButton("HierarchyConflictRedundancy");
+			typeHierarchyConflictRedundancy.setToggleGroup(togglePostAnalysisGroup);
+			typeHierarchyConflictRedundancy.setUserData(PostProcessingAnalysisType.HIERARCHYCONFLICTREDUNDANCY);
+			typeHierarchyConflictRedundancy.setSelected(false);
+			RadioButton typeHierarchyConflictRedundancyDouble = new RadioButton("HierarchyConflictRedundancyDouble");
+			typeHierarchyConflictRedundancyDouble.setToggleGroup(togglePostAnalysisGroup);
+			typeHierarchyConflictRedundancyDouble.setUserData(PostProcessingAnalysisType.HIERARCHYCONFLICTREDUNDANCYDOUBLE);
+			typeHierarchyConflictRedundancyDouble.setSelected(false);
+			processingType.getChildren().addAll(typeNone,typeHierarchy,typeHierarchyConflict,typeHierarchyConflictRedundancy,typeHierarchyConflictRedundancyDouble);
+
 		}
 }
