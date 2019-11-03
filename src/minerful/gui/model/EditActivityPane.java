@@ -1,5 +1,6 @@
 package minerful.gui.model;
 
+import org.apache.log4j.Logger;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import javafx.geometry.HPos;
@@ -13,8 +14,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -22,6 +21,12 @@ import javafx.scene.paint.Paint;
 import minerful.gui.controller.ModelGeneratorTabController;
 
 public class EditActivityPane extends ScrollPane {
+	
+	private final static Logger logger = Logger.getLogger(EditActivityPane.class);
+	
+	private static final String MIN_GT_MAX= "Invalid Cardinality!\nMinimum > Maximum";
+	private static final String ONE_IS_INVALID = "Invalid Cardinality!\nFor \"1\" select button.";
+	private static final String ZERO_IS_INVALID = "nvalid Cardinality!\nFor \"0\" select button.";
 
 	private ModelGeneratorTabController processTab;
 	private ActivityNode editedActivityNode;
@@ -55,7 +60,8 @@ public class EditActivityPane extends ScrollPane {
 
 		setFitToHeight(true);
 		setFitToWidth(true);
-
+		
+		this.setVbarPolicy(ScrollBarPolicy.NEVER);
 		this.processTab = processTab;
 
 		// STRUCTURE OF PANE TO EDIT ACTIVIY
@@ -200,7 +206,7 @@ public class EditActivityPane extends ScrollPane {
 
 				} else {
 					if (newValue.isEmpty()) {
-						System.out.println("no text!");
+						logger.warn("no text!");
 					} else {
 						cardMin0RB.setSelected(false);
 						cardMin1RB.setSelected(false);
@@ -243,7 +249,7 @@ public class EditActivityPane extends ScrollPane {
 
 				} else {
 					if (newValue.isEmpty()) {
-						System.out.println("no text!");
+						logger.warn("no text!");
 					} else {
 						cardMax1RB.setSelected(false);
 						cardMaxAnyRB.setSelected(false);
@@ -365,11 +371,8 @@ public class EditActivityPane extends ScrollPane {
 	 */
 	private boolean validateCardinalitySelection() {
 
-		String minGTMax = "Invalid Cardinality!\nMinimum > Maximum";
-		String oneIsInvalid = "Invalid Cardinality!\nFor \"1\" select button.";
-		String zeroIsInvalid = "nvalid Cardinality!\nFor \"0\" select button.";
 		boolean isValid = true;
-		System.out.println("Validating Cardinality Selction....");
+		logger.debug("Validating Cardinality Selection....");
 
 		if (cardMin0RB.isSelected() || cardMin1RB.isSelected()) { // Min 0 and
 																	// Min 1 is
@@ -384,20 +387,20 @@ public class EditActivityPane extends ScrollPane {
 				if (cardMinMoreTF.getText().equals("0")) { // 0 and 1 are not
 															// allowed in "more"
 															// TextField
-					cardErrorLabel.setText(zeroIsInvalid);
+					cardErrorLabel.setText(ZERO_IS_INVALID);
 					isValid = false;
 				} else {
 					if (cardMinMoreTF.getText().equals("1")) {
-						cardErrorLabel.setText(oneIsInvalid);
+						cardErrorLabel.setText(ONE_IS_INVALID);
 						isValid = false;
 					} else {
 						if (cardMax1RB.isSelected()) { // x..1 not valid
-							cardErrorLabel.setText(minGTMax);
+							cardErrorLabel.setText(MIN_GT_MAX);
 							isValid = false;
 						}
 						if (!cardMaxMoreTF.getText().isEmpty()) {
 							if (Integer.parseInt(cardMinMoreTF.getText()) > Integer.parseInt(cardMaxMoreTF.getText())) {
-								cardErrorLabel.setText(minGTMax);
+								cardErrorLabel.setText(MIN_GT_MAX);
 								isValid = false;
 							}
 						}
@@ -409,26 +412,26 @@ public class EditActivityPane extends ScrollPane {
 			if (cardMaxMoreTF.getText().equals("0")) { // 0 and 1 are not
 														// allowed in "more"
 														// TextField
-				cardErrorLabel.setText(zeroIsInvalid);
+				cardErrorLabel.setText(ZERO_IS_INVALID);
 				isValid = false;
 			} else {
 				if (cardMaxMoreTF.getText().equals("1")) {
-					cardErrorLabel.setText(oneIsInvalid);
+					cardErrorLabel.setText(ONE_IS_INVALID);
 					isValid = false;
 				}
 			}
 			if (!cardMinMoreTF.getText().isEmpty()) {
 				if (Integer.parseInt(cardMinMoreTF.getText()) > Integer.parseInt(cardMaxMoreTF.getText())) {
-					cardErrorLabel.setText(minGTMax);
+					cardErrorLabel.setText(MIN_GT_MAX);
 					isValid = false;
 				}
 			}
 		}
 		if (isValid) {
 			cardErrorLabel.setText("");
-			System.out.println("Selection is valid");
+			logger.debug("Selection is valid");
 		} else {
-			System.out.println("Selection is not valid: " + cardErrorLabel.getText());
+			logger.warn("Selection is not valid: " + cardErrorLabel.getText());
 		}
 		return isValid;
 	}

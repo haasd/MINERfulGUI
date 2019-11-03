@@ -22,17 +22,17 @@
 		<!-- Area-Header -->
 		<HBox spacing="5" styleClass="area-header" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" >
 			<Label styleClass="area-header-label" text="Generate/Modify Model" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
-			<Button styleClass="btn-default, btn-header" text="Modify Process Model" onAction="#selectModel">
+			<Button styleClass="btn-default, btn-header" text="Modify Process Map" onAction="#selectModel">
 				<graphic>
            			<FontIcon iconColor="white" iconLiteral="typ-flow-switch" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
             	</graphic>
 			</Button>
-			<Button styleClass="btn-default, btn-header" text="New Process Model" onAction="#createModel">
+			<Button styleClass="btn-default, btn-header" text="New Process Map" onAction="#createModel">
 				<graphic>
            			<FontIcon iconColor="white" iconLiteral="typ-flow-children" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
             	</graphic>
 			</Button>
-			<Button styleClass="btn-default, btn-header" text="Import Process Model" onAction="#importModel">
+			<Button styleClass="btn-default, btn-header" text="Import Process Map" onAction="#importModel">
 				<graphic>
            			<FontIcon iconColor="white" iconLiteral="typ-flow-merge" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
             	</graphic>

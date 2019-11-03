@@ -1,7 +1,5 @@
 package minerful.gui.controller;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.kordamp.ikonli.javafx.FontIcon;
 
@@ -43,10 +40,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import javafx.util.Callback;
-import minerful.MinerFulOutputManagementLauncher;
 import minerful.concept.ProcessModel;
 import minerful.concept.TaskChar;
 import minerful.concept.TaskCharArchive;
@@ -68,11 +62,8 @@ import minerful.gui.model.RelationConstraintElement;
 import minerful.gui.model.RelationConstraintNode;
 import minerful.gui.model.Selectable;
 import minerful.gui.model.Template;
-import minerful.gui.model.io.JFXToSVGConverter;
-import minerful.gui.model.io.XmlModelWriter;
 import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.util.Config;
-import minerful.io.params.OutputModelParameters;
 
 public class ModelGeneratorTabController extends AbstractController implements Initializable, ProcessElementInterface {
 	
@@ -445,13 +436,9 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	 * @param aNode
 	 */
 	public void deleteActivity(ActivityNode aNode){
-		Alert alert = new Alert(AlertType.CONFIRMATION);
-		alert.setTitle("Activity Deletion Confirmation");
-		alert.setHeaderText("Deleting all adjacent constraints");
-		alert.setContentText("By deleting this Activity, all adjacent constraints are also removed. Are you ok with this?");
+		Optional<ButtonType> result = MinerfulGuiUtil.displayAlert("Activity Deletion Confirmation", "Deleting all adjacent constraints", "By deleting this Activity, all adjacent constraints are also removed. Are you ok with this?", AlertType.CONFIRMATION);
 
 		if(!aNode.getActivityElement().getConstraintList().isEmpty()){
-			Optional<ButtonType> result = alert.showAndWait();
 			if (result.get() == ButtonType.OK){
 				//delete all connected constraints
 				ArrayList<RelationConstraintElement> constraintL =  new ArrayList<RelationConstraintElement>();		//local copy to avoid ConcurrentdModificationException
@@ -460,7 +447,6 @@ public class ModelGeneratorTabController extends AbstractController implements I
 				}
 				for(RelationConstraintElement c : constraintL){
 					deleteRelationConstraint(determineRelationConstraintNode(c));
-					constraintElements.remove(c);
 				}
 				anchorPane.getChildren().remove(aNode);
 				currentProcessElement.deleteActivity(aNode.getActivityElement());
@@ -626,9 +612,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	 */
 	public void setSelectionModeToAddConstraint(){
 		if(currentProcessElement.getActivityEList().size() <= 1){
-			Alert alert = new Alert(AlertType.INFORMATION, "Please add an ACTIVITY before you add a CONSTRAINT with two parameters. Otherwise you can not set the second parameter.", ButtonType.OK);
-			alert.setHeaderText("Not possible!");
-			alert.showAndWait();
+			MinerfulGuiUtil.displayAlert("Error", "Not possible!", "Please add an ACTIVITY before you add a CONSTRAINT with two parameters. Otherwise you can not set the second parameter.", AlertType.INFORMATION);
 		} else {
 			ActivityElement selectedActivity = ((ActivityNode) selectedElement).getActivityElement();
 			ActivityNode aNode = (ActivityNode) selectedElement;
@@ -661,10 +645,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 			amountOfConnectedActivities -= 1;	// in case of Activity Exchange there is one more selectable Element
 		}
 		if(currentProcessElement.getActivityEList().size() <= amountOfConnectedActivities){
-			Alert alert = new Alert(AlertType.INFORMATION, "Please add an additional ACTIVITY. All available ACTIVITIES are already part of this CONSTRAINT.", ButtonType.OK);
-			alert.setHeaderText("Not possible!");
-			alert.showAndWait();
-			
+			MinerfulGuiUtil.displayAlert("Error", "Not possible!", "Please add an additional ACTIVITY. All available ACTIVITIES are already part of this CONSTRAINT.", AlertType.INFORMATION);
 		} else {
 			addConstraintMode = mode;
 			//Disable everything
@@ -821,7 +802,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	
 	public void determineConstraints() {
 		constraintElements.clear(); 
-		constraintElements.addAll(GraphUtil.determineConstraints(activityElements));
+		constraintElements.addAll(GraphUtil.determineConstraints(currentProcessElement));
 		
 	}
 	

@@ -55,12 +55,13 @@ public class XmlModelReader {
 		for(File file: extractedFiles) {
 			Element rootElement = getRootElement(file);
 			
-			if("Activities.xml".equals(file.getName())) {
+			if("ProcessSpecification.xml".equals(file.getName())) {
 				activities = extractActivitiesFromFile(rootElement);
+				constraintList = extractConstraintsFromFile(rootElement);
 			} else if ("Positions.xml".equals(file.getName())) {
 				positions = extractPositionsFromFile(rootElement);
-			} else if ("Constraints.xml".equals(file.getName())) {
-				constraintList = extractConstraintsFromFile(rootElement);
+			} else if ("Templates.xml".equals(file.getName())) {
+				//TODO: must be implemented
 			} else {
 				logger.error("Folder content doesn't fit requirements");
 			}
@@ -113,10 +114,10 @@ public class XmlModelReader {
 		int i = 0;
 		for(ConstraintElement cElement : constraintList) {
 			
-			if(cElement.getTargetIdentifier() == null) {
+			if(cElement.getParams().size() == 1) {
 				
 				// determine corresponding ActivityElement
-				ActivityElement aElement = activities.get(cElement.getSourceIdentifier());
+				ActivityElement aElement = activities.get(cElement.getParams().get(0).get(0));
 				
 				if(aElement.getExistenceConstraint() == null) {
 					aElement.setExistenceConstraint(new XMLExistenceConstraint());
@@ -140,9 +141,15 @@ public class XmlModelReader {
 				i++;
 				Template template = RelationConstraintEnum.findTemplateByTemplateLabel(cElement.getTemplate());
 				RelationConstraintElement rcElement = new RelationConstraintElement(i, template);
-				rcElement.addActivityElement(activities.get(cElement.getSourceIdentifier()), 1, cElement.getSupport(), cElement.getConfidence(), cElement.getInterest());
-				rcElement.addActivityElement(activities.get(cElement.getTargetIdentifier()), 2, cElement.getSupport(), cElement.getConfidence(), cElement.getInterest());
-				rcElements.put(cElement.getIdentifier(),rcElement);
+				for(String param1 : cElement.getParams().get(0)) {
+					rcElement.addActivityElement(activities.get(param1), 1, cElement.getSupport(), cElement.getConfidence(), cElement.getInterest());
+				}
+				
+				for(String param2 : cElement.getParams().get(1)) {
+					rcElement.addActivityElement(activities.get(param2), 2, cElement.getSupport(), cElement.getConfidence(), cElement.getInterest());
+
+				}
+				rcElements.put(cElement.getIdentifier(),rcElement);							
 			}
 		}
 		
@@ -201,11 +208,12 @@ public class XmlModelReader {
 
 		Map<String,ActivityElement> activityMap = new HashMap<>();
 		
-		NodeList activities = rootElement.getElementsByTagName("activity");
+		NodeList activities = rootElement.getElementsByTagName("activities");
+		NodeList activityList = ((Element) activities.item(0)).getElementsByTagName("activity");
 		
-		for(int i=0; i < activities.getLength(); i++) {
+		for(int i=0; i < activityList.getLength(); i++) {
 			
-			Node node = activities.item(i);
+			Node node = activityList.item(i);
 			Element activity = (Element) node;
 			String identifier = activity.getAttribute("identifier");
 			NodeList nl = activity.getElementsByTagName("label");
@@ -258,6 +266,18 @@ public class XmlModelReader {
 		return positionMap;
 	}
 	
+	private List<String> determineActivityList(Element parameters) {
+		List<String> activityList = new ArrayList<>();
+		
+		NodeList activities = parameters.getElementsByTagName("activity");
+		
+		for(int i=0; i < activities.getLength(); i++) {
+			activityList.add(activities.item(i).getTextContent());
+		}
+		
+		return activityList;
+	}
+	
 	/**
 	 * Read Constraints from Constraints-File and return them
 	 * @return
@@ -265,40 +285,30 @@ public class XmlModelReader {
 	private List<ConstraintElement> extractConstraintsFromFile(Element rootElement) {
 		List<ConstraintElement> constraintMap = new ArrayList<>();
 		
-		// extract RelationConstraints
-		NodeList existenceConstraints = rootElement.getElementsByTagName("existenceConstraint");
-		for(int i=0; i < existenceConstraints.getLength(); i++) {
-			Node node = existenceConstraints.item(i);
-			Element existenceConstraint = (Element) node;
-			String template = existenceConstraint.getAttribute("template");
-			Element support = (Element) existenceConstraint.getElementsByTagName("support").item(0);
-			Element confidence = (Element) existenceConstraint.getElementsByTagName("confidence").item(0);
-			Element interest = (Element) existenceConstraint.getElementsByTagName("interest").item(0);
-			Element activity = (Element) existenceConstraint.getElementsByTagName("activity").item(0);
-			Element minElement = (Element) existenceConstraint.getElementsByTagName("min").item(0);
-			Element maxElement = (Element) existenceConstraint.getElementsByTagName("max").item(0);
+		// extract constraints
+		NodeList constraints = rootElement.getElementsByTagName("constraint");
+		for(int i=0; i < constraints.getLength(); i++) {
+			Node node = constraints.item(i);
+			Element constraint = (Element) node;
+			String template = constraint.getAttribute("template");
+			String identifier = constraint.getAttribute("identifier");
+			Element support = (Element) constraint.getElementsByTagName("support").item(0);
+			Element confidence = (Element) constraint.getElementsByTagName("confidence").item(0);
+			Element interest = (Element) constraint.getElementsByTagName("interest").item(0);
+			Element minElement = (Element) constraint.getElementsByTagName("min").item(0);
+			Element maxElement = (Element) constraint.getElementsByTagName("max").item(0);
+			
+			NodeList parameters = constraint.getElementsByTagName("parameter");
+			List<List<String>> params = new ArrayList<>();
+			
+			for(int j=0; j < parameters.getLength(); j++) {
+				params.add(determineActivityList((Element) parameters.item(j)));
+			}
 			
 			String min = minElement != null ? minElement.getTextContent() : null;
 			String max = minElement != null ? maxElement.getTextContent() : null;
-			constraintMap.add(new ConstraintElement(activity.getTextContent(), template, activity.getTextContent(), null, Double.parseDouble(support.getTextContent()), Double.parseDouble(confidence.getTextContent()), Double.parseDouble(interest.getTextContent()), true, min, max));
-			logger.debug("Found ExistenceConstraint of " + activity.getTextContent() + " Template " + template +  " Support: " + support.getTextContent() + " Confidence: " + confidence.getTextContent() + " Interest: " + interest.getTextContent());
-
-		}
-		
-		// extract RelationConstraints
-		NodeList relationConstraints = rootElement.getElementsByTagName("relationConstraint");
-		for(int i=0; i < relationConstraints.getLength(); i++) {
-			Node node = relationConstraints.item(i);
-			Element relationConstraint = (Element) node;
-			String identifier = relationConstraint.getAttribute("identifier");
-			String template = relationConstraint.getAttribute("template");
-			Element support = (Element) relationConstraint.getElementsByTagName("support").item(0);
-			Element confidence = (Element) relationConstraint.getElementsByTagName("confidence").item(0);
-			Element interest = (Element) relationConstraint.getElementsByTagName("interest").item(0);
-			Element sourceActivity = (Element) relationConstraint.getElementsByTagName("sourceActivity").item(0);
-			Element targetActivity = (Element) relationConstraint.getElementsByTagName("targetActivity").item(0);
-			constraintMap.add(new ConstraintElement(identifier, template, sourceActivity.getTextContent(), targetActivity.getTextContent(), Double.parseDouble(support.getTextContent()), Double.parseDouble(confidence.getTextContent()), Double.parseDouble(interest.getTextContent()), false, null, null));
-			logger.debug("Found RelConstraint " + identifier + " Template " + template + " Support: " + support.getTextContent() + " Confidence: " + confidence.getTextContent() + " Interest: " + interest.getTextContent() + " Source: " + sourceActivity.getTextContent() + " Target: " + targetActivity.getTextContent());
+			constraintMap.add(new ConstraintElement(identifier, template, params, Double.parseDouble(support.getTextContent()), Double.parseDouble(confidence.getTextContent()), Double.parseDouble(interest.getTextContent()), true, min, max));
+			logger.debug("Found Constraint " + identifier + " Template " + template +  " Support: " + support.getTextContent() + " Confidence: " + confidence.getTextContent() + " Interest: " + interest.getTextContent());
 
 		}
 		
@@ -337,8 +347,8 @@ public class XmlModelReader {
 		
 		String identifier;
 		String template;
-		String sourceIdentifier;
-		String targetIdentifier;
+		List<List<String>> params;
+		List<String> targetIdentifier;
 		double support;
 		double confidence;
 		double interest;
@@ -346,13 +356,12 @@ public class XmlModelReader {
 		String min;
 		String max;
 
-		public ConstraintElement(String identifier, String template, String sourceIdentifier, String targetIdentifier, double support,
+		public ConstraintElement(String identifier, String template, List<List<String>> params, double support,
 				double confidence, double interest, boolean existenceConstraint, String min, String max) {
 			super();
 			this.identifier = identifier;
 			this.template = template;
-			this.sourceIdentifier = sourceIdentifier;
-			this.targetIdentifier = targetIdentifier;
+			this.params = params;
 			this.support = support;
 			this.confidence = confidence;
 			this.interest = interest;
@@ -392,21 +401,9 @@ public class XmlModelReader {
 		public void setTemplate(String template) {
 			this.template = template;
 		}
-
-		public String getSourceIdentifier() {
-			return sourceIdentifier;
-		}
-
-		public void setSourceIdentifier(String sourceIdentifier) {
-			this.sourceIdentifier = sourceIdentifier;
-		}
-
-		public String getTargetIdentifier() {
-			return targetIdentifier;
-		}
-
-		public void setTargetIdentifier(String targetIdentifier) {
-			this.targetIdentifier = targetIdentifier;
+		
+		public List<List<String>> getParams() {
+			return params;
 		}
 
 		public double getSupport() {
