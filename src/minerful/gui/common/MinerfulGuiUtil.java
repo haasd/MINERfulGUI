@@ -16,8 +16,6 @@ import org.deckfour.xes.model.XLog;
 
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -25,7 +23,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -37,6 +34,7 @@ import minerful.checking.relevance.dao.ModelFitnessEvaluation;
 import minerful.concept.ProcessModel;
 import minerful.concept.constraint.Constraint;
 import minerful.gui.graph.util.GraphUtil;
+import minerful.gui.model.ActivityElement;
 import minerful.gui.model.io.JFXToSVGConverter;
 import minerful.gui.model.io.XmlModelWriter;
 import minerful.gui.service.ProcessElementInterface;
@@ -283,5 +281,15 @@ public class MinerfulGuiUtil {
 			typeHierarchyConflictRedundancyDouble.setSelected(false);
 			processingType.getChildren().addAll(typeNone,typeHierarchy,typeHierarchyConflict,typeHierarchyConflictRedundancy,typeHierarchyConflictRedundancyDouble);
 
+		}
+		
+		public static List<String> getIdsOfActivityElementList(List<ActivityElement> activityElements){
+			List<String> ids = new ArrayList<>();
+			
+			for(ActivityElement aElement : activityElements) {
+				ids.add(aElement.getTaskCharIdentifier());
+			}
+			
+			return ids;
 		}
 }

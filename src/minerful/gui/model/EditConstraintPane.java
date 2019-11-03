@@ -14,6 +14,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -30,28 +31,11 @@ public class EditConstraintPane extends ScrollPane {
 	private VBox activityEditVBox = new VBox();
 	private VBox typeEditVBox = new VBox();
 	private RelationConstraintNode selectedConstraint;
-	/*
-	 * private Button a1Button; private Button a2Button;
-	 */
+
 	private Label typeLabel;
 	private final ToggleGroup templateGroup = new ToggleGroup(); 
 	private HashMap<Template, RadioButton> radioButtonOfTemplate = new HashMap<Template, RadioButton>();
-	/*
-	private RadioButton precedenceRB;
-	private RadioButton respondedExistenceRB;
-	private RadioButton coExistenceRB;
-	private RadioButton responseRB;
-	private RadioButton alternateResponseRB;
-	private RadioButton alternatePrecedenceRB;
-	private RadioButton chainResponseRB;
-	private RadioButton chainPrecedenceRB;
-	private RadioButton successionRB;
-	private RadioButton alternateSuccessionRB;
-	private RadioButton chainSuccessionRB;
-	private RadioButton notSuccessionRB;
-	private RadioButton notChainSuccessionRB;
-	private RadioButton notCoExistenceRB;
-	*/
+
 	private VBox parameter1Area;
 	private VBox parameter2Area;
 	private final int buttonImageSize = 12;
@@ -62,7 +46,7 @@ public class EditConstraintPane extends ScrollPane {
 		setFitToHeight(true);
 		setFitToWidth(true);
 		setPrefWidth(200.0);
-		
+		this.setVbarPolicy(ScrollBarPolicy.NEVER);
 	
 		
 		// STRUCTURE OF PANE TO EDIT ACTIVIY

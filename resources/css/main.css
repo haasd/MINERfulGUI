@@ -6,6 +6,9 @@
 	
 	-activity-background-color: rgba(196,232,247,1);
 	-activity-border-color: rgb(61,136,195); 
+	
+	-color-light-blue: #4bb3fd;
+	-color-darker-blue: #00a6fb;
 }
 
 .clickable {
@@ -307,12 +310,13 @@
 }
 
 .list-cell:filled:selected:focused, .list-cell:filled:selected {
-    -fx-background-color: #393939;
+    -fx-background-color: -color-darker-blue;
     -fx-text-fill: white;
 }
 
 .table-cell:selected {
-	-fx-background-color: blue;
+	-fx-background-color: -color-darker-blue;
+	-fx-text-fill: white;
 }
 
 .table-row-cell {
@@ -321,11 +325,12 @@
 }
 
 .table-row-cell:selected .table-cell {
-    -fx-background-color: #aaaaaa;
+    -fx-background-color: -color-darker-blue;
+    -fx-text-fill: white;
 }
 .table-row-cell:hover .text {
-       -fx-background-color: steelblue;
-       -fx-text-fill: red;
+       -fx-background-color: -color-darker-blue;
+       -fx-text-fill: white;
 }
 
 .table-row-cell {

@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -33,20 +34,6 @@ import minerful.concept.constraint.existence.AtMostOne;
 import minerful.concept.constraint.existence.End;
 import minerful.concept.constraint.existence.Init;
 import minerful.concept.constraint.existence.Participation;
-import minerful.concept.constraint.relation.AlternatePrecedence;
-import minerful.concept.constraint.relation.AlternateResponse;
-import minerful.concept.constraint.relation.AlternateSuccession;
-import minerful.concept.constraint.relation.ChainPrecedence;
-import minerful.concept.constraint.relation.ChainResponse;
-import minerful.concept.constraint.relation.ChainSuccession;
-import minerful.concept.constraint.relation.CoExistence;
-import minerful.concept.constraint.relation.NotChainSuccession;
-import minerful.concept.constraint.relation.NotCoExistence;
-import minerful.concept.constraint.relation.NotSuccession;
-import minerful.concept.constraint.relation.Precedence;
-import minerful.concept.constraint.relation.RespondedExistence;
-import minerful.concept.constraint.relation.Response;
-import minerful.concept.constraint.relation.Succession;
 import minerful.gui.common.RelationConstraintInfo;
 import minerful.gui.common.ValidationEngine;
 import minerful.gui.controller.ModelGeneratorTabController;
@@ -56,7 +43,6 @@ import minerful.gui.model.ActivityNode.Cursor;
 import minerful.gui.model.Card;
 import minerful.gui.model.EventHandlerManager;
 import minerful.gui.model.ExistenceConstraintEnum;
-import minerful.gui.model.LineElement;
 import minerful.gui.model.LineNode;
 import minerful.gui.model.ProcessElement;
 import minerful.gui.model.RelationConstraintElement;
@@ -69,6 +55,9 @@ import minerful.gui.service.FruchtermanReingoldAlgorithm;
 import minerful.gui.service.LayoutAlgorithm;
 import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.util.Config;
+import minerful.io.encdec.DeclareConstraintTransferObject;
+import minerful.io.encdec.TransferObjectToConstraintTranslator;
+import minerful.io.encdec.pojo.ConstraintPojo;
 
 public class GraphUtil {
 	
@@ -130,11 +119,10 @@ public class GraphUtil {
 		return constraints;
 	}
 	
-	public static List<RelationConstraintInfo> determineConstraints(List<ActivityElement> activityElements) {
+	public static List<RelationConstraintInfo> determineConstraints(ProcessElement processElement) {
 		List<RelationConstraintInfo> constraintElements = new ArrayList<>();
-		List<LineElement> alreadyAddedLineElements = new ArrayList<>();
 		
-		for(ActivityElement sourceElement : activityElements) {
+		for(ActivityElement sourceElement : processElement.getActivityEList()) {
 			
 			if(sourceElement.getExistenceConstraint() != null) {
 				
@@ -160,15 +148,13 @@ public class GraphUtil {
 					}
 				}
 			}
+		}
+		
+		for(RelationConstraintElement constraint : processElement.getConstraintEList()) {
 			
-			for(RelationConstraintElement constraint : sourceElement.getConstraintList()) {
-				
-				for(LineElement lineElement: constraint.getLineElements()) {
-					
-					if(!alreadyAddedLineElements.contains(lineElement)) {
-						alreadyAddedLineElements.add(lineElement);
-						constraintElements.add(new RelationConstraintInfo(lineElement.getSourceElement().getIdentifier(), lineElement.getTargetElement().getIdentifier(), constraint.getTemplate().getName()));
-					}
+			for(ActivityElement aElement1: constraint.getParameter1Elements()) {
+				for(ActivityElement aElement2 : constraint.getParameter2Elements()) {
+					constraintElements.add(new RelationConstraintInfo(aElement1.getIdentifier(), aElement2.getIdentifier(), constraint.getTemplate().getName()));
 				}
 			}
 		}
@@ -218,8 +204,6 @@ public class GraphUtil {
 		TaskCharArchive taChaAr = new TaskCharArchive(taskChars);
 		ConstraintsBag bag = new ConstraintsBag(taChaAr.getTaskChars());
 		
-		List<LineElement> alreadyAddedLineElements = new ArrayList<>();
-		
 		for(ActivityElement aElement : processElement.getActivityEList()) {
 			
 			if(aElement.getExistenceConstraint() != null) {
@@ -257,102 +241,44 @@ public class GraphUtil {
 			}
 			
 			// transform relation constraints
-			for(RelationConstraintElement rcElement : aElement.getConstraintList()) {
-				for(LineElement lineElement : rcElement.getLineElements()) {
-					if(!alreadyAddedLineElements.contains(lineElement)) {
-						alreadyAddedLineElements.add(lineElement);
-						bag.add(mapTemplateToRelationConstraint(aElementMap, rcElement.getTemplate().getName(), lineElement));
-					}
-				}
+			for(RelationConstraintElement rcElement : processElement.getConstraintEList()) {
+				bag.add(mapTemplateToRelationConstraint(rcElement, taChaAr));
 			}
-			
-			
 		}
 		
 		return new ProcessModel(bag);
 	}
 	
-	private static Constraint mapTemplateToRelationConstraint(Map<ActivityElement, TaskChar> aElementMap, String templateName, LineElement lineElement) {
+	private static Constraint mapTemplateToRelationConstraint(RelationConstraintElement rcElement, TaskCharArchive taChaAr) {
 		
-		TaskChar source = aElementMap.get(lineElement.getSourceElement()); 
-		TaskChar target = aElementMap.get(lineElement.getTargetElement());
-
+		List<Set<String>> params = new ArrayList<>();
+		Set<String> base = new HashSet<>();
+		Set<String> implied = new HashSet<>();
 		
-		switch(templateName) {
-			// RelationConstraints
-			case "respondedExistence" :
-				RespondedExistence rExist = new RespondedExistence(source, target, lineElement.getSupport());
-				rExist.setConfidence(lineElement.getConfidence());
-				rExist.setInterestFactor(lineElement.getInterest());
-				return rExist;
-			case "response":
-				Response response = new Response(source, target, lineElement.getSupport());
-				response.setConfidence(lineElement.getConfidence());
-				response.setInterestFactor(lineElement.getInterest());
-				return response;
-			case "alternateResponse":
-				AlternateResponse alternateResponse = new AlternateResponse(source, target, lineElement.getSupport());
-				alternateResponse.setConfidence(lineElement.getConfidence());
-				alternateResponse.setInterestFactor(lineElement.getInterest());
-				return alternateResponse;
-			case "chainResponse":
-				ChainResponse chainResponse = new ChainResponse(source, target, lineElement.getSupport());
-				chainResponse.setConfidence(lineElement.getConfidence());
-				chainResponse.setInterestFactor(lineElement.getInterest());
-				return chainResponse;
-			case "precedence":
-				Precedence precendence = new Precedence(source, target, lineElement.getSupport());
-				precendence.setConfidence(lineElement.getConfidence());
-				precendence.setInterestFactor(lineElement.getInterest());
-				return precendence;
-			case "alternatePrecedence":
-				AlternatePrecedence altPrec = new AlternatePrecedence(source, target, lineElement.getSupport());
-				altPrec.setConfidence(lineElement.getConfidence());
-				altPrec.setInterestFactor(lineElement.getInterest());
-				return altPrec;
-			case "chainPrecedence":
-				ChainPrecedence chainPre = new ChainPrecedence(source, target, lineElement.getSupport());
-				chainPre.setConfidence(lineElement.getConfidence());
-				chainPre.setInterestFactor(lineElement.getInterest());
-				return chainPre;
-			case "coExistence":
-				CoExistence coExist = new CoExistence(source, target, lineElement.getSupport());
-				coExist.setConfidence(lineElement.getConfidence());
-				coExist.setInterestFactor(lineElement.getInterest());
-				return coExist;
-			case "succession":
-				Succession succession = new Succession(source, target, lineElement.getSupport());
-				succession.setConfidence(lineElement.getConfidence());
-				succession.setInterestFactor(lineElement.getInterest());
-				return succession;
-			case "alternateSuccession":
-				AlternateSuccession alternateSuccession = new AlternateSuccession(source, target, lineElement.getSupport());
-				alternateSuccession.setConfidence(lineElement.getConfidence());
-				alternateSuccession.setInterestFactor(lineElement.getInterest());
-				return alternateSuccession;
-			case "chainSuccession":
-				ChainSuccession chainSuccession = new ChainSuccession(source, target, lineElement.getSupport());
-				chainSuccession.setConfidence(lineElement.getConfidence());
-				chainSuccession.setInterestFactor(lineElement.getInterest());
-				return chainSuccession;
-			case "notChainSuccession":
-				NotChainSuccession notChainSuccession = new NotChainSuccession(source, target, lineElement.getSupport());
-				notChainSuccession.setConfidence(lineElement.getConfidence());
-				notChainSuccession.setInterestFactor(lineElement.getInterest());
-				return notChainSuccession;
-			case "notSuccession":
-				NotSuccession notSuccession = new NotSuccession(source, target, lineElement.getSupport());
-				notSuccession.setConfidence(lineElement.getConfidence());
-				notSuccession.setInterestFactor(lineElement.getInterest());
-				return notSuccession;
-			case "notCoExistence":
-				NotCoExistence notCoExistence = new NotCoExistence(source, target, lineElement.getSupport());
-				notCoExistence.setConfidence(lineElement.getConfidence());
-				notCoExistence.setInterestFactor(lineElement.getInterest());
-				return notCoExistence;
+		for(ActivityElement aElement1: rcElement.getParameter1Elements()) {
+			base.add(aElement1.getIdentifier());
 		}
 		
-		return null;
+		for(ActivityElement aElement2 : rcElement.getParameter2Elements()) {
+			implied.add(aElement2.getIdentifier());
+		}
+		
+		params.add(base);
+		params.add(implied);
+		
+		ConstraintPojo pojo = new ConstraintPojo();
+		pojo.template = rcElement.getTemplate().getName();
+		pojo.support = rcElement.getSupport();
+		pojo.confidence = rcElement.getConfidence();
+		pojo.interestFactor = rcElement.getInterest();
+		pojo.parameters = params;
+		
+		TransferObjectToConstraintTranslator totct = new TransferObjectToConstraintTranslator(taChaAr);
+		
+		Constraint constraint = totct.createConstraint(new DeclareConstraintTransferObject(pojo));
+		
+		return constraint;
+
 	}
 
 	/*
