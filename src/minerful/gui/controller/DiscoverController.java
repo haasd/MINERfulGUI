@@ -44,7 +44,7 @@ public class DiscoverController extends AbstractController implements Initializa
     	// init FileChooser and set extension-filter
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open Event-Log");
-		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XES, MXML, txt", "*.xes", "*.mxml", "*.txt");
+		FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XES, MXML, txt, xes.gz", "*.xes", "*.mxml", "*.txt", "*.xes.gz");
 	    fileChooser.getExtensionFilters().add(extFilter);
 	    
 	    // open FileChooser and handle response
