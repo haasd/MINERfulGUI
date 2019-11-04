@@ -52,10 +52,17 @@ public class MinerfulGuiUtil {
 		public static InputEncoding determineInputEncoding(String path) {
 			String extension = FilenameUtils.getExtension(path);
 			
+			if(path.contains(".xes.gz")) {
+				extension = "xes";
+			} else if(path.contains("mxml.gz")) {
+				extension = "mxml";
+			}
+			
 			switch(extension) {
 				case "txt": return InputEncoding.strings;
 				case "mxml": return InputEncoding.mxml;
-				default: return InputEncoding.xes;
+				case "xes": return InputEncoding.xes;
+				default: return null;
 			}
 		}
 		
