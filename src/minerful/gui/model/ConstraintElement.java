@@ -8,9 +8,9 @@ public abstract class ConstraintElement implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 6446864208169828877L;
-	private double support = 0d;
-	private double interest = 0d;
-	private double confidence = 0d;
+	private double support = 1d;
+	private double interest = 1d;
+	private double confidence = 1d;
 	
 	public ConstraintElement() {
 		super();

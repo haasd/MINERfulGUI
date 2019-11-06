@@ -320,30 +320,29 @@ public class XmlModelWriter {
 		
 		// handle cardinality constraints
 		if(aElement.getExistenceConstraint() != null && aElement.getExistenceConstraint().getCard() != null) {
-			Element existenceConstraint = processSpecificationDoc.createElement("constraint");
-			existenceConstraint.setAttribute("identifier", createConstraintIdentifier(null));
 			
-			if( "0".equals(aElement.getExistenceConstraint().getCard().getMin()) && "1".equals(aElement.getExistenceConstraint().getCard().getMax())) {
-				existenceConstraint.setAttribute("template", ExistenceConstraintEnum.AT_MOST_ONE.getTemplateLabel());
-			} else {
+			if( "1".equals(aElement.getExistenceConstraint().getCard().getMin().getBorder())) {
+				Element existenceConstraint = processSpecificationDoc.createElement("constraint");
+				existenceConstraint.setAttribute("identifier", createConstraintIdentifier(null));
 				existenceConstraint.setAttribute("template", ExistenceConstraintEnum.PARTICIPATION.getTemplateLabel());
+				Element parameters = processSpecificationDoc.createElement("parameters");
+				existenceConstraint.appendChild(parameters);
+				addParameterElements(parameters, new ArrayList<>(List.of(aElement.getTaskCharIdentifier())));
+				addMeasuresElement(existenceConstraint,aElement.getExistenceConstraint().getCard().getMin());
+				rootElement.appendChild(existenceConstraint);
 			}
 			
-//			Element minValue = processSpecificationDoc.createElement("min");
-//			minValue.setTextContent(aElement.getExistenceConstraint().getCard().getMin());
-//			existenceConstraint.appendChild(minValue);
-//			
-//			Element maxValue = processSpecificationDoc.createElement("max");
-//			maxValue.setTextContent(aElement.getExistenceConstraint().getCard().getMax());
-//			existenceConstraint.appendChild(maxValue);
-			
-			Element parameters = processSpecificationDoc.createElement("parameters");
-			existenceConstraint.appendChild(parameters);
-			addParameterElements(parameters, new ArrayList<>(List.of(aElement.getTaskCharIdentifier())));
-			addMeasuresElement(existenceConstraint,aElement.getExistenceConstraint().getCard());
-			rootElement.appendChild(existenceConstraint);
+			if( "1".equals(aElement.getExistenceConstraint().getCard().getMax().getBorder())) {
+				Element existenceConstraint = processSpecificationDoc.createElement("constraint");
+				existenceConstraint.setAttribute("identifier", createConstraintIdentifier(null));
+				existenceConstraint.setAttribute("template", ExistenceConstraintEnum.AT_MOST_ONE.getTemplateLabel());
+				Element parameters = processSpecificationDoc.createElement("parameters");
+				existenceConstraint.appendChild(parameters);
+				addParameterElements(parameters, new ArrayList<>(List.of(aElement.getTaskCharIdentifier())));
+				addMeasuresElement(existenceConstraint,aElement.getExistenceConstraint().getCard().getMax());
+				rootElement.appendChild(existenceConstraint);
+			}
 		}
-
 	}
 	
 	private void createRelationConstraintElement(Element rootElement, RelationConstraintElement rcElement) {

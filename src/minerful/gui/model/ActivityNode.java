@@ -247,7 +247,7 @@ public class ActivityNode extends StackPane implements Selectable {
 		if (activityElement.getExistenceConstraint() != null){
 			Card currentCard = activityElement.getExistenceConstraint().getCard();
 			if(currentCard != null){
-				cardLabel.setText(currentCard.getMin()+ ".." + currentCard.getMax());
+				cardLabel.setText(currentCard.getMin().getBorder() + ".." + currentCard.getMax().getBorder());
 				
 				if (!getChildren().contains(cardinalityShape)){
 					getChildren().add(existenceConstraintPosition, cardinalityShape);

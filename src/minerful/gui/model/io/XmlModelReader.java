@@ -26,6 +26,7 @@ import org.xml.sax.SAXException;
 import javafx.geometry.Point2D;
 import minerful.gui.model.ActivityElement;
 import minerful.gui.model.Card;
+import minerful.gui.model.CardinalityElement;
 import minerful.gui.model.ExistenceConstraintEnum;
 import minerful.gui.model.ProcessElement;
 import minerful.gui.model.RelationConstraintElement;
@@ -129,12 +130,22 @@ public class XmlModelReader {
 				} else if(ExistenceConstraintEnum.END.getTemplateLabel().equals(cElement.getTemplate())) {
 					aElement.getExistenceConstraint().setEndConstraint(new StructureElement(true,cElement.getSupport(), cElement.getConfidence(), cElement.getInterest()));
 				} else if(ExistenceConstraintEnum.AT_MOST_ONE.getTemplateLabel().equals(cElement.getTemplate())) {
+					CardinalityElement cardElement = new CardinalityElement("1", cElement.getSupport(), cElement.getConfidence(), cElement.getInterest());
 					if(aElement.getExistenceConstraint().getCard() == null) {
-						aElement.getExistenceConstraint().setCard(new Card(cElement.getMin(),cElement.getMax(),cElement.getSupport(), cElement.getConfidence(), cElement.getInterest()));
+						Card card = new Card();
+						card.setMax(cardElement);
+						aElement.getExistenceConstraint().setCard(card);
+					} else {
+						aElement.getExistenceConstraint().getCard().setMax(cardElement);
 					}
 				} else if(ExistenceConstraintEnum.PARTICIPATION.getTemplateLabel().equals(cElement.getTemplate())) {
+					CardinalityElement cardElement = new CardinalityElement("1", cElement.getSupport(), cElement.getConfidence(), cElement.getInterest());
 					if(aElement.getExistenceConstraint().getCard() == null) {
-						aElement.getExistenceConstraint().setCard(new Card(cElement.getMin(),cElement.getMax(), cElement.getSupport(), cElement.getConfidence(), cElement.getInterest()));
+						Card card = new Card();
+						card.setMin(cardElement);
+						aElement.getExistenceConstraint().setCard(card);
+					} else {
+						aElement.getExistenceConstraint().getCard().setMin(cardElement);
 					}
 				} 
 			} else {

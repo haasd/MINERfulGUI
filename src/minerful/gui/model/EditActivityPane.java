@@ -355,7 +355,7 @@ public class EditActivityPane extends ScrollPane {
 					if (cardMaxAnyRB.isSelected()) {
 						max = "*";
 					}
-					editedActivityNode.getActivityElement().getExistenceConstraint().setCard(new Card(min, max));
+					editedActivityNode.getActivityElement().getExistenceConstraint().setCard(new Card(new CardinalityElement(min), new CardinalityElement(max)));
 				}
 				editedActivityNode.updateNode();
 			}
@@ -488,8 +488,8 @@ public class EditActivityPane extends ScrollPane {
 	 * editedActivityNode.getExistenceConstraint().getCard() != null
 	 */
 	private void updateCardinalityPane() {
-		String min = editedActivityNode.getExistenceConstraint().getCard().getMin();
-		String max = editedActivityNode.getExistenceConstraint().getCard().getMax();
+		String min = editedActivityNode.getExistenceConstraint().getCard().getMin().getBorder();
+		String max = editedActivityNode.getExistenceConstraint().getCard().getMax().getBorder();
 		if (min.equals("0")) {
 			cardMin0RB.setSelected(true);
 		} else {
