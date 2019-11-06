@@ -26,7 +26,7 @@
 	      		</AnchorPane>
 	      		<FlowPane hgap="100" vgap="100" style="-fx-padding: 0 300px; -fx-alignment: center;" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.fillHeight="true" GridPane.fillWidth="true">
 		      		<GridPane fx:id="infoDiscover" styleClass="info-icon">
-			      		<ImageView fitHeight="250.0" fitWidth="250.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+			      		<ImageView fitHeight="250.0" fitWidth="250.0" GridPane.columnIndex="0" GridPane.rowIndex="0" onMousePressed='#openDiscovery'>
 			               <image>
 			                  <Image url="@../images/search.png" />
 			               </image>
@@ -36,7 +36,7 @@
 		   	      		</AnchorPane>
 			        </GridPane>
 		            <GridPane fx:id="infoSimulate" styleClass="info-icon">
-			      		<ImageView fitHeight="250.0" fitWidth="250.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+			      		<ImageView fitHeight="250.0" fitWidth="250.0" GridPane.columnIndex="0" GridPane.rowIndex="0" onMousePressed='#openEventLogGenerator'>
 			               <image>
 			                  <Image url="@../images/process.png" />
 			               </image>
@@ -46,7 +46,7 @@
 		   	      		</AnchorPane>
 		            </GridPane> 
 		            <GridPane fx:id="infoSimplify" styleClass="info-icon">
-			      		<ImageView fitHeight="250.0" fitWidth="250.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+			      		<ImageView fitHeight="250.0" fitWidth="250.0" GridPane.columnIndex="0" GridPane.rowIndex="0" onMousePressed='#openSimplifier'>
 			               <image>
 			                  <Image url="@../images/idea.png" />
 			               </image>
@@ -56,7 +56,7 @@
 		   	      		</AnchorPane>
 		            </GridPane>
 		            <GridPane fx:id="infoGenerateAutomata" styleClass="info-icon">
-			      		<ImageView fitHeight="200.0" fitWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+			      		<ImageView fitHeight="200.0" fitWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="0" onMousePressed='#openAutomataGenerator'>
 			               <image>
 			                  <Image url="@../images/generate.png" />
 			               </image>
@@ -66,7 +66,7 @@
 		   	      		</AnchorPane>
 		            </GridPane> 
 		            <GridPane fx:id="infoPerformCheck" styleClass="info-icon" >
-			      		<ImageView fitHeight="200.0" fitWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="0">
+			      		<ImageView fitHeight="200.0" fitWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="0" onMousePressed='#openFitnessChecker'>
 			               <image>
 			                  <Image url="@../images/questionnaire.png" />
 			               </image>
