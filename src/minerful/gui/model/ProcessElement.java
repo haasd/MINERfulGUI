@@ -177,20 +177,9 @@ public class ProcessElement implements Serializable{
 	 * loads default definition of templates. has to be called when no template list is loaded from file
 	 */
 	public void loadDefaultTemplates() {
-		templateList.add(new Template("precedence", false, false, true, false, false, false, false, false));
-		templateList.add(new Template("respondedExistence", true, true, false, false, false, false, false, false));
-		templateList.add(new Template("coExistence", true, true, true, true, false, false, false, false));
-		templateList.add(new Template("response", false, true, false, false, false, false, false, false));
-		templateList.add(new Template("alternateResponse", false, true, false, false, true, false, false, false));
-		templateList.add(new Template("alternatePrecedence", false, false, true, false, false, true, false, false));
-		templateList.add(new Template("chainResponse", false, true, false, false, false, false, true, false));
-		templateList.add(new Template("chainPrecedence", false, false, true, false, false, false, true, false));
-		templateList.add(new Template("succession", false, true, true, false, false, false, false, false));
-		templateList.add(new Template("alternateSuccession", false, true, true, false, true, true, false, false));
-		templateList.add(new Template("chainSuccession", false, true, true, false, false, false, true, false));
-		templateList.add(new Template("notSuccession", false, true, true, false, false, false, false, true));
-		templateList.add(new Template("notChainSuccession", false, true, true, false, false, false, true, true));
-		templateList.add(new Template("notCoExistence", true, true, true, true, false, false, false, true));
+		for(RelationConstraintEnum rcEnum : RelationConstraintEnum.values()) {
+			templateList.add(rcEnum.getTemplate());
+		}
 	}
 	
 	public Object clone() throws CloneNotSupportedException{  

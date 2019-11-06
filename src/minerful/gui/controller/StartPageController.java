@@ -99,11 +99,6 @@ public class StartPageController extends AbstractController implements Initializ
 	@Override
     public void initialize(URL location, ResourceBundle resources) {
 		initDocumentation();
-		infoDiscover.setOnMouseClicked(e -> openDocumentation(GuiConstants.DISCOVER));
-		infoSimulate.setOnMouseClicked(e -> openDocumentation(GuiConstants.SIMULATE));
-		infoSimplify.setOnMouseClicked(e -> openDocumentation(GuiConstants.SIMPLIFY));
-		infoGenerateAutomata.setOnMouseClicked(e -> openDocumentation(GuiConstants.GENERATE_AUTOMATA));
-		infoPerformCheck.setOnMouseClicked(e -> openDocumentation(GuiConstants.PERFORM_CHECK));
 		
 		buttons.add(discoverButton);
 		buttons.add(eventLogButton);
@@ -124,7 +119,7 @@ public class StartPageController extends AbstractController implements Initializ
 	    }
 	}
 	
-	private void openDocumentation(String area) {
+	public void openDocumentation(String area) {
 		try {
 			infoStage.setMaximized(true);
 			infoStage.show();
@@ -135,7 +130,7 @@ public class StartPageController extends AbstractController implements Initializ
 	}
     
     @FXML
-    private void openDiscovery() {
+    public void openDiscovery() {
     	if(currentView != "discover") {
         	logger.info("Open Discovery");
         	
@@ -175,7 +170,7 @@ public class StartPageController extends AbstractController implements Initializ
     
     
     @FXML
-    private void openStartPage(MouseEvent me) {
+    public void openStartPage(MouseEvent me) {
     	if(currentView != "startpage") {
     		logger.info("Open Startpage");
     		handlePane("tutorial", "pages/Tutorial.fxml");
@@ -184,7 +179,7 @@ public class StartPageController extends AbstractController implements Initializ
     }
     
     @FXML
-    private void openModelGenerator() {
+    public void openModelGenerator() {
     	if(currentView != "modelgenerator") {
     		logger.info("Open Model Generator");
     		
@@ -197,7 +192,7 @@ public class StartPageController extends AbstractController implements Initializ
     }
     
     @FXML
-    private void openEventLogGenerator() {
+    public void openEventLogGenerator() {
     	if(currentView != "eventloggenerator") {
     		logger.info("Open EventLog Generator");
     		
@@ -210,7 +205,7 @@ public class StartPageController extends AbstractController implements Initializ
     }
     
     @FXML
-    private void openSimplifier() {
+    public void openSimplifier() {
     	if(currentView != "simplifier") {
         	logger.info("Open Simplification");
         	
@@ -223,7 +218,7 @@ public class StartPageController extends AbstractController implements Initializ
     }
     
     @FXML
-    private void openAutomataGenerator() {
+    public void openAutomataGenerator() {
     	if(currentView != "automatagenerator") {
         	logger.info("Open Automata Generator");
         	
@@ -236,7 +231,7 @@ public class StartPageController extends AbstractController implements Initializ
     }
     
     @FXML
-    private void openFitnessChecker() {
+    public void openFitnessChecker() {
     	if(currentView != "fitnesschecker") {
         	logger.info("Open Fitness-Check");
         	
