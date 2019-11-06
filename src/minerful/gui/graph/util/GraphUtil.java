@@ -41,6 +41,7 @@ import minerful.gui.model.ActivityElement;
 import minerful.gui.model.ActivityNode;
 import minerful.gui.model.ActivityNode.Cursor;
 import minerful.gui.model.Card;
+import minerful.gui.model.CardinalityElement;
 import minerful.gui.model.EventHandlerManager;
 import minerful.gui.model.ExistenceConstraintEnum;
 import minerful.gui.model.LineNode;
@@ -141,9 +142,11 @@ public class GraphUtil {
 				Card card = sourceElement.getExistenceConstraint().getCard();
 				
 				if(card != null) {
-					if("0".equals(card.getMin()) && "1".equals(card.getMax())) {
+					if("1".equals(card.getMax())) {
 						constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), null, "AtMostOne"));
-					} else {
+					} 
+					
+					if("1".equals(card.getMin())) {
 						constraintElements.add(new RelationConstraintInfo(sourceElement.getIdentifier(), null, "Participation"));
 					}
 				}
@@ -226,17 +229,20 @@ public class GraphUtil {
 				if(aElement.getExistenceConstraint().getCard() != null) {
 					Card card = aElement.getExistenceConstraint().getCard();
 					
-					if("0".equals(card.getMin()) && "1".equals(card.getMin())) {
-						AtMostOne constraint = new AtMostOne(aElementMap.get(aElement), card.getSupport());
-						constraint.setConfidence(card.getConfidence());
-						constraint.setInterestFactor(card.getInterest());
+					if("1".equals(card.getMax().getBorder())) {
+						AtMostOne constraint = new AtMostOne(aElementMap.get(aElement), card.getMax().getSupport());
+						constraint.setConfidence(card.getMax().getConfidence());
+						constraint.setInterestFactor(card.getMax().getInterest());
 						bag.add(constraint);
-					} else {
-						Participation constraint = new Participation(aElementMap.get(aElement), card.getSupport());
-						constraint.setConfidence(card.getConfidence());
-						constraint.setInterestFactor(card.getInterest());
+					} 
+					
+					if("1".equals(card.getMin().getBorder())) {
+						Participation constraint = new Participation(aElementMap.get(aElement), card.getMin().getSupport());
+						constraint.setConfidence(card.getMin().getConfidence());
+						constraint.setInterestFactor(card.getMin().getInterest());
 						bag.add(constraint);
 					}
+					
 				}
 			}
 			
@@ -380,21 +386,15 @@ public class GraphUtil {
 
 					if(conTemplateLabel.equals(ExistenceConstraintEnum.PARTICIPATION.getTemplateLabel()) || conTemplateLabel.equals(ExistenceConstraintEnum.AT_MOST_ONE.getTemplateLabel())) {
 						
-						Card card;
-						if(conTemplateLabel.equals(ExistenceConstraintEnum.AT_MOST_ONE.getTemplateLabel())) {
-							 card = new Card("0", "1");
-						} else {
-							 card = new Card("0", "*");
+						if(activityElement.getExistenceConstraint() == null ) {
+							activityElement.setExistenceConstraint(new XMLExistenceConstraint(activityElement.getId(), new Card(), new StructureElement(false), new StructureElement(false)));
 						}
 						
-						card.setSupport(constraint.getSupport());
-						card.setInterest(constraint.getInterestFactor());
-						card.setConfidence(constraint.getConfidence());
-						
-						if(activityElement.getExistenceConstraint() != null) {
-							activityElement.getExistenceConstraint().setCard(card);
+						CardinalityElement cardElement = new CardinalityElement("1", constraint.getSupport(), constraint.getConfidence(), constraint.getInterestFactor());
+						if(conTemplateLabel.equals(ExistenceConstraintEnum.AT_MOST_ONE.getTemplateLabel())) {
+							activityElement.getExistenceConstraint().getCard().setMax(cardElement);
 						} else {
-							activityElement.setExistenceConstraint(new XMLExistenceConstraint(activityElement.getId(), card, new StructureElement(false), new StructureElement(false)));
+							activityElement.getExistenceConstraint().getCard().setMin(cardElement);
 						}
 						
 					} else if (conTemplateLabel.equals(ExistenceConstraintEnum.INIT.getTemplateLabel()) || conTemplateLabel.equals(ExistenceConstraintEnum.END.getTemplateLabel())) {

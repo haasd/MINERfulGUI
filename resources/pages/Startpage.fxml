@@ -99,7 +99,7 @@
 	              		<FontIcon iconColor="eaf6ff" iconLiteral="typ-lightbulb" iconSize="30" textAlignment="CENTER" wrappingWidth="26.0" />
 	               	</graphic>
                   </Button>
-                  <Button fx:id="generateButton" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="6.0" layoutY="54.0" mnemonicParsing="false" prefHeight="54.0" text="Generate/Modify Process Map" styleClass="menu-button" onAction="#openModelGenerator">
+                  <Button fx:id="generateButton" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="6.0" layoutY="54.0" mnemonicParsing="false" prefHeight="54.0" text="Draw/Modify Process Map" styleClass="menu-button" onAction="#openModelGenerator">
 	                  <graphic>
 	                  	<FontIcon iconColor="eaf6ff" iconLiteral="typ-edit" iconSize="30" layoutX="20.0" layoutY="37.0" textAlignment="CENTER" wrappingWidth="26.0" />
                       </graphic>

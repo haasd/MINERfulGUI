@@ -6,14 +6,14 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 import minerful.concept.constraint.Constraint;
 
-public class Card extends ConstraintElement implements Serializable {
+public class Card implements Serializable {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6073788820411271600L;
-	private String min;	// DataType String to allow "*" 
-	private String max;
+	private CardinalityElement min = new CardinalityElement("0");	// DataType String to allow "*" 
+	private CardinalityElement max = new CardinalityElement("*");
 	
 	/**
 	 * Cardinality Constructor for JAXB
@@ -25,31 +25,25 @@ public class Card extends ConstraintElement implements Serializable {
 	 * @param min - String of positive Integers and * (not null)
 	 * @param max - String of positive Integers and * (not null)
 	 */
-	public Card(String min, String max){
-		this.min = min;
-		this.max = max;
-	}
-	
-	public Card(String min, String max, double support, double confidence, double interest){
-		super(support, confidence, interest);
+	public Card(CardinalityElement min, CardinalityElement max){
 		this.min = min;
 		this.max = max;
 	}
 	
 	@XmlAttribute(required=true)
-	public String getMin() {
+	public CardinalityElement getMin() {
 		return min;
 	}
 
-	public void setMin(String min) {
+	public void setMin(CardinalityElement min) {
 		this.min = min;
 	}
 	@XmlAttribute(required=true)
-	public String getMax() {
+	public CardinalityElement getMax() {
 		return max;
 	}
 
-	public void setMax(String max) {
+	public void setMax(CardinalityElement max) {
 		this.max = max;
 	}
 	
