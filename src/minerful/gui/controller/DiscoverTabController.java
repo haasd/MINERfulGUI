@@ -891,6 +891,12 @@ public class DiscoverTabController extends AbstractController implements Initial
 		maxTranslateY.set(maxY);
 	}
 	
+	
+	@FXML
+	private void displayConstraintsPane() {
+		hiddenSidesPane.setPinnedSide(Side.RIGHT);
+	}
+	
 	public ActivityNode determineActivityNode(ActivityElement activityElement) {
 		for(ActivityNode activityNode : activityNodes) {
 			if(activityNode.getActivityElement() == activityElement) {

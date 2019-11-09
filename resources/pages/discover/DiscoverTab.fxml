@@ -175,7 +175,7 @@
 				         				<ToggleSwitch fx:id="parameterStyling" text="Activate Parameter Styling" />
 				         			</HBox>
 				         			<HBox HBox.hgrow="ALWAYS" alignment="CENTER_RIGHT">
-				         				<Label text="Display Constraints" GridPane.columnIndex="3" GridPane.rowIndex="0" style="-fx-content-display: right">
+				         				<Label styleClass="clickable" text="Display Constraints" GridPane.columnIndex="3" GridPane.rowIndex="0" style="-fx-content-display: right" onMouseClicked="#displayConstraintsPane">
 					         				<graphic>
 			              						<FontIcon iconColor="#393939" iconLiteral="fa-arrow-circle-right" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
 			               					</graphic>
