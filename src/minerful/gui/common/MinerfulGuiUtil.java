@@ -213,7 +213,7 @@ public class MinerfulGuiUtil {
 						break;
 					case "svg": 
 						JFXToSVGConverter svgWriter = new JFXToSVGConverter(peInterface);
-						svgWriter.createDocument(outputFile);
+						svgWriter.createDocument(outputFile, peInterface.isParamsStylingActive());
 						customOutput = true;
 						break;
 				}

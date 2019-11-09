@@ -807,6 +807,11 @@ public class SimplifierTabController extends AbstractController implements Initi
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public boolean isParamsStylingActive() {
+		return false;
+	}
 	
 	
 }

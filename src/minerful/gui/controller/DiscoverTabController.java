@@ -986,4 +986,9 @@ public class DiscoverTabController extends AbstractController implements Initial
 		return maxTranslateY;
 	}
 
+	@Override
+	public boolean isParamsStylingActive() {
+		return parameterStyling.isSelected();
+	}
+
 }

@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<templates>
+    <template name="Init">
+		<parameters min="1" max="1">
+			<activation />
+			<target>
+				<parameter>1</parameter>
+			</target>
+		</parameters>
+		<description>1 is the first to occur</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+	 <template name="End">
+		<parameters min="1" max="1">
+			<activation />
+			<target>
+				<parameter>1</parameter>
+			</target>
+		</parameters>
+		<description>1 is the last to occur</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+    <template name="Participation">
+		<parameters min="1" max="1">
+			<activation />
+			<target>
+				<parameter>1</parameter>
+			</target>
+		</parameters>
+		<description>1 occurs at least once</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+	<template name="AtMostOne">
+		<parameters min="1" max="1">
+			<activation />
+			<target>
+				<parameter>1</parameter>
+			</target>
+		</parameters>
+		<description>Descriptive text here</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+	<template name="RespondedExistence">
+		<parameters min="2" max="2">
+			<activation>
+				<parameter>1</parameter>
+			</activation>
+			<target>
+				<parameter>2</parameter>
+			</target>
+		</parameters>
+		<description>Descriptive text here</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+    <template name="Response">
+		<parameters min="2" max="2">
+			<activation>
+				<parameter>1</parameter>
+			</activation>
+			<target>
+				<parameter>2</parameter>
+			</target>
+		</parameters>
+		<description>Descriptive text here</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+	<template name="AlternateResponse">
+		<parameters min="2" max="2">
+			<activation>
+				<parameter>1</parameter>
+			</activation>
+			<target>
+				<parameter>2</parameter>
+			</target>
+		</parameters>
+		<description>Descriptive text here</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+	<template name="ChainResponse">
+		<parameters min="2" max="2">
+			<activation>
+				<parameter>1</parameter>
+			</activation>
+			<target>
+				<parameter>2</parameter>
+			</target>
+		</parameters>
+		<description>Descriptive text here</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+    <template name="Precedence">
+		<parameters min="2" max="2">
+			<activation>
+				<parameter>2</parameter>
+			</activation>
+			<target>
+				<parameter>1</parameter>
+			</target>
+		</parameters>
+		<description>Descriptive text here</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+	<template name="AlternatePrecedence">
+		<parameters min="2" max="2">
+			<activation>
+				<parameter>2</parameter>
+			</activation>
+			<target>
+				<parameter>1</parameter>
+			</target>
+		</parameters>
+		<description>Descriptive text here</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+	<template name="ChainPrecedence">
+		<parameters min="2" max="2">
+			<activation>
+				<parameter>2</parameter>
+			</activation>
+			<target>
+				<parameter>1</parameter>
+			</target>
+		</parameters>
+		<description>Descriptive text here</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+	<template name="CoExistence">
+		<parameters min="2" max="2">			
+			<activation>
+				<parameter>1</parameter>
+				<parameter>2</parameter>
+			</activation>
+			<target>
+				<parameter>2</parameter>
+				<parameter>1</parameter>
+			</target>
+		</parameters>
+		<description>Descriptive text here</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+	<template name="Succession">
+		<parameters min="2" max="2">			
+			<activation>
+				<parameter>1</parameter>
+				<parameter>2</parameter>
+			</activation>
+			<target>
+				<parameter>2</parameter>
+				<parameter>1</parameter>
+			</target>
+		</parameters>
+		<description>Descriptive text here</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+    <template name="AlternateSuccession">
+		<parameters min="2" max="2">			
+			<activation>
+				<parameter>1</parameter>
+				<parameter>2</parameter>
+			</activation>
+			<target>
+				<parameter>2</parameter>
+				<parameter>1</parameter>
+			</target>
+		</parameters>
+		<description>Descriptive text here</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+	<template name="ChainSuccession">
+		<parameters min="2" max="2">			
+			<activation>
+				<parameter>1</parameter>
+				<parameter>2</parameter>
+			</activation>
+			<target>
+				<parameter>2</parameter>
+				<parameter>1</parameter>
+			</target>
+		</parameters>
+		<description>Descriptive text here</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+	<template name="NotChainSuccession">
+		<parameters min="2" max="2">			
+			<activation>
+				<parameter>1</parameter>
+				<parameter>2</parameter>
+			</activation>
+			<target>
+				<parameter>2</parameter>
+				<parameter>1</parameter>
+			</target>
+		</parameters>
+		<description>Descriptive text here</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+	<template name="NotSuccession">
+		<parameters min="2" max="2">			
+			<activation>
+				<parameter>1</parameter>
+				<parameter>2</parameter>
+			</activation>
+			<target>
+				<parameter>2</parameter>
+				<parameter>1</parameter>
+			</target>
+		</parameters>
+		<description>Descriptive text here</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+	<template name="NotCoExistence">
+		<parameters min="2" max="2">			
+			<activation>
+				<parameter>1</parameter>
+				<parameter>2</parameter>
+			</activation>
+			<target>
+				<parameter>2</parameter>
+				<parameter>1</parameter>
+			</target>
+		</parameters>
+		<description>Descriptive text here</description>
+		<ltlf>Formula here</ltlf>
+		<regexp>Regular expression here</regexp>
+	</template>
+</templates>

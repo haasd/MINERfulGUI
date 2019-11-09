@@ -36,4 +36,5 @@ public interface ProcessElementInterface {
 	public DoubleProperty getMaxTranslateY();
 	public DoubleProperty getMaxTranslateX();
 	public List<ActivityNode> getActivityNodes();
+	public boolean isParamsStylingActive();
 }

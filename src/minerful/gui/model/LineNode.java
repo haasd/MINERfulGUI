@@ -46,6 +46,7 @@ public class LineNode extends StackPane {
 	private String newNegativeStyle = "dashedline";
 	private String oldNegativeStyle = "dashedline";
 	private String normalStyle = "line";
+	private Double strokeWidth = 1d;
 
 	/**
 	 * Creates a Line with Labels and Arrows
@@ -232,7 +233,12 @@ public class LineNode extends StackPane {
 		this.renderingOptimization = renderingOptimization;
 	}
 	
-	
-	
+	public Double getStrokeWidth() {
+		return strokeWidth;
+	}
+
+	public void setStrokeWidth(Double strokeWidth) {
+		this.strokeWidth = strokeWidth;
+	}
 
 }

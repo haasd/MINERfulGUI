@@ -18,13 +18,17 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.batik.svggen.SVGGeneratorContext;
+import org.apache.batik.svggen.SVGGeneratorContext.GraphicContextDefaults;
 import org.apache.batik.svggen.SVGGraphics2D;
 import org.jfxconverter.JFXConverter;
 import org.w3c.dom.Document;
 
+import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.model.ActivityElement;
 import minerful.gui.model.ActivityNode.Cursor;
 import minerful.gui.model.RelationConstraintElement;
+import minerful.gui.model.RelationConstraintNode;
 import minerful.gui.model.Template;
 import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.util.Config;
@@ -58,14 +62,14 @@ public class JFXToSVGConverter {
 	 *
 	 * @param node the Node
 	 */
-	public void createDocument(File outputFile) {
+	public void createDocument(File outputFile, boolean paramsStyling) {
 
 		if (outputFile != null) {
 
 			try {
 				outputFile.createNewFile();
 				Writer writer = new BufferedWriter(new FileWriter(outputFile));
-				createSVGStream();
+				createSVGStream(paramsStyling);
 				g2D.stream(writer, true);
 
 				writer.close();
@@ -76,43 +80,58 @@ public class JFXToSVGConverter {
 		}
 	}
 
-	private void createSVGStream() {
+	private void createSVGStream(boolean paramsStyling) {
 		try {
 
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 			Document doc = docBuilder.getDOMImplementation().createDocument("http://www.w3.org/2000/svg", "svg", null);
+			
+			final SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(doc);
+			ctx.setEmbeddedFontsOn(true);
+			
+			System.out.println(ctx.getExtensionHandler());
+			ctx.setExtensionHandler(new GradientExtensionHandler());
+			
+			final GraphicContextDefaults defaults = new GraphicContextDefaults();
+			defaults.setFont(new Font("Arial", Font.PLAIN, 12));
+			ctx.setGraphicContextDefaults(defaults);
+			ctx.setPrecision(12);
 
-			g2D = new SVGGraphics2D(doc);
+			g2D = new SVGGraphics2D(ctx, false);
 			converter = new JFXConverter();
-
-			// convert everything automatically (bug with rotation)
-			// converter.convert(g2D, node);
 
 			// convert manually
 			// lines
-			for (RelationConstraintElement cElem : processTab.getCurrentProcessElement().getConstraintEList()) {
+			for (RelationConstraintElement cElement : processTab.getCurrentProcessElement().getConstraintEList()) {
+				String width;
+				if(paramsStyling) {
+					 width = GraphUtil.determineStrokeWidth(cElement.getSupport(), cElement.getConfidence(), cElement.getInterest());
+				} else {
+					width = "1";
+				}
+				
 
 				g2D.setPaint(darkBlueColor);
-				if (cElem.getTemplate().getNegation()) {
+				if (cElement.getTemplate().getNegation()) {
 					// set the stroke of the copy, not the original
-					Stroke dashed = new BasicStroke(1, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0,
+					Stroke dashed = new BasicStroke(Float.valueOf(width), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0,
 							new float[] { 9 }, 0);
 					g2D.setStroke(dashed);
 				} else {
-					g2D.setStroke(new BasicStroke(1));
+					g2D.setStroke(new BasicStroke(Float.valueOf(width)));
 				}
 
-				for (ActivityElement aElem : cElem.getParameter1Elements()) {
-					Line2D.Double line2D = new Line2D.Double(cElem.getPosX() + constraintRadius,
-							cElem.getPosY() + constraintRadius, aElem.getPosX() + activityRadius,
+				for (ActivityElement aElem : cElement.getParameter1Elements()) {
+					Line2D.Double line2D = new Line2D.Double(cElement.getPosX() + constraintRadius,
+							cElement.getPosY() + constraintRadius, aElem.getPosX() + activityRadius,
 							aElem.getPosY() + activityRadius);
 					g2D.draw(line2D);
 				}
 
-				for (ActivityElement aElem : cElem.getParameter2Elements()) {
-					Line2D.Double line2D = new Line2D.Double(cElem.getPosX() + constraintRadius,
-							cElem.getPosY() + constraintRadius, aElem.getPosX() + activityRadius,
+				for (ActivityElement aElem : cElement.getParameter2Elements()) {
+					Line2D.Double line2D = new Line2D.Double(cElement.getPosX() + constraintRadius,
+							cElement.getPosY() + constraintRadius, aElem.getPosX() + activityRadius,
 							aElem.getPosY() + activityRadius);
 					g2D.draw(line2D);
 				}

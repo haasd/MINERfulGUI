@@ -5,9 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -28,9 +27,6 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import minerful.concept.constraint.Constraint;
-import minerful.concept.constraint.MetaConstraintUtils;
-import minerful.concept.constraint.existence.ExistenceConstraint;
 import minerful.gui.model.ActivityElement;
 import minerful.gui.model.ConstraintElement;
 import minerful.gui.model.ExistenceConstraintEnum;
@@ -45,7 +41,6 @@ public class XmlModelWriter {
     private DocumentBuilder docBuilder;
     private Document positionDoc;
     private Document processSpecificationDoc;
-    private Document templateDoc;
     private List<File> tmpFiles;
     
     private ProcessElement processElement;
@@ -62,7 +57,6 @@ public class XmlModelWriter {
 			docBuilder = docFactory.newDocumentBuilder();
 			positionDoc = docBuilder.newDocument();
 			processSpecificationDoc = docBuilder.newDocument();
-			templateDoc = docBuilder.newDocument();
 			tmpFiles = new ArrayList<>();
 		} catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block
@@ -72,7 +66,12 @@ public class XmlModelWriter {
 		
 		createPositionDoc();
 		createprocessSpecificationDoc();
-		createTemplateDoc();
+		ClassLoader classLoader = getClass().getClassLoader();
+		URL resource = classLoader.getResource("Templates.xml");
+		String templatePath = resource.getFile();
+		
+		File templates = new File(templatePath);
+		tmpFiles.add(templates);
 
 		try {
 			zipDocuments(path);
@@ -207,62 +206,6 @@ public class XmlModelWriter {
 		return activity;
 	}
 	
-	private void createTemplateParameters(Element rootElement) {
-		
-	}
-	
-	private void createTemplateDoc() {
-		logger.info("Start Creation of Template-Document!");
-		Collection<Class<? extends Constraint>> templates = MetaConstraintUtils.getAllConstraintTemplates();
-		
-		// create activities element
-		Element rootElement = processSpecificationDoc.createElement("templates");
-
-		for(Class<? extends Constraint> template : templates) {
-			Element templateElement = processSpecificationDoc.createElement("template");
-			
-//			try {
-//
-//				Constraint constraint = (Constraint) template.getConstructors()[0].newInstance();
-//				templateElement.setAttribute("name", constraint.getTemplateName());
-//				Element regExpElement = processSpecificationDoc.createElement("regexp");
-//				regExpElement.setTextContent(constraint.getRegularExpression());
-//				templateElement.appendChild(regExpElement);
-//				
-//				Element description = processSpecificationDoc.createElement("description");
-//				description.setTextContent(constraint.getDescription());
-//				templateElement.appendChild(description);
-//				
-//				Element parameters = processSpecificationDoc.createElement("parameters");
-//				templateElement.appendChild(parameters);
-//				createTemplateParameters(parameters);
-//				
-//			} catch (InstantiationException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IllegalAccessException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (IllegalArgumentException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (InvocationTargetException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (SecurityException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-			
-
-			rootElement.appendChild(templateElement);
-		}
-
-		createXMLFile(templateDoc, "Templates");
-		
-		logger.info("Finished Creation of Template-Document!");
-	}
-	
 	private void addParameterElements(Element parameters, List<String> activities) {
 		Element parameter = processSpecificationDoc.createElement("parameter");
 		parameters.appendChild(parameter);
@@ -377,7 +320,6 @@ public class XmlModelWriter {
                 zipOut.write(bytes, 0, length);
             }
             fis.close();
-            
             fileToZip.delete();
         }
         zipOut.close();
