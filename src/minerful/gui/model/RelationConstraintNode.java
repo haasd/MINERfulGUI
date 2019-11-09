@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import minerful.gui.controller.ModelGeneratorTabController;
+import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.util.Config;
 
@@ -54,6 +55,8 @@ public class RelationConstraintNode extends StackPane implements Positionable, S
 	private double activityRadius = config.getDouble("activity.radius");
 	private double constraintRadius = config.getDouble("constraint.radius");
 	
+	private boolean parameterStylingIsActive = false;
+
 	private ArrayList<LineNode> parameter1Lines = new ArrayList<LineNode>();
 	private ArrayList<LineNode> parameter2Lines = new ArrayList<LineNode>();
 	
@@ -174,6 +177,7 @@ public class RelationConstraintNode extends StackPane implements Positionable, S
         
         for(LineNode line : getParameter1Lines()){
       	   line.updateLinePosition();
+      	   
         }
         for(LineNode line : getParameter2Lines()){
        	   line.updateLinePosition();
@@ -311,5 +315,13 @@ public class RelationConstraintNode extends StackPane implements Positionable, S
 		for (LineNode line : getParameter2Lines()){
 			line.updateLineElementsAfterChanges();
 		}
+	}
+	
+	public boolean isParameterStylingIsActive() {
+		return parameterStylingIsActive;
+	}
+
+	public void setParameterStylingIsActive(boolean parameterStylingIsActive) {
+		this.parameterStylingIsActive = parameterStylingIsActive;
 	}
 }

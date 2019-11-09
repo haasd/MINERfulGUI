@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.scene.transform.Rotate;
+import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.util.Config;
 
 /**
@@ -149,8 +150,6 @@ public class LineNode extends StackPane {
 				}
 				line.getStyleClass().add(oldNegativeStyle);
 			}
-			
-			//line.getStrokeDashArray().add(10.0);		// CAUSES LAGS
 			
 		} else {
 			line.getStyleClass().add(normalStyle);
