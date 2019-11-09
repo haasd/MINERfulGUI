@@ -29,6 +29,8 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.control.Tooltip?>
 <?import minerful.gui.common.GuiConstants?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.RadioButton?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml/" fx:controller="minerful.gui.controller.DiscoverTabController">
 	<fx:define>
@@ -96,18 +98,29 @@
         				</Tooltip>
     				</tooltip>
     			</Label>
-    			<TableView fx:id="eventsTable" styleClass="table">
-					 <columns>
-					 	<TableColumn styleClass="column-center" prefWidth="50.0" minWidth="50.0" maxWidth="50.0" text="" fx:id="filterColumn"> 
-					    	<graphic>
-                  				<FontIcon iconLiteral="typ-filter" iconSize="24" />
-               				</graphic>
-					    </TableColumn>
-					    <TableColumn styleClass="column-left" text="Eventname" fx:id="eventNameColumn"> 
-					    </TableColumn>
-					 </columns>
-					 <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
-    			</TableView>
+    			
+    			<VBox spacing="5" styleClass="no-border-bottom">
+    				<HBox spacing="10">
+	    				<RadioButton fx:id="radioName" mnemonicParsing="false" text="Name">
+			               <toggleGroup>
+			                  <ToggleGroup fx:id="eventClassificationGroup" />
+			               </toggleGroup>
+						</RadioButton>
+		    			<RadioButton fx:id="radioLogSpec" mnemonicParsing="false" text="LogSpec" toggleGroup="$eventClassificationGroup" />
+    				</HBox>
+	    			<TableView fx:id="eventsTable" styleClass="table">
+						 <columns>
+						 	<TableColumn styleClass="column-center" prefWidth="50.0" minWidth="50.0" maxWidth="50.0" text="" fx:id="filterColumn"> 
+						    	<graphic>
+	                  				<FontIcon iconLiteral="typ-filter" iconSize="24" />
+	               				</graphic>
+						    </TableColumn>
+						    <TableColumn styleClass="column-left" text="Eventname" fx:id="eventNameColumn"> 
+						    </TableColumn>
+						 </columns>
+						 <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/></columnResizePolicy>
+	    			</TableView>
+	    		</VBox>
     			
     			<!-- Post Processing Analysis Type -->
     			<Label styleClass="section-header2" text="Pruning Type" style="-fx-content-display: right">

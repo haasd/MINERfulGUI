@@ -12,8 +12,10 @@ import minerful.concept.ProcessModel;
 import minerful.gui.common.MinerfulGuiUtil;
 import minerful.gui.service.loginfo.LogInfo;
 import minerful.logparser.LogParser;
+import minerful.logparser.LogEventClassifier.ClassificationType;
 import minerful.miner.params.MinerFulCmdParameters;
 import minerful.params.InputLogCmdParameters;
+import minerful.params.InputLogCmdParameters.EventClassification;
 import minerful.params.SystemCmdParameters;
 import minerful.postprocessing.params.PostProcessingCmdParameters;
 
@@ -43,6 +45,7 @@ public class LogParserServiceImpl implements LogParserService  {
 				
 				minerFulParams.kbParallelProcessingThreads = 4;
 				minerFulParams.queryParallelProcessingThreads = 4;
+				
 				postParams.supportThreshold = 0.95;
 				postParams.confidenceThreshold = 0.25;
 				postParams.interestFactorThreshold = 0.125;

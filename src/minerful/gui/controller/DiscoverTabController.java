@@ -42,6 +42,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableCell;
@@ -85,6 +86,7 @@ import minerful.gui.service.loginfo.LogInfo;
 import minerful.miner.params.MinerFulCmdParameters;
 import minerful.params.InputLogCmdParameters;
 import minerful.params.SystemCmdParameters;
+import minerful.params.InputLogCmdParameters.EventClassification;
 import minerful.postprocessing.params.PostProcessingCmdParameters;
 import minerful.postprocessing.params.PostProcessingCmdParameters.PostProcessingAnalysisType;
 
@@ -224,6 +226,15 @@ public class DiscoverTabController extends AbstractController implements Initial
 	@FXML
 	Label numberOfConstraints;
 	
+	@FXML
+	ToggleGroup eventClassificationGroup;
+	
+	@FXML
+	RadioButton radioName;
+	
+	@FXML
+	RadioButton radioLogSpec;
+	
 	private ProcessModel processModel; 
 	
 	private LogInfo currentEventLog;
@@ -232,23 +243,17 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	private PostProcessingAnalysisType postProcessingType = PostProcessingAnalysisType.HIERARCHY;
 	
+	private EventClassification eventClassification = EventClassification.name;
+	
 	private Boolean cropRedundantAndInconsistentConstraints = false;
 	
 	private EventHandlerManager eventManager = new EventHandlerManager(this);
 	
 	private ProcessElement processElement;
 	
-	private ProxyPipe pipe;
-	
     private String fixedParameter;
 	
 	private Double fixedThreshold;
-	
-	private Boolean fixed = false;
-	
-	private Series<Double,Integer> supportData;
-	private Series<Double,Integer> interestData;
-	private Series<Double,Integer> confidenceData;
 	
 	private double scrollPanePadding = 250d;
 	private DoubleProperty maxTranslateX = new SimpleDoubleProperty(scrollPanePadding);
@@ -262,10 +267,27 @@ public class DiscoverTabController extends AbstractController implements Initial
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		System.setProperty("gs.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
-
 		eventLogTable.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
 		logInfoList.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
 		eventsTable.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
+		
+		radioName.setSelected(true);
+		radioName.setUserData(EventClassification.name);
+		
+		radioLogSpec.setSelected(false);
+		radioLogSpec.setUserData(EventClassification.logspec);
+		
+		eventClassificationGroup.selectedToggleProperty().addListener(new ChangeListener<Toggle>(){
+		    public void changed(ObservableValue<? extends Toggle> ov, Toggle old_toggle, Toggle new_toggle) {
+
+		         if (eventClassificationGroup.getSelectedToggle() != null) {
+		        	 eventClassification = (EventClassification) eventClassificationGroup.getSelectedToggle().getUserData();
+		             reminingRequired = true;
+		             updateModel();
+		         }
+
+		     } 
+		});
 		
 		startAtTrace.setTextFormatter(ValidationEngine.getNumericFilter());
 		startAtTrace.setOnKeyPressed(onEnterPressed());
@@ -555,10 +577,12 @@ public class DiscoverTabController extends AbstractController implements Initial
 			logger.info("Update Parameters: " + supportThresholdField.getText() + " " + confidenceThresholdField.getText() + " " + interestThresholdField.getText() + " " + postProcessingType);
 			
 			InputLogCmdParameters inputParams = new InputLogCmdParameters();
+			inputParams.eventClassification = eventClassification;
 			inputParams.inputLogFile = new File(currentEventLog.getPath());
 			inputParams.inputLanguage = MinerfulGuiUtil.determineInputEncoding(currentEventLog.getPath());
 			MinerFulCmdParameters minerFulParams = new MinerFulCmdParameters();
 			SystemCmdParameters systemParams = new SystemCmdParameters();
+			
 			PostProcessingCmdParameters postParams = new PostProcessingCmdParameters();
 			postParams.supportThreshold = Double.parseDouble(supportThresholdField.getText());
 			postParams.confidenceThreshold = Double.parseDouble(confidenceThresholdField.getText());
@@ -759,7 +783,6 @@ public class DiscoverTabController extends AbstractController implements Initial
 				String doubleValue = String.format("%.3f", newValue.doubleValue());
 				doubleValue = doubleValue.replace(",", ".");
 				textField.setText(doubleValue);
-				fixed = true;
 				fixedParameter = parameter;
 				fixedThreshold = newValue.doubleValue();
 			}
