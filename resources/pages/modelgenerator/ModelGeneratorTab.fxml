@@ -21,6 +21,7 @@
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import minerful.gui.model.ZoomableScrollPane?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml" fx:controller="minerful.gui.controller.ModelGeneratorTabController">
 	<children>
@@ -39,12 +40,14 @@
 		         			<Button styleClass="btn-default, btn-save" text="Save" onAction="#saveModel" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 		         			<Button styleClass="btn-default" text="Export" onAction="#exportFile" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
 		         		</HBox>
-	         			<ScrollPane fx:id="scrollPane" styleClass="model-canvas, background" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
-         					<AnchorPane fx:id="anchorPane" styleClass="background">
-         						<BorderPane fx:id="backgroundPane">
-         						</BorderPane>
-         					</AnchorPane>
-	         			</ScrollPane>
+	         			<ZoomableScrollPane fx:id="scrollPane" styleClass="model-canvas, background" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
+	         				<anchorPane>
+	         					<AnchorPane fx:id="anchorPane" styleClass="background">
+	         						<BorderPane fx:id="backgroundPane">
+	         						</BorderPane>
+	         					</AnchorPane>
+         					</anchorPane>
+	         			</ZoomableScrollPane>
 	         			<GridPane GridPane.columnIndex="0" GridPane.rowIndex="2">
 	         				<children>
 		         				<!-- Activities -->
