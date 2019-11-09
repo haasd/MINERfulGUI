@@ -22,7 +22,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Accordion;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -62,6 +61,7 @@ import minerful.gui.model.RelationConstraintElement;
 import minerful.gui.model.RelationConstraintNode;
 import minerful.gui.model.Selectable;
 import minerful.gui.model.Template;
+import minerful.gui.model.ZoomableScrollPane;
 import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.util.Config;
 
@@ -70,7 +70,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	Logger logger = Logger.getLogger(ModelGeneratorTabController.class);
 	
 	@FXML
-	ScrollPane scrollPane;
+	ZoomableScrollPane scrollPane;
 	
 	@FXML
 	AnchorPane anchorPane;
@@ -147,6 +147,8 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
+		scrollPane.getStyleClass().add("model-canvas");
 		
 		FontIcon fontIcon = new FontIcon("fa-plus");
 		fontIcon.setIconSize(25);

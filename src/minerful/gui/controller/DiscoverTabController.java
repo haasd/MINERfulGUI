@@ -44,6 +44,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ScrollPane;
+import minerful.gui.model.ZoomableScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -116,7 +117,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 	TableView<Constraint> constraintsTable;
 	
 	@FXML
-	ScrollPane scrollPane;
+	ZoomableScrollPane scrollPane;
 	
 	@FXML
 	AnchorPane anchorPane;
@@ -266,6 +267,9 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		
+		scrollPane.getStyleClass().add("model-canvas");
+		
 		System.setProperty("gs.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 		eventLogTable.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
 		logInfoList.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));

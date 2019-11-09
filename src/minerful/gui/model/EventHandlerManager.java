@@ -109,6 +109,7 @@ public class EventHandlerManager {
             
             aNode.updateAllLineNodePositions();
             processTab.setMaxTranslate();
+            t.consume();
 
         }
     };
@@ -204,6 +205,7 @@ public class EventHandlerManager {
             }
 
             processTab.setMaxTranslate();
+            t.consume();
         }
     };
 	
