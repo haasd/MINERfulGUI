@@ -555,7 +555,7 @@ public class SimplifierTabController extends AbstractController implements Initi
 			interestChart.addVerticalValueMarker(new Data<>(Double.parseDouble(interestThresholdField.getText()), 0));
 							
 			anchorPane.getChildren().remove(1, anchorPane.getChildren().size());
-			processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this);
+			processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this, false);
 			setMaxTranslate();
 			
 			if(negativeConstraints.isSelected()) {

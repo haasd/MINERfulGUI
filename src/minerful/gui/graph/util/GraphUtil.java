@@ -293,15 +293,16 @@ public class GraphUtil {
 	/*
 	 * Create ProcessElement based on a ProcessModel 
 	 */
-	public static ProcessElement transformProcessModelIntoProcessElement(ProcessModel processModel, AnchorPane pane, EventHandlerManager eventHandler, ProcessElementInterface controller) {
+	public static ProcessElement transformProcessModelIntoProcessElement(ProcessModel processModel, AnchorPane pane, EventHandlerManager eventHandler, ProcessElementInterface controller, boolean reminingRequired) {
 		ProcessElement processElement = new ProcessElement();
 		
-		determineActivityElements(processElement, processModel.getTasks(), pane, eventHandler, controller);
+		determineActivityElements(processElement, processModel.getTasks(), pane, eventHandler, controller, reminingRequired);
 		determineConstraintElements(processElement, processModel.getAllUnmarkedConstraints(), pane, eventHandler, controller);
 		
-		LayoutAlgorithm testAlgorithm = new FruchtermanReingoldAlgorithm(1000, 500, processElement, controller, 1000);
-		
-		testAlgorithm.optimizeLayout();
+		if(reminingRequired) {
+			LayoutAlgorithm testAlgorithm = new FruchtermanReingoldAlgorithm(1000, 500, processElement, controller, 1000);
+			testAlgorithm.optimizeLayout();
+		}
 		
 		return processElement;
 	}
@@ -335,7 +336,7 @@ public class GraphUtil {
 		return newProcessElement;
 	}
 	
-	private static void determineActivityElements(ProcessElement processElement, Set<TaskChar> activities, AnchorPane pane, EventHandlerManager eventHandler, ProcessElementInterface controller) {
+	private static void determineActivityElements(ProcessElement processElement, Set<TaskChar> activities, AnchorPane pane, EventHandlerManager eventHandler, ProcessElementInterface controller, boolean reminingRequired) {
 		
 		Integer id = 0;
 		double x = 50d;
@@ -345,18 +346,27 @@ public class GraphUtil {
 			ActivityElement activityElement = new ActivityElement(id, taskChar.getName(), taskChar.identifier.toString());
 			activityElement.setPosition(x, y);
 			processElement.addActivity(activityElement);
+			
 
-			Random random = new Random(); 
+			Random random = new Random();
 			
-			x = (random.nextDouble() * 800d ) - 400d;
-			y = (random.nextDouble() * 800d ) - 400d;
-			
-			if(x < 0) {
-				x+= 400d;
-			}
-			
-			if(y < 0) {
-				y+= 400d;
+			if(reminingRequired) {
+				x = (random.nextDouble() * 800d ) - 400d;
+				y = (random.nextDouble() * 800d ) - 400d;
+				
+				if(x < 0) {
+					x+= 400d;
+				}
+				
+				if(y < 0) {
+					y+= 400d;
+				}
+			} else {
+				for(ActivityElement aElement : controller.getCurrentProcessElement().getActivityEList()) {
+					if(taskChar.getName().equals(aElement.getIdentifier())) {
+						activityElement.setPosition(aElement.getPosX(), aElement.getPosY());
+					}
+				}
 			}
 			
 			//create Node and add it to Pane

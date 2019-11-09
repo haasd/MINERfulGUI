@@ -554,13 +554,13 @@ public class DiscoverTabController extends AbstractController implements Initial
 		if(processModel.getAllUnmarkedConstraints().size() > GuiConstants.NUMBER_CONSTRAINTS_WARNING) {
 			Optional<ButtonType> result = MinerfulGuiUtil.displayAlert("Warning", "Proceed rendering of graph?", "Rendering of Graph was stopped due to a high number of constraints.", AlertType.CONFIRMATION);
 			if (result.get() == ButtonType.OK){
-				processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this);
+				processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this, true);
 				setMaxTranslate();
 			} else {
 				logger.info("Graphrendering was canceled!");
 			}
 		} else {
-			processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this);
+			processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this, true);
 			setMaxTranslate();
 		}
 		
@@ -639,6 +639,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		            	try {
 		    				processModel = task.get();
 		    				progressForm.closeProgressForm();
+		    				updateInfos();
 		    			} catch (InterruptedException e) {
 		    				// TODO Auto-generated catch block
 		    				e.printStackTrace();
@@ -648,10 +649,8 @@ public class DiscoverTabController extends AbstractController implements Initial
 		    			}
 		            }
 		        });
-				
-				processModel.addPropertyChangeListener(this);
+		        
 			} else {
-				reminingRequired = false;
 				MinerFulMinerLauncher miFuMiLa = new MinerFulMinerLauncher(inputParams, minerFulParams, postParams, systemParams);
 				
 				// set up ProgressForm
@@ -667,6 +666,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		            	try {
 		    				processModel = task.get();
 		    				progressForm.closeProgressForm();
+		    				updateInfos();
 
 		    			} catch (InterruptedException e) {
 		    				// TODO Auto-generated catch block
@@ -677,68 +677,73 @@ public class DiscoverTabController extends AbstractController implements Initial
 		    			}
 		            }
 		        });
-				processModel.addPropertyChangeListener(this);
+				
 			}
-			
-			discoveredConstraints.clear();
-			discoveredConstraints.addAll(processModel.getAllUnmarkedConstraints());
-			
-			/*
-			 * Handle Graphs
-			 */
-			if(!"support".equals(fixedParameter) && fixedParameter != null) {
-				supportChart.getData().clear();
-				supportChart.getData().add(DiscoverUtil.countConstraintForThresholdValueFixed(processModel.getAllConstraints(), "support", fixedParameter, fixedThreshold));
-			} else if(fixedParameter == null) {
-				supportChart.getData().clear();
-				supportChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "support"));
-			}
+		}
+	}
+	
+	private void updateInfos() {
+		processModel.addPropertyChangeListener(this);
+		
+		discoveredConstraints.clear();
+		discoveredConstraints.addAll(processModel.getAllUnmarkedConstraints());
+		
+		/*
+		 * Handle Graphs
+		 */
+		if(!"support".equals(fixedParameter) && fixedParameter != null) {
+			supportChart.getData().clear();
+			supportChart.getData().add(DiscoverUtil.countConstraintForThresholdValueFixed(processModel.getAllConstraints(), "support", fixedParameter, fixedThreshold));
+		} else if(fixedParameter == null) {
+			supportChart.getData().clear();
+			supportChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "support"));
+		}
 
-			supportChart.addVerticalValueMarker(new Data<>(Double.parseDouble(supportThresholdField.getText()), 0));
-			
-			
-			if(fixedParameter != null && !"confidence".equals(fixedParameter)) {
-				confidenceChart.getData().clear();
-				confidenceChart.getData().add(DiscoverUtil.countConstraintForThresholdValueFixed(processModel.getAllConstraints(), "confidence", fixedParameter, fixedThreshold));
-			} else {
-				confidenceChart.getData().clear();
-				confidenceChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "confidence"));
-			}
-			
-			confidenceChart.addVerticalValueMarker(new Data<>(Double.parseDouble(confidenceThresholdField.getText()), 0));
-			
-			if(!"interest".equals(fixedParameter) && fixedParameter != null) {
-				interestChart.getData().clear();
-				interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValueFixed(processModel.getAllConstraints(), "interest", fixedParameter, fixedThreshold));
-			} else if(fixedParameter == null){
-				interestChart.getData().clear();
-				interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "interest"));
-			}
-			
-			interestChart.addVerticalValueMarker(new Data<>(Double.parseDouble(interestThresholdField.getText()), 0));
-							
-			anchorPane.getChildren().remove(1, anchorPane.getChildren().size());
-			processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this);
-			setMaxTranslate();
-			
-			if(negativeConstraints.isSelected()) {
-				GraphUtil.hideConstraints(activityNodes, constraintNodes, false);
-			}
-			
-			if(positiveConstraints.isSelected()) {
-				GraphUtil.hideConstraints(activityNodes, constraintNodes, true);
-			}
-			
-			if(parameterStyling.isSelected()) {
-				GraphUtil.setParameterStyling(activityNodes, constraintNodes,true);
-			} else {
-				GraphUtil.setParameterStyling(activityNodes, constraintNodes,false);
-			}
-			
+		supportChart.addVerticalValueMarker(new Data<>(Double.parseDouble(supportThresholdField.getText()), 0));
+		
+		
+		if(fixedParameter != null && !"confidence".equals(fixedParameter)) {
+			confidenceChart.getData().clear();
+			confidenceChart.getData().add(DiscoverUtil.countConstraintForThresholdValueFixed(processModel.getAllConstraints(), "confidence", fixedParameter, fixedThreshold));
+		} else {
+			confidenceChart.getData().clear();
+			confidenceChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "confidence"));
+		}
+		
+		confidenceChart.addVerticalValueMarker(new Data<>(Double.parseDouble(confidenceThresholdField.getText()), 0));
+		
+		if(!"interest".equals(fixedParameter) && fixedParameter != null) {
+			interestChart.getData().clear();
+			interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValueFixed(processModel.getAllConstraints(), "interest", fixedParameter, fixedThreshold));
+		} else if(fixedParameter == null){
+			interestChart.getData().clear();
+			interestChart.getData().add(DiscoverUtil.countConstraintForThresholdValue(processModel.getAllConstraints(), "interest"));
+		}
+		
+		interestChart.addVerticalValueMarker(new Data<>(Double.parseDouble(interestThresholdField.getText()), 0));
+						
+		anchorPane.getChildren().remove(1, anchorPane.getChildren().size());
+		processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this, reminingRequired);
+		setMaxTranslate();
+		
+		if(negativeConstraints.isSelected()) {
+			GraphUtil.hideConstraints(activityNodes, constraintNodes, false);
+		}
+		
+		if(positiveConstraints.isSelected()) {
+			GraphUtil.hideConstraints(activityNodes, constraintNodes, true);
+		}
+		
+		if(parameterStyling.isSelected()) {
+			GraphUtil.setParameterStyling(activityNodes, constraintNodes,true);
+		} else {
+			GraphUtil.setParameterStyling(activityNodes, constraintNodes,false);
 		}
 		
 		setConstraintsTable();
 		numberOfConstraints.setText(String.valueOf(discoveredConstraints.size()));
+		
+		reminingRequired = false;
 	}
 	
 	private void setConstraintsTable() {
