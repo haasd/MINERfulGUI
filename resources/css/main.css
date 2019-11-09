@@ -356,6 +356,17 @@
 	-fx-padding: 5 0 5 0;
 }
 
+.default-color0.chart-series-area-line, 
+.default-color1.chart-series-area-line, 
+.default-color2.chart-series-area-line { 
+	-fx-stroke: #f5782e; 
+}
+
+.default-color0.chart-series-area-fill,
+.default-color1.chart-series-area-fill,
+.default-color2.chart-series-area-fill { 
+	-fx-fill: #f8b289;
+}
 
 /*
  * Buttons
