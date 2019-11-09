@@ -139,15 +139,10 @@ public class ActivityNode extends StackPane implements Selectable {
 		StackPane.setAlignment(endLabel, Pos.BOTTOM_RIGHT);
 		StackPane.setMargin(endLabel, new Insets(0, radius * 0.5, radius * 0.2, 0));
 		
-		
-		
-		
 		//Edit Buttons
 		deleteButton = new Button("");
 		deleteButton.setOnAction((event) -> {if(this.processTab != null) {this.processTab.deleteActivity(this);}});
 		//TODO: ENABLE AGAIN
-		
-		
 		
 		addConstraintButton = new Button("");
 		addConstraintButton.setOnAction((event) -> {

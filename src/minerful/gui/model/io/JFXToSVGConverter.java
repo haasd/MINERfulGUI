@@ -26,6 +26,7 @@ import org.w3c.dom.Document;
 
 import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.model.ActivityElement;
+import minerful.gui.model.ActivityNode;
 import minerful.gui.model.ActivityNode.Cursor;
 import minerful.gui.model.RelationConstraintElement;
 import minerful.gui.model.RelationConstraintNode;
@@ -104,37 +105,40 @@ public class JFXToSVGConverter {
 			// convert manually
 			// lines
 			for (RelationConstraintElement cElement : processTab.getCurrentProcessElement().getConstraintEList()) {
-				String width;
-				if(paramsStyling) {
-					 width = GraphUtil.determineStrokeWidth(cElement.getSupport(), cElement.getConfidence(), cElement.getInterest());
-				} else {
-					width = "1";
-				}
 				
+				if(!processTab.determineRelationConstraintNode(cElement).getStyleClass().contains("hide")) {
+					String width;
+					if(paramsStyling) {
+						 width = GraphUtil.determineStrokeWidth(cElement.getSupport(), cElement.getConfidence(), cElement.getInterest());
+					} else {
+						width = "1";
+					}
 
-				g2D.setPaint(darkBlueColor);
-				if (cElement.getTemplate().getNegation()) {
-					// set the stroke of the copy, not the original
-					Stroke dashed = new BasicStroke(Float.valueOf(width), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0,
-							new float[] { 9 }, 0);
-					g2D.setStroke(dashed);
-				} else {
-					g2D.setStroke(new BasicStroke(Float.valueOf(width)));
+					g2D.setPaint(darkBlueColor);
+					if (cElement.getTemplate().getNegation()) {
+						// set the stroke of the copy, not the original
+						Stroke dashed = new BasicStroke(Float.valueOf(width), BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0,
+								new float[] { 9 }, 0);
+						g2D.setStroke(dashed);
+					} else {
+						g2D.setStroke(new BasicStroke(Float.valueOf(width)));
+					}
+
+					for (ActivityElement aElem : cElement.getParameter1Elements()) {
+						Line2D.Double line2D = new Line2D.Double(cElement.getPosX() + constraintRadius,
+								cElement.getPosY() + constraintRadius, aElem.getPosX() + activityRadius,
+								aElem.getPosY() + activityRadius);
+						g2D.draw(line2D);
+					}
+
+					for (ActivityElement aElem : cElement.getParameter2Elements()) {
+						Line2D.Double line2D = new Line2D.Double(cElement.getPosX() + constraintRadius,
+								cElement.getPosY() + constraintRadius, aElem.getPosX() + activityRadius,
+								aElem.getPosY() + activityRadius);
+						g2D.draw(line2D);
+					}
 				}
 
-				for (ActivityElement aElem : cElement.getParameter1Elements()) {
-					Line2D.Double line2D = new Line2D.Double(cElement.getPosX() + constraintRadius,
-							cElement.getPosY() + constraintRadius, aElem.getPosX() + activityRadius,
-							aElem.getPosY() + activityRadius);
-					g2D.draw(line2D);
-				}
-
-				for (ActivityElement aElem : cElement.getParameter2Elements()) {
-					Line2D.Double line2D = new Line2D.Double(cElement.getPosX() + constraintRadius,
-							cElement.getPosY() + constraintRadius, aElem.getPosX() + activityRadius,
-							aElem.getPosY() + activityRadius);
-					g2D.draw(line2D);
-				}
 			}
 
 			//
@@ -143,7 +147,9 @@ public class JFXToSVGConverter {
 			// relationConstraints
 			for (RelationConstraintElement cElem : processTab.getCurrentProcessElement().getConstraintEList()) {
 				processTab.determineRelationConstraintNode(cElem).setEditable(false);
-				converter.convert(g2D, processTab.determineRelationConstraintNode(cElem));
+				if(!processTab.determineRelationConstraintNode(cElem).getStyleClass().contains("hide")) {
+					converter.convert(g2D, processTab.determineRelationConstraintNode(cElem));
+				}
 			}
 
 			// Activities
@@ -156,13 +162,33 @@ public class JFXToSVGConverter {
 
 			// Cursors
 			for (RelationConstraintElement cElem : processTab.getCurrentProcessElement().getConstraintEList()) {
-				for (ActivityElement aElem : cElem.getParameter1Elements()) {
-					drawCursorsAndAlternateLabel(aElem, cElem);
-				}
+				
+				if(!processTab.determineRelationConstraintNode(cElem).getStyleClass().contains("hide")) {
+					for (ActivityElement aElem : cElem.getParameter1Elements()) {
+						drawCursorsAndAlternateLabel(aElem, cElem);
+					}
 
-				for (ActivityElement aElem : cElem.getParameter2Elements()) {
-					drawCursorsAndAlternateLabel(aElem, cElem);
+					for (ActivityElement aElem : cElem.getParameter2Elements()) {
+						drawCursorsAndAlternateLabel(aElem, cElem);
+					}
+				} else {
+					
+					for (ActivityElement aElem : cElem.getParameter1Elements()) {
+						Cursor cursor = processTab.determineActivityNode(aElem)
+								.getCursorByConstraint(processTab.determineRelationConstraintNode(cElem));
+						cursor.getInsideCursor().setVisible(false);
+						cursor.getOutsideCursor().setVisible(false);
+					}
+
+					for (ActivityElement aElem : cElem.getParameter2Elements()) {
+						Cursor cursor = processTab.determineActivityNode(aElem)
+								.getCursorByConstraint(processTab.determineRelationConstraintNode(cElem));
+						cursor.getInsideCursor().setVisible(false);
+						cursor.getOutsideCursor().setVisible(false);
+					}
+					
 				}
+				
 			}
 
 			// get the root element and add size

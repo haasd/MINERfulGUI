@@ -11,7 +11,8 @@
 	-color-darker-blue: #00a6fb;
 }
 
-.clickable {
+.clickable,
+.activityPane {
 	-fx-cursor: hand;
 }
 
