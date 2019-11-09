@@ -17,7 +17,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
-import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.model.xml.XMLExistenceConstraint;
 import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.util.Config;

@@ -584,11 +584,13 @@ public class GraphUtil {
 	 * @param support
 	 * @param confidence
 	 * @param interest
-	 * @return strokeWidth as double
+	 * @return strokeWidth as String
 	 */
-	public static double determineStrokeWidth(double support, double confidence, double interest) {
+	public static String determineStrokeWidth(double support, double confidence, double interest) {
 		
-		return Math.max((3 * (support * 0.85 + confidence * 0.10 + interest * 0.05)), 0.2d);
+		double width = Math.max((3 * (support * 0.85 + confidence * 0.10 + interest * 0.05)), 0.2d);
+		
+		return String.valueOf(width).replace(",", ".");
 	}
 	
 	/**
@@ -607,10 +609,9 @@ public class GraphUtil {
 		String opacityString = String.valueOf(opacity).replace(",", ".");
 		node.setStyle(String.format("%s: rgba(%d, %d, %d, %s);",attribute, red, green, blue, opacityString));
 		if("-fx-stroke".equals(attribute) ) {
-			double width = determineStrokeWidth(constraintElement.getSupport(), constraintElement.getConfidence(),constraintElement.getInterest());
-			String widthString = String.valueOf(width).replace(",", ".");
+			String width = determineStrokeWidth(constraintElement.getSupport(), constraintElement.getConfidence(),constraintElement.getInterest());
 			
-			node.setStyle(node.getStyle().concat(String.format(" -fx-stroke-width: %s;", widthString)));
+			node.setStyle(node.getStyle().concat(String.format(" -fx-stroke-width: %s;", width)));
 		}
 	}
 	

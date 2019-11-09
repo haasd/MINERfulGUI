@@ -854,6 +854,12 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	public DoubleProperty getMaxTranslateY() {
 		return maxTranslateY;
 	}
+
+	@Override
+	public boolean isParamsStylingActive() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 
 }
