@@ -143,16 +143,16 @@ public class EditActivityPane extends ScrollPane {
 
 		cardinalityGridPane.add(card0L, 1, 0);
 		cardinalityGridPane.add(card1L, 2, 0);
-		cardinalityGridPane.add(cardMoreL, 3, 0);
-		cardinalityGridPane.add(cardAnyL, 4, 0);
+		//cardinalityGridPane.add(cardMoreL, 3, 0);
+		cardinalityGridPane.add(cardAnyL, 3, 0);
 		cardinalityGridPane.add(cardMinL, 0, 1);
 		cardinalityGridPane.add(cardMaxL, 0, 2);
 		cardinalityGridPane.add(cardMin0RB, 1, 1);
 		cardinalityGridPane.add(cardMin1RB, 2, 1);
-		cardinalityGridPane.add(cardMinMoreTF, 3, 1);
+		//cardinalityGridPane.add(cardMinMoreTF, 3, 1);
 		cardinalityGridPane.add(cardMax1RB, 2, 2);
-		cardinalityGridPane.add(cardMaxMoreTF, 3, 2);
-		cardinalityGridPane.add(cardMaxAnyRB, 4, 2);
+		//cardinalityGridPane.add(cardMaxMoreTF, 3, 2);
+		cardinalityGridPane.add(cardMaxAnyRB, 3, 2);
 		cardinalityEditVBox.getChildren().add(cardErrorLabel);
 
 		GridPane.setHalignment(card0L, HPos.CENTER);
@@ -342,6 +342,7 @@ public class EditActivityPane extends ScrollPane {
 					if (cardMin1RB.isSelected()) {
 						min = "1";
 					}
+					
 					if (!cardMinMoreTF.getText().isEmpty()) {
 						min = cardMinMoreTF.getText();
 					}
