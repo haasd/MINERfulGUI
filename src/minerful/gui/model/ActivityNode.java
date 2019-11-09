@@ -2,11 +2,7 @@ package minerful.gui.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import javafx.beans.InvalidationListener;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -21,7 +17,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Rotate;
-import minerful.gui.controller.ModelGeneratorTabController;
+import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.model.xml.XMLExistenceConstraint;
 import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.util.Config;
@@ -62,11 +58,7 @@ public class ActivityNode extends StackPane implements Selectable {
 	private ArrayList<LineNode> lineNodes = new ArrayList<LineNode>();
 	
 	private int existenceConstraintPosition = 1;
-	
-	//private Polygon insideArrow;
-	//private Polygon outsideArrow;
-	
-	
+
 	private final double arrowHeight = config.getDouble("arrow.height");
 	private final double arrowWidth = config.getDouble("arrow.width");
 	
@@ -243,7 +235,7 @@ public class ActivityNode extends StackPane implements Selectable {
 	/**
 	 * updates the elements of the Existence Constraint on the ActivityNode based on the information of the activityElement
 	 */
-	private void updateExistenceConstraint() {
+	public void updateExistenceConstraint() {
 		if (activityElement.getExistenceConstraint() != null){
 			Card currentCard = activityElement.getExistenceConstraint().getCard();
 			if(currentCard != null){
@@ -282,7 +274,7 @@ public class ActivityNode extends StackPane implements Selectable {
 					}
 				} else {
 					if(!activityElement.getExistenceConstraint().getEndConstraint().isActive() && activityElement.getExistenceConstraint().getInitConstraint().isActive()){
-						if (!getChildren().contains(initShape)){
+						if (!getChildren().contains(initShape)){	
 							getChildren().add(existenceConstraintPosition, initShape);
 						}
 						if (!getChildren().contains(initLabel)){
@@ -295,7 +287,7 @@ public class ActivityNode extends StackPane implements Selectable {
 						if (getChildren().contains(initLabel)){
 							getChildren().remove(initLabel);
 						}
-						}
+					}
 					
 					if(activityElement.getExistenceConstraint().getEndConstraint().isActive() && !activityElement.getExistenceConstraint().getInitConstraint().isActive()){
 						if (!getChildren().contains(endShape)){
@@ -587,5 +579,31 @@ public class ActivityNode extends StackPane implements Selectable {
 		}
 		return null;
 	}
+
+	public Shape getCardinalityShape() {
+		return cardinalityShape;
+	}
+
+	public void setCardinalityShape(Shape cardinalityShape) {
+		this.cardinalityShape = cardinalityShape;
+	}
+
+	public Shape getInitShape() {
+		return initShape;
+	}
+
+	public void setInitShape(Shape initShape) {
+		this.initShape = initShape;
+	}
+
+	public Shape getEndShape() {
+		return endShape;
+	}
+
+	public void setEndShape(Shape endShape) {
+		this.endShape = endShape;
+	}
+	
+	
 	
 }

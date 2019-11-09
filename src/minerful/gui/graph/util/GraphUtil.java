@@ -19,11 +19,13 @@ import org.springframework.util.FastByteArrayOutputStream;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.shape.Shape;
 import minerful.concept.ProcessModel;
 import minerful.concept.TaskChar;
 import minerful.concept.TaskCharArchive;
@@ -42,6 +44,7 @@ import minerful.gui.model.ActivityNode;
 import minerful.gui.model.ActivityNode.Cursor;
 import minerful.gui.model.Card;
 import minerful.gui.model.CardinalityElement;
+import minerful.gui.model.ConstraintElement;
 import minerful.gui.model.EventHandlerManager;
 import minerful.gui.model.ExistenceConstraintEnum;
 import minerful.gui.model.LineNode;
@@ -437,6 +440,9 @@ public class GraphUtil {
 				double posX = (aElement1.getPosX() + aElement2.getPosX()) / 2 + activityRadius - contraintRadius; 
 				double posY = (aElement1.getPosY() + aElement2.getPosY()) / 2 + activityRadius - contraintRadius;
 				cElement.setPosition(posX, posY);
+				cElement.setSupport(constraint.getSupport());
+				cElement.setConfidence(constraint.getConfidence());
+				cElement.setInterest(constraint.getInterestFactor());
 				
 				// add Constraint to Process
 				processElement.addRelationConstraint(cElement);
@@ -561,6 +567,116 @@ public class GraphUtil {
 				
 				for(LineNode lNode : rcNode.getParameter2Lines()) {
 					lNode.getStyleClass().remove("hide");
+				}
+			}
+		}
+	}
+	
+	public static double determineOpacity(double support, double confidence, double interest) {
+		
+		return support * 0.85 + confidence * 0.10 + interest * 0.05;
+		
+	}
+	
+	/**
+	 * determines the stroke width of relationConstraintElement based on parameters
+	 * 
+	 * @param support
+	 * @param confidence
+	 * @param interest
+	 * @return strokeWidth as double
+	 */
+	public static double determineStrokeWidth(double support, double confidence, double interest) {
+		
+		return Math.max((3 * (support * 0.85 + confidence * 0.10 + interest * 0.05)), 0.2d);
+	}
+	
+	/**
+	 * determines shapeOpacity based on rgb-values and parameters
+	 * 
+	 * @param attribute
+	 * @param node
+	 * @param red
+	 * @param green
+	 * @param blue
+	 * @param constraintElement
+	 */
+	public static void setShapeOpacity(String attribute, Node node, int red, int green, int blue, ConstraintElement constraintElement) {
+		
+		double opacity = determineOpacity(constraintElement.getSupport(), constraintElement.getConfidence(),constraintElement.getInterest());
+		String opacityString = String.valueOf(opacity).replace(",", ".");
+		node.setStyle(String.format("%s: rgba(%d, %d, %d, %s);",attribute, red, green, blue, opacityString));
+		if("-fx-stroke".equals(attribute) ) {
+			double width = determineStrokeWidth(constraintElement.getSupport(), constraintElement.getConfidence(),constraintElement.getInterest());
+			String widthString = String.valueOf(width).replace(",", ".");
+			
+			node.setStyle(node.getStyle().concat(String.format(" -fx-stroke-width: %s;", widthString)));
+		}
+	}
+	
+	/**
+	 * determines shapeOpacity and also allows fade (required if opacity is influenced by two constraints)
+	 * 
+	 * @param node
+	 * @param red
+	 * @param green
+	 * @param blue
+	 * @param constraintElement1
+	 * @param constraintElement2
+	 */
+	public static void setShapeWithFadeOpacity(Node node, int red, int green, int blue, ConstraintElement constraintElement1, ConstraintElement constraintElement2) {
+		
+		double opacity = determineOpacity(constraintElement1.getSupport(), constraintElement1.getConfidence(),constraintElement1.getInterest());
+		String opacityString = String.valueOf(opacity).replace(",", ".");
+		String color1 = String.format("rgba(%d, %d, %d, %s)", red, green, blue, opacityString);
+		opacity = determineOpacity(constraintElement2.getSupport(), constraintElement2.getConfidence(),constraintElement2.getInterest());
+		opacityString = String.valueOf(opacity).replace(",", ".");
+		String color2 = String.format("rgba(%d, %d, %d, %s)", red, green, blue, opacityString);
+		node.setStyle(String.format("-fx-fill: linear-gradient(from 25%% 25%% to 100%% 100%% ,%s, %s);", color1, color2, opacity));
+	}
+	
+	/**
+	 * used to enable and disable styling of graph based on parameters
+	 * 
+	 * @param aNodes
+	 * @param rcNodes
+	 * @param active
+	 */
+	public static void setParameterStyling(List<ActivityNode> aNodes, List<RelationConstraintNode> rcNodes, Boolean active) {
+		if(active) {
+			for(RelationConstraintNode rcNode : rcNodes) {
+				for(LineNode lNode : rcNode.getParameter1Lines()) {
+					setShapeOpacity("-fx-stroke", lNode.getLine(), 61, 136, 195, rcNode.getConstraintElement());
+				}
+				
+				for(LineNode lNode : rcNode.getParameter2Lines()) {
+					setShapeOpacity("-fx-stroke", lNode.getLine(), 61, 136, 195, rcNode.getConstraintElement());
+				}
+			}
+			
+			for(ActivityNode aNode : aNodes) {
+				if(aNode.getActivityElement().getExistenceConstraint() != null) {
+					setShapeWithFadeOpacity(aNode.getCardinalityShape(), 255, 255, 255, aNode.getActivityElement().getExistenceConstraint().getCard().getMin(), aNode.getActivityElement().getExistenceConstraint().getCard().getMax());
+					setShapeOpacity("-fx-fill", aNode.getInitShape(), 255, 255, 255, aNode.getActivityElement().getExistenceConstraint().getInitConstraint());
+					setShapeOpacity("-fx-fill", aNode.getEndShape(), 255, 255, 255, aNode.getActivityElement().getExistenceConstraint().getEndConstraint());
+				}
+			}
+		} else {
+			for(RelationConstraintNode rcNode : rcNodes) {
+				for(LineNode lNode : rcNode.getParameter1Lines()) {
+					lNode.getLine().setStyle("");
+				}
+				
+				for(LineNode lNode : rcNode.getParameter2Lines()) {
+					lNode.getLine().setStyle("");
+				}
+			}
+			
+			for(ActivityNode aNode : aNodes) {
+				if(aNode.getActivityElement().getExistenceConstraint() != null) {
+					aNode.getCardinalityShape().setStyle("");
+					aNode.getInitShape().setStyle("");
+					aNode.getEndShape().setStyle("");
 				}
 			}
 		}

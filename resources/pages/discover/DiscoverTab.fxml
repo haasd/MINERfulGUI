@@ -70,7 +70,7 @@
         				</Tooltip>
     				</tooltip>
     			</Label>
-				<GridPane vgap="10">
+				<GridPane vgap="10" styleClass="border-top-bottom">
 					<children>
 						<Label GridPane.columnIndex="0" GridPane.rowIndex="0" text="Start from Trace:" />
 						<TextField fx:id="startAtTrace" GridPane.columnIndex="1" GridPane.rowIndex="0" ></TextField> 
@@ -137,7 +137,7 @@
         				</Tooltip>
     				</tooltip>
     			</Label>
-         		<VBox fx:id="cropType">
+         		<VBox fx:id="cropType" styleClass="border-top-bottom">
          			<ToggleSwitch style="-fx-padding: 5px 0px;" fx:id="negativeConstraints" text="Crop negative Constraints" />
     				<ToggleSwitch style="-fx-padding: 5px 0px;" fx:id="positiveConstraints" text="Crop positive Constraints" />
          		</VBox>	
@@ -157,6 +157,9 @@
 				         			<Label styleClass="section-header1" text="Model" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
 				         			<Button styleClass="btn-default, btn-save" text="Take Snapshot" onAction="#saveSnapshotOfModel" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 				         			<Button styleClass="btn-default" text="Export" onAction="#exportFile" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+				         			<HBox style="-fx-padding: 0px 15px;" alignment="CENTER_RIGHT">
+				         				<ToggleSwitch fx:id="parameterStyling" text="Activate Parameter Styling" />
+				         			</HBox>
 				         			<HBox HBox.hgrow="ALWAYS" alignment="CENTER_RIGHT">
 				         				<Label text="Display Constraints" GridPane.columnIndex="3" GridPane.rowIndex="0" style="-fx-content-display: right">
 					         				<graphic>

@@ -159,6 +159,9 @@ public class DiscoverTabController extends AbstractController implements Initial
 	ToggleSwitch positiveConstraints;
 	
 	@FXML
+	ToggleSwitch parameterStyling;
+	
+	@FXML
 	TextField supportThresholdField;
 	
 	@FXML
@@ -334,7 +337,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 	    eventLogTable.visibleProperty().bind(Bindings.isEmpty(eventLogTable.getItems()).not());
 	    
 	    MinerfulGuiUtil.setHeight(logInfoList, 125);
-	    MinerfulGuiUtil.setHeight(eventsTable, 250);
+	    MinerfulGuiUtil.setHeight(eventsTable, 200);
 		
 		// define date-column and set format
 		dateColumn.setCellValueFactory(
@@ -428,6 +431,15 @@ public class DiscoverTabController extends AbstractController implements Initial
 			}
 			
 			setConstraintsTable();
+        });
+		
+		// define parameterStyling
+		parameterStyling.selectedProperty().addListener(it -> {
+			if(parameterStyling.isSelected()) {
+				GraphUtil.setParameterStyling(activityNodes, constraintNodes,true);
+			} else {
+				GraphUtil.setParameterStyling(activityNodes, constraintNodes,false);
+			}
         });
 		
 		//init Charts
@@ -687,6 +699,12 @@ public class DiscoverTabController extends AbstractController implements Initial
 			
 			if(positiveConstraints.isSelected()) {
 				GraphUtil.hideConstraints(activityNodes, constraintNodes, true);
+			}
+			
+			if(parameterStyling.isSelected()) {
+				GraphUtil.setParameterStyling(activityNodes, constraintNodes,true);
+			} else {
+				GraphUtil.setParameterStyling(activityNodes, constraintNodes,false);
 			}
 			
 		}
