@@ -304,9 +304,49 @@ public class GraphUtil {
 			testAlgorithm.optimizeLayout();
 		}
 		
+		determineLocation(controller,processElement);
+		
 		return processElement;
 	}
 	
+	public static void determineLocation(ProcessElementInterface controller, ProcessElement processElement) {
+		
+		int constraintCounter = 0;
+		List<RelationConstraintElement> rcElements = new ArrayList<>();
+		double x = 800d;
+		double y = 50d;
+		int counter = 0;
+		
+		for(ActivityElement node : processElement.getActivityEList()) {
+			ActivityNode aNode = controller.determineActivityNode(node);
+			
+			for(RelationConstraintElement rcElement : aNode.getActivityElement().getConstraintList()) {
+				
+				constraintCounter = determineConstraintCounter(rcElement, rcElements);
+	        	controller.determineRelationConstraintNode(rcElement).moveConstraintBetweenActivities(constraintCounter);
+	        	rcElements.add(rcElement);
+				
+			}
+
+			// relocated all activities without relation constraints
+			if(aNode.getActivityElement().getConstraintList().size() == 0) {
+				aNode.getActivityElement().setPosition(x, y);
+				counter++;
+				x += 150d;
+				
+				if(counter == 6) {
+					counter=0;
+					y += 150d;
+					x = 800d;
+				}
+				
+				aNode.updateNode();
+			}
+			aNode.updateAllLineNodePositions();
+			rcElements = new ArrayList<>();
+		}
+	}
+
 	//generate a copy of a ProcessElement
 	public static ProcessElement cloneProcessElement(ProcessElement processElement) {
 		ProcessElement newProcessElement = new ProcessElement();
@@ -453,6 +493,7 @@ public class GraphUtil {
 				cElement.setSupport(constraint.getSupport());
 				cElement.setConfidence(constraint.getConfidence());
 				cElement.setInterest(constraint.getInterestFactor());
+				cElement.setPositionFixed(true);
 				
 				// add Constraint to Process
 				processElement.addRelationConstraint(cElement);
@@ -476,6 +517,22 @@ public class GraphUtil {
 				
 			}
 		}
+	}
+	
+	private static int determineConstraintCounter(RelationConstraintElement rcElement, List<RelationConstraintElement> rcElements) {
+		int counter = 0;
+		
+		ActivityElement source = rcElement.getParameter1Elements().get(0);
+		ActivityElement target = rcElement.getParameter2Elements().get(0);
+		
+		for(RelationConstraintElement rcElem : rcElements) {
+			if((rcElem.getParameter1Elements().get(0) == source && rcElem.getParameter2Elements().get(0) == target) 
+					|| (rcElem.getParameter1Elements().get(0) == target && rcElem.getParameter2Elements().get(0) == source)) {
+				counter++;
+			}
+		}
+		
+		return counter; 
 	}
 	
 	/**

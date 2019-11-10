@@ -194,7 +194,7 @@ public class RelationConstraintNode extends StackPane implements Positionable, S
 		double activity1CenterY = activity1.getTranslateY() + activityRadius;
 		double activity2CenterY = activity2.getTranslateY() + activityRadius;
 		
-		double offsetPixels = 5.0;
+		double offsetPixels = 40.0;
 		
 		double L = Math.sqrt((activity1CenterX-activity2CenterX)*(activity1CenterX-activity2CenterX)+(activity1CenterY-activity2CenterY)*(activity1CenterY-activity2CenterY));
 		
