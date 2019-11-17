@@ -172,7 +172,7 @@
 				         			<Button styleClass="btn-default, btn-save" text="Take Snapshot" onAction="#saveSnapshotOfModel" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
 				         			<Button styleClass="btn-default" text="Export" onAction="#exportFile" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
 				         			<HBox style="-fx-padding: 0px 15px;" alignment="CENTER_RIGHT">
-				         				<ToggleSwitch fx:id="parameterStyling" text="Activate Parameter Styling" />
+				         				<ToggleSwitch fx:id="parameterStyling" text="Show measures on map" />
 				         			</HBox>
 				         			<HBox HBox.hgrow="ALWAYS" alignment="CENTER_RIGHT">
 				         				<Label styleClass="clickable" text="Display Constraints" GridPane.columnIndex="3" GridPane.rowIndex="0" style="-fx-content-display: right" onMouseClicked="#displayConstraintsPane">

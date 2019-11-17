@@ -23,7 +23,13 @@
 	<children>
      	<HBox style="-fx-spacing: 10; -fx-padding: 5px;" GridPane.columnIndex="0" GridPane.rowIndex="0">
       		<Label styleClass="section-header1" text="FitnessCheck-Result" />
-      		<Button styleClass="btn-default" text="Export"/>
+      		<Button styleClass="btn-default" text="Export" onAction="#exportFitnessResults"/>
+      		
+      		<HBox style="-fx-padding: 0px 15px;" alignment="CENTER_RIGHT">
+      			<Label text="Average fitness: " />
+    			<Label style="-fx-font-weight: bold;" fx:id="avgFitness" text="" />
+    		</HBox>
+      		
       	</HBox>
       	<VBox style="-fx-padding: 10px;" GridPane.columnIndex="0" GridPane.rowIndex="1" >
 	      	<TableView VBox.vgrow="ALWAYS" fx:id="fitnessCheckTable" styleClass="table" >

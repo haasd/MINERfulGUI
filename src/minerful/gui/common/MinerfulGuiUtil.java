@@ -27,9 +27,11 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import minerful.MinerFulFitnessCheckLauncher;
 import minerful.MinerFulMinerLauncher;
 import minerful.MinerFulOutputManagementLauncher;
 import minerful.MinerFulSimplificationLauncher;
+import minerful.checking.params.CheckingCmdParameters;
 import minerful.checking.relevance.dao.ModelFitnessEvaluation;
 import minerful.concept.ProcessModel;
 import minerful.concept.constraint.Constraint;
@@ -38,6 +40,7 @@ import minerful.gui.model.ActivityElement;
 import minerful.gui.model.io.JFXToSVGConverter;
 import minerful.gui.model.io.XmlModelWriter;
 import minerful.gui.service.ProcessElementInterface;
+import minerful.gui.service.loginfo.LogInfo;
 import minerful.io.params.OutputModelParameters;
 import minerful.logmaker.MinerFulLogMaker;
 import minerful.logmaker.params.LogMakerParameters.Encoding;
@@ -298,5 +301,44 @@ public class MinerfulGuiUtil {
 			}
 			
 			return ids;
+		}
+		
+		public static void exportFitnessCheckResult(ModelInfo modelInfo, LogInfo eventLogInfo) {
+			// init FileChooser and set extension-filter
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Export Fitness check result");
+			FileChooser.ExtensionFilter extFilter = 
+		             new FileChooser.ExtensionFilter("CSV","*.csv");
+		    fileChooser.getExtensionFilters().add(extFilter);
+		    
+		    // open FileChooser and handle response
+			File saveFile = fileChooser.showSaveDialog(new Stage());
+			if(saveFile != null) {
+				
+				CheckingCmdParameters chkParams = new CheckingCmdParameters();
+				String path = saveFile.getAbsolutePath();
+				File outputFile = new File(path);
+
+				logger.info("Save as File: " + path);
+				
+				String fileName = saveFile.getName();           
+				String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1, saveFile.getName().length());
+				
+				logger.info("Saving...");
+				
+				switch(fileExtension.toLowerCase()) {
+					case "csv": 
+						chkParams.fileToSaveResultsAsCSV = outputFile;	
+						break;
+				}
+				
+				MinerFulFitnessCheckLauncher miFuCheLa = new MinerFulFitnessCheckLauncher(modelInfo.getProcessModel(), eventLogInfo.getLogParser(), chkParams);
+				miFuCheLa.check();
+				MinerfulGuiUtil.displayAlert("Information", "Finished export", "Finished export of: " + outputFile, AlertType.INFORMATION);
+				
+			} else {
+				logger.info("Export canceled!"); 
+			}
+			
 		}
 }

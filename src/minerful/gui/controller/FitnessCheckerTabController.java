@@ -9,16 +9,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import minerful.checking.relevance.dao.ModelFitnessEvaluation;
-import minerful.concept.constraint.Constraint;
 import minerful.gui.common.FitnessCheckInfo;
 import minerful.gui.common.MinerfulGuiUtil;
 import minerful.gui.common.ModelInfo;
-import minerful.gui.common.ValidationEngine;
-import minerful.gui.service.loginfo.EventFilter;
 import minerful.gui.service.loginfo.LogInfo;
 
 public class FitnessCheckerTabController extends AbstractController implements Initializable {
@@ -51,6 +49,9 @@ public class FitnessCheckerTabController extends AbstractController implements I
 	
 	@FXML
 	TableColumn<FitnessCheckInfo, Integer> violationsColumn;
+	
+	@FXML
+	Label avgFitness;
 	
 	private ModelFitnessEvaluation mfe;
 	
@@ -87,7 +88,11 @@ public class FitnessCheckerTabController extends AbstractController implements I
 	public void updateFitnessResults() {
 		fitnessCheckInfoTable.clear();
 		fitnessCheckInfoTable.addAll(MinerfulGuiUtil.deriveFitnessCheckInfo(mfe));
+		avgFitness.setText(mfe.avgFitness().toString());
+	}
 	
+	public void exportFitnessResults() {
+		MinerfulGuiUtil.exportFitnessCheckResult(modelInfo,eventLogInfo);
 	}
 	
 	public ModelFitnessEvaluation getMfe() {

@@ -135,6 +135,7 @@ public class FitnessCheckerController extends AbstractController implements Init
 			MinerFulFitnessCheckLauncher miFuCheLa = new MinerFulFitnessCheckLauncher(selectedModelInfo.getProcessModel(), selectedEventLogInfo.getLogParser(), chkParams);
 			
 			ModelFitnessEvaluation mfe = miFuCheLa.check();	
+			
 
 			try {
 				
