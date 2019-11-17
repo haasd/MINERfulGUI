@@ -981,7 +981,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 	}
 
 	@Override
-	public ScrollPane getScrollPane() {
+	public ZoomableScrollPane getScrollPane() {
 		// TODO Auto-generated method stub
 		return scrollPane;
 	}

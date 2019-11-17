@@ -21,8 +21,8 @@
 	<children>
 		<!-- Area-Header -->
 		<HBox styleClass="area-header" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" >
-			<Label styleClass="area-header-label" text="Create Event-Log" />
-			<Button styleClass="btn-default, btn-header" text="Select Process Map" onAction="#selectModel">
+			<Label styleClass="area-header-label" text="Create event log" />
+			<Button styleClass="btn-default, btn-header" text="Select process map" onAction="#selectModel">
 				<graphic>
            			<FontIcon iconColor="white" iconLiteral="typ-document" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
             	</graphic>

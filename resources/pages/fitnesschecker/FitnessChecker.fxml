@@ -22,16 +22,16 @@
 		
 		<!-- Area-Header -->
 		<HBox styleClass="area-header" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" >
-			<Label styleClass="area-header-label" text="Perform Fitness-Check" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
+			<Label styleClass="area-header-label" text="Perform fitness check" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
 		</HBox>
 		
 		<!-- Selector -->
 		<HBox GridPane.columnIndex="0" GridPane.rowIndex="1" alignment="CENTER" GridPane.columnSpan="2" style="-fx-spacing: 15; -fx-padding: 15px;">
-			<Button styleClass="btn-default" text="Select Process-Model" onAction="#selectModel"/>
+			<Button styleClass="btn-default" text="Select process map" onAction="#selectModel"/>
 			<Label text="Please select process-model" fx:id="selectedModel" />
-			<Button styleClass="btn-default" text="Select Event-Log" onAction="#selectEventLog"/>
+			<Button styleClass="btn-default" text="Select event log" onAction="#selectEventLog"/>
 			<Label text="Please select event-log" fx:id="selectedEventLog" />
-			<Button styleClass="btn-default, btn-important" text="Perform Check" onAction="#performFitnessCheck"/>
+			<Button styleClass="btn-default, btn-important" text="Perform fitness check" onAction="#performFitnessCheck"/>
 		</HBox>
 		
 		<!-- TabPane -->

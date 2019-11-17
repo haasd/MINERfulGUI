@@ -320,7 +320,9 @@ public class XmlModelWriter {
                 zipOut.write(bytes, 0, length);
             }
             fis.close();
-            fileToZip.delete();
+            if(!fileToZip.getName().contains("Templates.xml")) {
+            	fileToZip.delete();
+            }
         }
         zipOut.close();
         fos.close();

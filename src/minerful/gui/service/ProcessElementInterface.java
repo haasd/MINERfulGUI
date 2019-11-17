@@ -13,6 +13,7 @@ import minerful.gui.model.ActivityNode;
 import minerful.gui.model.ProcessElement;
 import minerful.gui.model.RelationConstraintElement;
 import minerful.gui.model.RelationConstraintNode;
+import minerful.gui.model.ZoomableScrollPane;
 
 public interface ProcessElementInterface {
 	
@@ -31,7 +32,7 @@ public interface ProcessElementInterface {
 	public ProcessElement getCurrentProcessElement();
 	public ProcessModel getCurrentProcessModel();
 	public BorderPane getBackgroundPane();
-	public ScrollPane getScrollPane();
+	public ZoomableScrollPane getScrollPane();
 	public void setMaxTranslate();
 	public DoubleProperty getMaxTranslateY();
 	public DoubleProperty getMaxTranslateX();

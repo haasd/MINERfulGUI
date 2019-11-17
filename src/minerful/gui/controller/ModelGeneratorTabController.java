@@ -842,7 +842,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	}
 
 	@Override
-	public ScrollPane getScrollPane() {
+	public ZoomableScrollPane getScrollPane() {
 		// TODO Auto-generated method stub
 		return scrollPane;
 	}

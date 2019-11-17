@@ -4,6 +4,8 @@ package minerful.gui.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import org.kordamp.ikonli.javafx.FontIcon;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -11,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import minerful.gui.controller.ModelGeneratorTabController;
 import minerful.gui.graph.util.GraphUtil;
@@ -102,8 +105,10 @@ public class RelationConstraintNode extends StackPane implements Positionable, S
 	public void setEditable(boolean editable) {
 		if(editable){
 			if (!getChildren().contains(deleteButton)){
-				imgDelete =  new Image(getClass().getClassLoader().getResource("images/Delete-icon.png").toExternalForm(),12,12,true,true);
-				deleteButton.setGraphic(new ImageView(imgDelete));
+				
+				FontIcon fontIcon = new FontIcon("fa-minus");
+				fontIcon.setIconColor(Paint.valueOf("red"));
+				deleteButton.setGraphic(fontIcon);
 				
 				this.getChildren().add(deleteButton);
 			}

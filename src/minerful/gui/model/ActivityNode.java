@@ -3,6 +3,8 @@ package minerful.gui.model;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.kordamp.ikonli.javafx.FontIcon;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -11,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
@@ -189,11 +192,13 @@ public class ActivityNode extends StackPane implements Selectable {
 		if(editable){
 			
 			if(!getChildren().contains(deleteButton)){
-				imgDelete =  new Image(getClass().getClassLoader().getResource("images/Delete-icon.png").toExternalForm(),12,12,true,true);
-				deleteButton.setGraphic(new ImageView(imgDelete));
+				FontIcon fontIcon = new FontIcon("fa-minus");
+				fontIcon.setIconColor(Paint.valueOf("red"));
+				deleteButton.setGraphic(fontIcon);
 				
-				imgAddConstraint =  new Image(getClass().getClassLoader().getResource("images/Connect-icon.png").toExternalForm(),12,12,true,true);
-				addConstraintButton.setGraphic(new ImageView(imgAddConstraint));
+				fontIcon = new FontIcon("fa-share-alt");
+				fontIcon.setIconColor(Paint.valueOf("black"));
+				addConstraintButton.setGraphic(fontIcon);
 				
 				getChildren().addAll(deleteButton, addConstraintButton);
 			}

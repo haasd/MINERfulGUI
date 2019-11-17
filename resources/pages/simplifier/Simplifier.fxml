@@ -23,12 +23,12 @@
 		<!-- Area-Header -->
 		<HBox spacing="5" styleClass="area-header" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" >
 			<Label styleClass="area-header-label" text="Simplify" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
-			<Button styleClass="btn-default, btn-header" text="Modify Process Map" onAction="#selectModel">
+			<Button styleClass="btn-default, btn-header" text="Modify process map" onAction="#selectModel">
 				<graphic>
            			<FontIcon iconColor="white" iconLiteral="typ-flow-switch" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
             	</graphic>
 			</Button>
-			<Button styleClass="btn-default, btn-header" text="Import Process Map" onAction="#importModel">
+			<Button styleClass="btn-default, btn-header" text="Import process map" onAction="#importModel">
 				<graphic>
            			<FontIcon iconColor="white" iconLiteral="typ-flow-merge" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
             	</graphic>

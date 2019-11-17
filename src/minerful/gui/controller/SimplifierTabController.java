@@ -76,6 +76,7 @@ import minerful.gui.model.ProcessElement;
 import minerful.gui.model.RelationConstraintElement;
 import minerful.gui.model.RelationConstraintEnum;
 import minerful.gui.model.RelationConstraintNode;
+import minerful.gui.model.ZoomableScrollPane;
 import minerful.gui.model.io.XmlModelReader;
 import minerful.gui.service.DiscoverUtil;
 import minerful.gui.service.ProcessElementInterface;
@@ -112,7 +113,7 @@ public class SimplifierTabController extends AbstractController implements Initi
 	Label numberOfConstraints;
 	
 	@FXML
-	ScrollPane scrollPane;
+	ZoomableScrollPane scrollPane;
 	
 	@FXML
 	AnchorPane anchorPane;
@@ -744,7 +745,7 @@ public class SimplifierTabController extends AbstractController implements Initi
 	}
 
 	@Override
-	public ScrollPane getScrollPane() {
+	public ZoomableScrollPane getScrollPane() {
 		// TODO Auto-generated method stub
 		return scrollPane;
 	}

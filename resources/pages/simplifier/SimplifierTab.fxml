@@ -24,7 +24,7 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import minerful.gui.common.AreaChartWithMarker?>
-<?import javafx.scene.control.ScrollPane?>
+<?import minerful.gui.model.ZoomableScrollPane?>
 <?import org.controlsfx.control.ToggleSwitch?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.control.Tooltip?>
@@ -178,12 +178,14 @@
          								<Label fx:id="numberOfConstraints" text="0" style="-fx-font-weight: bold"/>
 				         			</HBox>
 				         		</HBox>
-			         			<ScrollPane fx:id="scrollPane" styleClass="model-canvas, background" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
-		         					<AnchorPane fx:id="anchorPane" styleClass="background">
-		         						<BorderPane fx:id="backgroundPane">
-		         						</BorderPane>
-		         					</AnchorPane>
-	         					</ScrollPane>
+				         		<ZoomableScrollPane fx:id="scrollPane" styleClass="model-canvas, background" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
+		         					<anchorPane>
+			         					<AnchorPane fx:id="anchorPane" styleClass="background">
+			         						<BorderPane fx:id="backgroundPane">
+			         						</BorderPane>
+			         					</AnchorPane>
+		         					</anchorPane>
+	         					</ZoomableScrollPane>
 			         		</children>
 			         		<columnConstraints>
 						        <ColumnConstraints hgrow="ALWAYS" />
