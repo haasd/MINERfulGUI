@@ -35,14 +35,14 @@
       						<Label styleClass="info-icon-label" text="Discover" GridPane.columnIndex="0" GridPane.rowIndex="1" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
 		   	      		</AnchorPane>
 			        </GridPane>
-		            <GridPane fx:id="infoSimulate" styleClass="info-icon">
-			      		<ImageView fitHeight="250.0" fitWidth="250.0" GridPane.columnIndex="0" GridPane.rowIndex="0" onMousePressed='#openEventLogGenerator'>
+		            <GridPane fx:id="infoDraw" styleClass="info-icon">
+			      		<ImageView fitHeight="250.0" fitWidth="250.0" GridPane.columnIndex="0" GridPane.rowIndex="0" onMousePressed='#openModelGenerator'>
 			               <image>
 			                  <Image url="@../images/process.png" />
 			               </image>
 			            </ImageView>
 			            <AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="1" >
-      						<Label styleClass="info-icon-label" text="Simulate" GridPane.columnIndex="0" GridPane.rowIndex="1" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
+      						<Label styleClass="info-icon-label" text="Draw/Modify process map" GridPane.columnIndex="0" GridPane.rowIndex="1" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
 		   	      		</AnchorPane>
 		            </GridPane> 
 		            <GridPane fx:id="infoSimplify" styleClass="info-icon">
@@ -53,6 +53,16 @@
 			            </ImageView>
 			            <AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="1" >
       						<Label styleClass="info-icon-label" text="Simplify" GridPane.columnIndex="0" GridPane.rowIndex="1" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
+		   	      		</AnchorPane>
+		            </GridPane>
+		            <GridPane fx:id="infoSimulate" styleClass="info-icon">
+			      		<ImageView fitHeight="200.0" fitWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="0" onMousePressed='#openEventLogGenerator'>
+			               <image>
+			                  <Image url="@../images/machine.png" />
+			               </image>
+			            </ImageView>
+			            <AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="1" >
+      						<Label styleClass="info-icon-label" text="Create event log" GridPane.columnIndex="0" GridPane.rowIndex="1" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
 		   	      		</AnchorPane>
 		            </GridPane>
 		            <GridPane fx:id="infoGenerateAutomata" styleClass="info-icon">
@@ -128,6 +138,11 @@
             </AnchorPane>
             <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                <children>
+               		<Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="7.0" layoutY="242.0" mnemonicParsing="false" prefHeight="54.0" text="Documentation" styleClass="menu-button" onAction="#openDocumentation" >
+	                  <graphic>
+	                  		<FontIcon iconColor="#e8eaf6" iconLiteral="fa-question" iconSize="30" layoutX="20.0" layoutY="300.0" textAlignment="CENTER" wrappingWidth="26.0" />
+                  	  </graphic>
+                  	</Button>
                		<Button AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" alignment="BASELINE_LEFT" layoutX="7.0" layoutY="300.0" mnemonicParsing="false" prefHeight="54.0" text="Inventory" styleClass="menu-button" onAction="#openInventory" >
 	                  <graphic>
 	                  		<FontIcon iconColor="#e8eaf6" iconLiteral="fa-cube" iconSize="30" layoutX="20.0" layoutY="300.0" textAlignment="CENTER" wrappingWidth="26.0" />

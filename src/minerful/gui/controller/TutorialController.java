@@ -23,6 +23,9 @@ public class TutorialController extends AbstractController implements Initializa
 	
 	@FXML
 	private GridPane infoPerformCheck;
+	
+	@FXML
+	private GridPane infoDraw;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -32,7 +35,7 @@ public class TutorialController extends AbstractController implements Initializa
 		infoSimplify.setOnMouseClicked(e -> ((StartPageController) this.getMainController()).openSimplifier());
 		infoGenerateAutomata.setOnMouseClicked(e -> ((StartPageController) this.getMainController()).openAutomataGenerator());
 		infoPerformCheck.setOnMouseClicked(e -> ((StartPageController) this.getMainController()).openFitnessChecker());
-
+		infoDraw.setOnMouseClicked(e -> ((StartPageController) this.getMainController()).openModelGenerator());
 	}
 	
 	

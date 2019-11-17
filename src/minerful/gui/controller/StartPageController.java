@@ -79,6 +79,9 @@ public class StartPageController extends AbstractController implements Initializ
 	private GridPane infoSimplify;
 	
 	@FXML
+	private GridPane infoDraw;
+	
+	@FXML
 	private GridPane infoGenerateAutomata;
 	
 	@FXML
@@ -119,7 +122,8 @@ public class StartPageController extends AbstractController implements Initializ
 	    }
 	}
 	
-	public void openDocumentation(String area) {
+	@FXML
+	public void openDocumentation() {
 		try {
 			infoStage.setMaximized(true);
 			infoStage.show();
