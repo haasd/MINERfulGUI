@@ -16,7 +16,9 @@ import org.deckfour.xes.model.XTrace;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -217,33 +219,39 @@ public class EventLogGeneratorTabController extends AbstractController implement
 				logMakParameters.outputEncoding = MinerfulGuiUtil.determineEncoding(extension.toLowerCase());
 				logMakParameters.outputLogFile = saveFile;
 				
-				try {
-					// set up ProgressForm
-					ProgressForm progressForm = new ProgressForm("Create Log!");
-					
-					Task<XLog> createLog = MinerfulGuiUtil.generateLog(logMak, modelInfo.getProcessModel());
-					progressForm.activateProgress(createLog);
-					new Thread(createLog).start();
-					XLog log = createLog.get();
-					Iterator<XTrace> it = log.iterator();
-					Integer number=0;
-					while(it.hasNext()) {
-						number++;
-						XTrace xtrace = it.next();
-						eventLogList.add(new TraceInfo("Trace " + number, xtrace));
-					}
-					logMak.storeLog();
-					
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				// set up ProgressForm
+				ProgressForm progressForm = new ProgressForm("Create Log!");
+				
+				Task<XLog> createLog = MinerfulGuiUtil.generateLog(logMak, modelInfo.getProcessModel());
+				progressForm.activateProgress(createLog);
+				new Thread(createLog).start();
+				
+				createLog.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+		            @Override
+		            public void handle(WorkerStateEvent event) {
+		            	try {
+		            		XLog log = createLog.get();
+							Iterator<XTrace> it = log.iterator();
+							Integer number=0;
+							while(it.hasNext()) {
+								number++;
+								XTrace xtrace = it.next();
+								eventLogList.add(new TraceInfo("Trace " + number, xtrace));
+							}
+							logMak.storeLog();
+		    				progressForm.closeProgressForm();
+		    			} catch (InterruptedException e) {
+		    				// TODO Auto-generated catch block
+		    				e.printStackTrace();
+		    			} catch (ExecutionException e) {
+		    				// TODO Auto-generated catch block
+		    				e.printStackTrace();
+		    			} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+		            }
+		        });
 			}
 			
 		} else if(save && logMak != null) {
@@ -286,29 +294,35 @@ public class EventLogGeneratorTabController extends AbstractController implement
 			logMak = new MinerFulLogMaker(logMakParameters);
 			eventLogList.clear();
 			
-			try {
-				// set up ProgressForm
-				ProgressForm progressForm = new ProgressForm("Create Log!");
-				
-				Task<XLog> createLog = MinerfulGuiUtil.generateLog(logMak, modelInfo.getProcessModel());
-				progressForm.activateProgress(createLog);
-				new Thread(createLog).start();
-				XLog log = createLog.get();
-				Iterator<XTrace> it = log.iterator();
-				Integer number=0;
-				while(it.hasNext()) {
-					number++;
-					XTrace xtrace = it.next();
-					eventLogList.add(new TraceInfo("Trace " + number, xtrace));
-				}
-				
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
+			// set up ProgressForm
+			ProgressForm progressForm = new ProgressForm("Create Log!");
+			
+			Task<XLog> createLog = MinerfulGuiUtil.generateLog(logMak, modelInfo.getProcessModel());
+			progressForm.activateProgress(createLog);
+			new Thread(createLog).start();
+			
+			createLog.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+	            @Override
+	            public void handle(WorkerStateEvent event) {
+	            	try {
+	            		XLog log = createLog.get();
+	    				Iterator<XTrace> it = log.iterator();
+	    				Integer number=0;
+	    				while(it.hasNext()) {
+	    					number++;
+	    					XTrace xtrace = it.next();
+	    					eventLogList.add(new TraceInfo("Trace " + number, xtrace));
+	    				}
+	    				progressForm.closeProgressForm();
+	    			} catch (InterruptedException e) {
+	    				// TODO Auto-generated catch block
+	    				e.printStackTrace();
+	    			} catch (ExecutionException e) {
+	    				// TODO Auto-generated catch block
+	    				e.printStackTrace();
+	    			} 
+	            }
+	        });
 		}
 
 	}
