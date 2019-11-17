@@ -242,6 +242,8 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	private Boolean reminingRequired = false;
 	
+	private Boolean relocatingRequired = false;
+	
 	private PostProcessingAnalysisType postProcessingType = PostProcessingAnalysisType.HIERARCHY;
 	
 	private EventClassification eventClassification = EventClassification.name;
@@ -554,13 +556,13 @@ public class DiscoverTabController extends AbstractController implements Initial
 		if(processModel.getAllUnmarkedConstraints().size() > GuiConstants.NUMBER_CONSTRAINTS_WARNING) {
 			Optional<ButtonType> result = MinerfulGuiUtil.displayAlert("Warning", "Proceed rendering of graph?", "Rendering of Graph was stopped due to a high number of constraints.", AlertType.CONFIRMATION);
 			if (result.get() == ButtonType.OK){
-				processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this, true);
+				processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this, true, false);
 				setMaxTranslate();
 			} else {
 				logger.info("Graphrendering was canceled!");
 			}
 		} else {
-			processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this, true);
+			processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this, true, false);
 			setMaxTranslate();
 		}
 		
@@ -723,7 +725,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		interestChart.addVerticalValueMarker(new Data<>(Double.parseDouble(interestThresholdField.getText()), 0));
 						
 		anchorPane.getChildren().remove(1, anchorPane.getChildren().size());
-		processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this, reminingRequired);
+		processElement = GraphUtil.transformProcessModelIntoProcessElement(processModel,anchorPane,eventManager, this, reminingRequired, relocatingRequired);
 		setMaxTranslate();
 		
 		if(negativeConstraints.isSelected()) {
@@ -744,6 +746,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		numberOfConstraints.setText(String.valueOf(discoveredConstraints.size()));
 		
 		reminingRequired = false;
+		relocatingRequired = false;
 	}
 	
 	private void setConstraintsTable() {
@@ -778,6 +781,9 @@ public class DiscoverTabController extends AbstractController implements Initial
 
 					if(newValue != null && !newValue.isEmpty()) {
 						slider.setValue(Double.parseDouble(newValue));
+						if(Double.parseDouble(newValue) < Double.parseDouble(oldValue)) {
+							relocatingRequired = true;
+						}
 					}
 			}
 		};

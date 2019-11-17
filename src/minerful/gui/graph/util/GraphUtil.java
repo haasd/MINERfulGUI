@@ -293,13 +293,13 @@ public class GraphUtil {
 	/*
 	 * Create ProcessElement based on a ProcessModel 
 	 */
-	public static ProcessElement transformProcessModelIntoProcessElement(ProcessModel processModel, AnchorPane pane, EventHandlerManager eventHandler, ProcessElementInterface controller, boolean reminingRequired) {
+	public static ProcessElement transformProcessModelIntoProcessElement(ProcessModel processModel, AnchorPane pane, EventHandlerManager eventHandler, ProcessElementInterface controller, boolean reminingRequired, boolean relocatingRequired) {
 		ProcessElement processElement = new ProcessElement();
 		
 		determineActivityElements(processElement, processModel.getTasks(), pane, eventHandler, controller, reminingRequired);
 		determineConstraintElements(processElement, processModel.getAllUnmarkedConstraints(), pane, eventHandler, controller);
 		
-		if(reminingRequired) {
+		if(reminingRequired || relocatingRequired) {
 			LayoutAlgorithm testAlgorithm = new FruchtermanReingoldAlgorithm(1000, 500, processElement, controller, 1000);
 			testAlgorithm.optimizeLayout();
 		}
