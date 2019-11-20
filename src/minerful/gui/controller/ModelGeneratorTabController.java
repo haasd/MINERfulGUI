@@ -96,6 +96,9 @@ public class ModelGeneratorTabController extends AbstractController implements I
 	@FXML
 	TableColumn<RelationConstraintInfo, String> templateColumn;
 	
+	@FXML
+	Button saveButton;
+	
 	private ModelInfo modelInfo;
 	
 	private ConstraintsBag bag = new ConstraintsBag();
@@ -267,6 +270,8 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		modelInfo.setProcessElement(GraphUtil.cloneProcessElement(currentProcessElement));
 		
 		getMainController().addSavedProcessModels(modelInfo);
+		
+		saveButton.setGraphic(null);
 
 	}
 	
@@ -806,6 +811,9 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		constraintElements.clear(); 
 		constraintElements.addAll(GraphUtil.determineConstraints(currentProcessElement));
 		
+		FontIcon fontIcon = new FontIcon("fa-certificate");
+		fontIcon.setIconColor(Paint.valueOf("#fccf03"));
+		saveButton.setGraphic(fontIcon);
 	}
 	
 	public void determineActivities() {

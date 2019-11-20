@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutionException;
 import org.apache.log4j.Logger;
 import org.controlsfx.control.HiddenSidesPane;
 import org.controlsfx.control.ToggleSwitch;
-import org.graphstream.stream.ProxyPipe;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
@@ -37,14 +37,13 @@ import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart.Data;
-import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.ScrollPane;
-import minerful.gui.model.ZoomableScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -60,6 +59,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import minerful.MinerFulMinerLauncher;
 import minerful.MinerFulSimplificationLauncher;
 import minerful.concept.ProcessModel;
@@ -80,14 +80,15 @@ import minerful.gui.model.ProcessElement;
 import minerful.gui.model.RelationConstraintElement;
 import minerful.gui.model.RelationConstraintEnum;
 import minerful.gui.model.RelationConstraintNode;
+import minerful.gui.model.ZoomableScrollPane;
 import minerful.gui.service.DiscoverUtil;
 import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.service.loginfo.EventFilter;
 import minerful.gui.service.loginfo.LogInfo;
 import minerful.miner.params.MinerFulCmdParameters;
 import minerful.params.InputLogCmdParameters;
-import minerful.params.SystemCmdParameters;
 import minerful.params.InputLogCmdParameters.EventClassification;
+import minerful.params.SystemCmdParameters;
 import minerful.postprocessing.params.PostProcessingCmdParameters;
 import minerful.postprocessing.params.PostProcessingCmdParameters.PostProcessingAnalysisType;
 
@@ -235,6 +236,9 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	@FXML
 	RadioButton radioLogSpec;
+	
+	@FXML
+	Button takeSnapshotButton;
 	
 	private ProcessModel processModel; 
 	
@@ -513,6 +517,11 @@ public class DiscoverTabController extends AbstractController implements Initial
 	}
 	
 	public void updateLogInfo() {
+		
+		FontIcon fontIcon = new FontIcon("fa-certificate");
+		fontIcon.setIconColor(Paint.valueOf("#fccf03"));
+		takeSnapshotButton.setGraphic(fontIcon);
+		
 		logger.info("Update Event-Log Info");
 		logInfos.clear();
 		
@@ -578,7 +587,10 @@ public class DiscoverTabController extends AbstractController implements Initial
 	}
 	
 	private void updateModel() {
-		
+		FontIcon fontIcon = new FontIcon("fa-certificate");
+		fontIcon.setIconColor(Paint.valueOf("#fccf03"));
+		takeSnapshotButton.setGraphic(fontIcon);
+
 		if(processModel != null) {
 			logger.info("Update Parameters: " + supportThresholdField.getText() + " " + confidenceThresholdField.getText() + " " + interestThresholdField.getText() + " " + postProcessingType);
 			
@@ -871,6 +883,8 @@ public class DiscoverTabController extends AbstractController implements Initial
 		modelInfo.setProcessElement(GraphUtil.cloneProcessElement(processElement));
 		
 		getMainController().addSavedProcessModels(modelInfo);
+		
+		takeSnapshotButton.setGraphic(null);
 
 	}
 	

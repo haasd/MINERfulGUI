@@ -16,6 +16,14 @@
 	-fx-cursor: hand;
 }
 
+.save-icon {
+	visibility: hidden;
+}
+
+.save-icon.active {
+	visibility: hidden;
+}
+
 .background {
 	-fx-background-color: white;
 }
