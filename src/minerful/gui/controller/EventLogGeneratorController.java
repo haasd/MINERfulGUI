@@ -21,6 +21,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import minerful.gui.common.GuiConstants;
 import minerful.gui.common.ModelInfo;
 
 public class EventLogGeneratorController extends AbstractController implements Initializable {
@@ -57,7 +58,7 @@ public class EventLogGeneratorController extends AbstractController implements I
 			
 			stage.setScene(new Scene(root));
 
-		    stage.setTitle("Saved Models");
+		    stage.setTitle(GuiConstants.SAVED_PROCESS_MAPS);
 		    stage.initModality(Modality.WINDOW_MODAL);
 		    stage.initOwner(((Node)event.getSource()).getScene().getWindow() );
 		    stage.showAndWait();

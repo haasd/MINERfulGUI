@@ -140,7 +140,7 @@ public class MinerfulGuiUtil {
 		public static void exportFile(ProcessElementInterface peInterface, List<ModelInfo> savedModels) {
 			// init FileChooser and set extension-filter
 			FileChooser fileChooser = new FileChooser();
-			fileChooser.setTitle("Open Event-Log");
+			fileChooser.setTitle(GuiConstants.OPEN_EVENT_LOG);
 			FileChooser.ExtensionFilter extFilter = 
 		             new FileChooser.ExtensionFilter("ZIP","*.zip");
 		    fileChooser.getExtensionFilters().add(extFilter);

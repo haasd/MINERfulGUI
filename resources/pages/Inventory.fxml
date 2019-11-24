@@ -21,8 +21,8 @@
    	<HBox styleClass="window-header" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2">
    		<Label styleClass="window-header-label" GridPane.hgrow="ALWAYS" text="Inventory" />
    	</HBox>
- 	<Label styleClass="window-header2" text="Event-Logs" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-    <Label styleClass="window-header2" text="Models" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+ 	<Label styleClass="window-header2" text="Event logs" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+    <Label styleClass="window-header2" text="Process maps" GridPane.columnIndex="1" GridPane.rowIndex="1" />
     <ListView fx:id="eventLogList" styleClass="eventlog-list" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="2" />
     <ListView fx:id="modelsList" styleClass="models-list" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
    </children>

@@ -30,7 +30,7 @@
 			<Button styleClass="btn-default" text="Select process map" onAction="#selectModel"/>
 			<Label text="Please select process-model" fx:id="selectedModel" />
 			<Button styleClass="btn-default" text="Select event log" onAction="#selectEventLog"/>
-			<Label text="Please select event-log" fx:id="selectedEventLog" />
+			<Label text="Please select event log" fx:id="selectedEventLog" />
 			<Button styleClass="btn-default, btn-important" text="Perform fitness check" onAction="#performFitnessCheck"/>
 		</HBox>
 		

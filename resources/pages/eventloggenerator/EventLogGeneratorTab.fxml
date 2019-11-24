@@ -46,7 +46,7 @@
 		<GridPane GridPane.columnIndex="1" GridPane.rowIndex="0">
 			<children>
 				<VBox style="-fx-padding: 10px;" GridPane.columnIndex="0" GridPane.rowIndex="0">
-					<Label styleClass="section-header1" text="Event-Log" />
+					<Label styleClass="section-header1" text="Event log" />
 		 			<ListView VBox.vgrow="ALWAYS" fx:id="eventLog">
 		 			</ListView>
 				</VBox>

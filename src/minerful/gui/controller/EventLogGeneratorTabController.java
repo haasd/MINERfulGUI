@@ -36,6 +36,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import minerful.gui.common.EventInfo;
+import minerful.gui.common.GuiConstants;
 import minerful.gui.common.MinerfulGuiUtil;
 import minerful.gui.common.ModelInfo;
 import minerful.gui.common.ProgressForm;
@@ -202,7 +203,7 @@ public class EventLogGeneratorTabController extends AbstractController implement
 			
 			// init FileChooser and set extension-filter
 			FileChooser fileChooser = new FileChooser();
-			fileChooser.setTitle("Open Event-Log");
+			fileChooser.setTitle(GuiConstants.OPEN_EVENT_LOG);
 			FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT (*.txt)", "*.txt");
 			fileChooser.getExtensionFilters().add(extFilter);
 			extFilter = new FileChooser.ExtensionFilter("XES (*.xes)", "*.xes");
@@ -257,7 +258,7 @@ public class EventLogGeneratorTabController extends AbstractController implement
 		} else if(save && logMak != null) {
 			// init FileChooser and set extension-filter
 			FileChooser fileChooser = new FileChooser();
-			fileChooser.setTitle("Open Event-Log");
+			fileChooser.setTitle(GuiConstants.OPEN_EVENT_LOG);
 			FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT (*.txt)", "*.txt");
 			fileChooser.getExtensionFilters().add(extFilter);
 			extFilter = new FileChooser.ExtensionFilter("XES (*.xes)", "*.xes");

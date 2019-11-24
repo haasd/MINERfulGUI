@@ -21,6 +21,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import minerful.gui.common.GuiConstants;
 import minerful.gui.common.ModelInfo;
 import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.model.io.XmlModelReader;
@@ -57,7 +58,7 @@ public class SimplifierController extends AbstractController implements Initiali
 			
 			stage.setScene(new Scene(root));
 
-		    stage.setTitle("Saved Models");
+		    stage.setTitle(GuiConstants.SAVED_PROCESS_MAPS);
 		    stage.initModality(Modality.WINDOW_MODAL);
 		    stage.initOwner(((Node)event.getSource()).getScene().getWindow() );
 		    stage.showAndWait();
@@ -76,7 +77,7 @@ public class SimplifierController extends AbstractController implements Initiali
 	public void importModel(ActionEvent event) {
 		// init FileChooser and set extension-filter
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Import Model");
+		fileChooser.setTitle(GuiConstants.IMPORT_PROCESS_MAP);
 		FileChooser.ExtensionFilter extFilter = 
 	             new FileChooser.ExtensionFilter("ZIP", "*.zip");
 	    fileChooser.getExtensionFilters().add(extFilter);

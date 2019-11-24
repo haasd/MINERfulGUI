@@ -409,7 +409,7 @@ public class SimplifierTabController extends AbstractController implements Initi
 			
 			stage.setScene(new Scene(root));
 
-		    stage.setTitle("Saved Models");
+		    stage.setTitle(GuiConstants.SAVED_PROCESS_MAPS);
 		    stage.initModality(Modality.WINDOW_MODAL);
 		    stage.initOwner(((Node)event.getSource()).getScene().getWindow() );
 		    stage.showAndWait();
@@ -428,7 +428,7 @@ public class SimplifierTabController extends AbstractController implements Initi
 	public void importModel(ActionEvent event) {
 		// init FileChooser and set extension-filter
 		FileChooser fileChooser = new FileChooser();
-		fileChooser.setTitle("Import Model");
+		fileChooser.setTitle(GuiConstants.IMPORT_PROCESS_MAP);
 		FileChooser.ExtensionFilter extFilter = 
 	             new FileChooser.ExtensionFilter("ZIP", "*.zip");
 	    fileChooser.getExtensionFilters().add(extFilter);

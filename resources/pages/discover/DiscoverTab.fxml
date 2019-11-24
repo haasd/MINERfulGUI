@@ -43,7 +43,7 @@
          	<children>
          		
          		<!-- Event-Log -->
-				<Label styleClass="section-header1" text="Event-Log">
+				<Label styleClass="section-header1" text="Event log">
 				</Label>
 				<TableView fx:id="eventLogTable" styleClass="table">
 					 <columns>

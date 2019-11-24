@@ -132,7 +132,7 @@ public class SavedEventLogController extends AbstractController implements Initi
 	public void loadLog(ActionEvent event) {
 		// init FileChooser and set extension-filter
 				FileChooser fileChooser = new FileChooser();
-				fileChooser.setTitle("Open Event-Log");
+				fileChooser.setTitle(GuiConstants.OPEN_EVENT_LOG);
 				FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XES", "*.xes");
 			    fileChooser.getExtensionFilters().add(extFilter);
 			    extFilter =  new FileChooser.ExtensionFilter("MXML","*.mxml");

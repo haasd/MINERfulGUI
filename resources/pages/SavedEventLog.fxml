@@ -21,7 +21,7 @@
 
 <GridPane style="-fx-background-color: white;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="minerful.gui.controller.SavedEventLogController">
 	<VBox style="-fx-spacing: 10; -fx-padding: 20px;" GridPane.hgrow="ALWAYS" alignment="CENTER" styleClass="constraints-table" GridPane.columnIndex="0" GridPane.rowIndex="0">
-    	<Label styleClass="section-header2" text="Saved Event-Logs"/>
+    	<Label styleClass="section-header2" text="Saved event logs"/>
     	<TableView fx:id="modelTable" styleClass="table">
 			<columns>
 			   <TableColumn styleClass="column-left" text="Modelname" fx:id="modelnameColumn"> 
@@ -33,7 +33,7 @@
 				<TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
 			</columnResizePolicy>
 		</TableView>
-		<Button styleClass="btn-default" text="Load Event-Log" onAction="#loadLog" />
+		<Button styleClass="btn-default" text="Load event log" onAction="#loadLog" />
  	</VBox>
 </GridPane>
 

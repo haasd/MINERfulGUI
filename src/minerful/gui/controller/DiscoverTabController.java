@@ -525,7 +525,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		fontIcon.setIconColor(Paint.valueOf("#fccf03"));
 		takeSnapshotButton.setGraphic(fontIcon);
 		
-		logger.info("Update Event-Log Info");
+		logger.info("Update Event log Info");
 		logInfos.clear();
 		
 		TaskCharArchive taskArchive = currentEventLog.getLogParser().getTaskCharArchive();

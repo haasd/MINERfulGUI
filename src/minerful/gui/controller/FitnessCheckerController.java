@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 import minerful.MinerFulFitnessCheckLauncher;
 import minerful.checking.params.CheckingCmdParameters;
 import minerful.checking.relevance.dao.ModelFitnessEvaluation;
+import minerful.gui.common.GuiConstants;
 import minerful.gui.common.MinerfulGuiUtil;
 import minerful.gui.common.ModelInfo;
 import minerful.gui.service.loginfo.LogInfo;
@@ -73,7 +74,7 @@ public class FitnessCheckerController extends AbstractController implements Init
 			
 			stage.setScene(new Scene(root));
 
-		    stage.setTitle("Saved Models");
+		    stage.setTitle(GuiConstants.SAVED_PROCESS_MAPS);
 		    stage.initModality(Modality.WINDOW_MODAL);
 		    stage.initOwner(((Node)event.getSource()).getScene().getWindow() );
 		    stage.showAndWait();
@@ -106,7 +107,7 @@ public class FitnessCheckerController extends AbstractController implements Init
 			
 			stage.setScene(new Scene(root));
 
-		    stage.setTitle("Saved Event-Logs");
+		    stage.setTitle(GuiConstants.SAVED_EVENT_LOGS);
 		    stage.initModality(Modality.WINDOW_MODAL);
 		    stage.initOwner(((Node)event.getSource()).getScene().getWindow() );
 		    stage.showAndWait();
@@ -125,11 +126,11 @@ public class FitnessCheckerController extends AbstractController implements Init
 	@FXML
 	public void performFitnessCheck(ActionEvent event) {
 		if((selectedModelInfo == null) && (selectedEventLogInfo == null)) {
-			MinerfulGuiUtil.displayAlert("Missing Selection", "Missing Selection", "Please select a model and an event-log!", AlertType.ERROR);
+			MinerfulGuiUtil.displayAlert("Missing Selection", "Missing selection", "Please select a model and an event log!", AlertType.ERROR);
 		} else if (selectedModelInfo == null) {
-			MinerfulGuiUtil.displayAlert("Missing Selection", "Missing Selection", "Please select a model!", AlertType.ERROR);
+			MinerfulGuiUtil.displayAlert("Missing Selection", "Missing selection", "Please select a model!", AlertType.ERROR);
 		} else if (selectedEventLogInfo == null) {
-			MinerfulGuiUtil.displayAlert("Missing Selection", "Missing Selection", "Please select an event-log!", AlertType.ERROR);
+			MinerfulGuiUtil.displayAlert("Missing Selection", "Missing selection", "Please select an event log!", AlertType.ERROR);
 		} else {
 			CheckingCmdParameters chkParams = new CheckingCmdParameters();
 			MinerFulFitnessCheckLauncher miFuCheLa = new MinerFulFitnessCheckLauncher(selectedModelInfo.getProcessModel(), selectedEventLogInfo.getLogParser(), chkParams);
