@@ -254,6 +254,8 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	private Boolean cropRedundantAndInconsistentConstraints = false;
 	
+	private Boolean classificationChanged = false;
+	
 	private EventHandlerManager eventManager = new EventHandlerManager(this);
 	
 	private ProcessElement processElement;
@@ -293,6 +295,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		         if (eventClassificationGroup.getSelectedToggle() != null) {
 		        	 eventClassification = (EventClassification) eventClassificationGroup.getSelectedToggle().getUserData();
 		             reminingRequired = true;
+		             classificationChanged = true;
 		             updateModel();
 		         }
 
@@ -680,6 +683,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		            	try {
 		    				processModel = task.get();
 		    				progressForm.closeProgressForm();
+		    				currentEventLog.setLogParser(miFuMiLa.getLogParser());
 		    				updateInfos();
 
 		    			} catch (InterruptedException e) {
@@ -757,6 +761,25 @@ public class DiscoverTabController extends AbstractController implements Initial
 		setConstraintsTable();
 		numberOfConstraints.setText(String.valueOf(discoveredConstraints.size()));
 		
+		if(classificationChanged) {		
+			TaskCharArchive taskArchive = currentEventLog.getLogParser().getTaskCharArchive();
+	        Set<TaskChar> taskSet = taskArchive.getCopyOfTaskChars();
+	        eventInfos.clear();
+			 for(TaskChar taskChar : taskSet) {
+				 EventFilter filter = new EventFilter(taskChar.getName(), true);
+				 filter.getSelected().selectedProperty().addListener(new ChangeListener<Boolean>() {
+				     @Override
+				     public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				    	 reminingRequired = true;
+				         updateModel();
+				     }
+				 });
+				 
+				 eventInfos.add(filter);
+			 }
+		}
+		
+		classificationChanged = false;
 		reminingRequired = false;
 		relocatingRequired = false;
 	}
