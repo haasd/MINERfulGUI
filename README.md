@@ -1,5 +1,13 @@
-MINERful
+MINERfulGUI
 =========================
+MINERfulGUI is an extension for MINERful and adds a graphical user interface to the basic application.
+
+Setup
+-------------------------
+Do be able to run the current version of the application within eclipse, one has to adjust the overall configuration of the buildpath. A detailed description can be found in MinerfulGUIs [**Wiki**](https://github.com/haasd/MINERfulGUI/wiki).
+
+MINERful
+-------------------------
 
 MINERful is a fast process mining tool for discovering declarative process models out of event logs. Event logs can be either real or synthetic, stored as [XES](http://www.xes-standard.org/), [MXML](http://www.processmining.org/logs/mxml), or text files (a collection of strings, in which every character is considered as an event, every line as a trace). Among the other things, MINERful can also create synthetic logs and export them as [XES](http://www.xes-standard.org/) or [MXML](http://www.processmining.org/logs/mxml) files, simplify existing Declare models, and import/export models written in [JSON](http://www.json.org/) or in the ConDec native language. Simply play around with it!
 
