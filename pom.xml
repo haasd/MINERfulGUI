@@ -237,6 +237,11 @@
 	</dependencies>
 	<build>
 		<sourceDirectory>../</sourceDirectory>
+		<resources>
+			<resource>
+				<directory>resources</directory>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -254,7 +259,7 @@
 				<artifactId>maven-shade-plugin</artifactId>
 				<executions>
 					<execution>
-					<id>shade-my-jar</id>
+						<id>shade-my-jar</id>
 						<phase>package</phase>
 						<goals>
 							<goal>shade</goal>
