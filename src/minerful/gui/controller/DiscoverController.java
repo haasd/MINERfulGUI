@@ -18,9 +18,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import minerful.gui.common.MinerfulGuiUtil;
 import minerful.gui.common.ProgressForm;
 import minerful.gui.service.loginfo.LogInfo;
 import minerful.gui.service.logparser.LogParserService;
@@ -78,6 +80,14 @@ public class DiscoverController extends AbstractController implements Initializa
 	    				// TODO Auto-generated catch block
 	    				e.printStackTrace();
 	    			}
+	            }
+	        });
+	        
+	        parseLog.setOnFailed(new EventHandler<WorkerStateEvent>() {
+	            @Override
+	            public void handle(WorkerStateEvent event) {
+	            	progressForm.closeProgressForm();
+	            	MinerfulGuiUtil.displayAlert("Error", "Stopped Import!", "Error occurred while importing file: " + selectedFile.getAbsolutePath(), AlertType.ERROR);
 	            }
 	        });
 

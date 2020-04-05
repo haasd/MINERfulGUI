@@ -33,7 +33,7 @@ public class LogParserServiceImpl implements LogParserService  {
 	public Task<LogInfo> parseLog() {
 		Task<LogInfo> task = new Task<LogInfo>() {
 		    @Override public LogInfo call() {
-		    	
+		    	try {
 		    	InputLogCmdParameters inputParams =
 						new InputLogCmdParameters();
 				MinerFulCmdParameters minerFulParams =
@@ -63,6 +63,10 @@ public class LogParserServiceImpl implements LogParserService  {
 				logger.info("Mining Time: "+ TimeUnit.MILLISECONDS.toSeconds(time));
 		   
 		        return new LogInfo(miFuMiLa.getLogParser(),path,new Date(),processModel);
+		    	} catch(Exception e) {
+		    		logger.error(String.format("Exception will parsing the event log %s", path), e);
+		    		throw e;
+		    	}
 		    }
 		};
 		

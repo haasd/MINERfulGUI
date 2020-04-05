@@ -24,6 +24,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -92,6 +93,7 @@ public class MinerfulGuiUtil {
 			alert.setTitle(title);
 			alert.setHeaderText(headerText);
 			alert.setContentText(contentText);
+			alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 			return alert.showAndWait();
 		}
 		
