@@ -244,6 +244,8 @@ public class DiscoverTabController extends AbstractController implements Initial
 	
 	private LogInfo currentEventLog;
 	
+	private int maxTraceNumber = 0;
+	
 	private Boolean reminingRequired = false;
 	
 	private Boolean relocatingRequired = false;
@@ -579,6 +581,8 @@ public class DiscoverTabController extends AbstractController implements Initial
 		}
 		
 		numberOfConstraints.setText(String.valueOf(discoveredConstraints.size()));
+		
+		maxTraceNumber = currentEventLog.getLogParser().length();
 
 		logInfos.add(GuiConstants.FILENAME+new File(currentEventLog.getPath()).getName());
 		logInfos.add(GuiConstants.NUMBER_OF_EVENTS+currentEventLog.getLogParser().numberOfEvents());
@@ -614,7 +618,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 			minerFulParams.activitiesToExcludeFromResult = new ArrayList<>();
 			
 			if(startAtTrace != null && startAtTrace.getText() != "" && stopAtTrace != null && stopAtTrace.getText() != "") {
-				if(Integer.parseInt(startAtTrace.getText()) > Integer.parseInt(stopAtTrace.getText()) || Integer.parseInt(startAtTrace.getText()) > currentEventLog.getLogParser().length()) {
+				if(Integer.parseInt(startAtTrace.getText()) > Integer.parseInt(stopAtTrace.getText()) || Integer.parseInt(startAtTrace.getText()) > maxTraceNumber) {
 					startAtTrace.setText(String.valueOf(0));
 					inputParams.startFromTrace = 0;
 					startAtTrace.setStyle("-fx-focus-color: red ");
@@ -622,15 +626,15 @@ public class DiscoverTabController extends AbstractController implements Initial
 					inputParams.startFromTrace = Integer.parseInt(startAtTrace.getText());
 				}
 				
-				if(Integer.parseInt(stopAtTrace.getText()) > currentEventLog.getLogParser().length()) {
-					stopAtTrace.setText(String.valueOf(currentEventLog.getLogParser().length()));
-					inputParams.subLogLength = currentEventLog.getLogParser().length() - 1;
+				if(Integer.parseInt(stopAtTrace.getText()) > maxTraceNumber) {
+					stopAtTrace.setText(String.valueOf(maxTraceNumber));
+					inputParams.subLogLength = maxTraceNumber - 1;
 				} else {
 					inputParams.subLogLength = Integer.parseInt(stopAtTrace.getText()) - 1;
 				}
 			} else {
 				inputParams.startFromTrace = 0;
-				inputParams.subLogLength = currentEventLog.getLogParser().length() - 1;
+				inputParams.subLogLength = maxTraceNumber - 1;
 			}	
 			
 			// exclude all events that aren't marked
@@ -847,7 +851,9 @@ public class DiscoverTabController extends AbstractController implements Initial
 	        {
 	            if (ke.getCode().equals(KeyCode.ENTER))
 	            {
+	            	reminingRequired=true;
 	                updateModel();
+	                
 	            }
 	        }
 	    };
