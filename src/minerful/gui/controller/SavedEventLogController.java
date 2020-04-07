@@ -183,6 +183,8 @@ public class SavedEventLogController extends AbstractController implements Initi
 			            @Override
 			            public void handle(WorkerStateEvent event) {
 			            	progressForm.closeProgressForm();
+			            	Throwable throwable = parseLog.getException(); 
+			                logger.error("Error occurred while importing file: " + selectedFile.getAbsolutePath(), throwable);
 			            	MinerfulGuiUtil.displayAlert("Error", "Stopped Import!", "Error occurred while importing file: " + selectedFile.getAbsolutePath(), AlertType.ERROR);
 			            }
 			        });
