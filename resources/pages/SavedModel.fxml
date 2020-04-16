@@ -33,6 +33,10 @@
 				<TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
 			</columnResizePolicy>
 		</TableView>
+		<HBox alignment="CENTER_RIGHT" style="-fx-spacing: 20; -fx-padding: 10px;"  >
+			<Button styleClass="btn-default" text="Cancel" onAction="#pressCancel" />
+			<Button fx:id="okayButton" styleClass="btn-default" text="Okay" onAction="#pressOk" />
+		</HBox>
  	</VBox>
 </GridPane>
 

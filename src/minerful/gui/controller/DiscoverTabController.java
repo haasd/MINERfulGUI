@@ -896,6 +896,8 @@ public class DiscoverTabController extends AbstractController implements Initial
 		dialog.setHeaderText("Save Snapshot of Model as");
 		dialog.setContentText("Modelname:");
 		dialog.getDialogPane().setMinWidth(500.0);
+		dialog.getDialogPane().getStylesheets().add(MinerfulGuiUtil.class.getClassLoader().getResource("css/main.css").toExternalForm());
+		dialog.getDialogPane().getStyleClass().add("alert");
 		
 		
 		ModelInfo modelInfo = new ModelInfo();

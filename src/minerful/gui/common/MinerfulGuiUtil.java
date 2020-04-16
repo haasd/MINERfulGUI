@@ -130,13 +130,21 @@ public class MinerfulGuiUtil {
 					updateProgress(100, 100);
 					long time = System.currentTimeMillis() - start;
 					logger.info("Finished creating Log!");
-					logger.info("Creation Time: "+ TimeUnit.MILLISECONDS.toSeconds(time));
+					logger.info("Creation Time: "+ formatInterval(time));
 
 			        return log;
 			    }
 			};
 			
 			return task;
+		}
+		
+		public static String formatInterval(final long interval)
+		{
+		    final long min = TimeUnit.MILLISECONDS.toMinutes(interval) %60;
+		    final long sec = TimeUnit.MILLISECONDS.toSeconds(interval) %60;
+		    final long ms = TimeUnit.MILLISECONDS.toMillis(interval) %1000;
+		    return String.format("%02d min %02d sec %03d millis", min, sec, ms);
 		}
 		
 		public static void exportFile(ProcessElementInterface peInterface, List<ModelInfo> savedModels) {

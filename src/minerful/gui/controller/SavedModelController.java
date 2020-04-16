@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TableCell;
@@ -43,6 +44,8 @@ public class SavedModelController extends AbstractController implements Initiali
 	private final ObservableList<ModelInfo> modelInfos =
 	        FXCollections.observableArrayList();
 	
+	private boolean pressedOkay = false;
+	
 	@FXML
 	TableView<ModelInfo> modelTable;
 	
@@ -52,12 +55,17 @@ public class SavedModelController extends AbstractController implements Initiali
 	@FXML
 	TableColumn<ModelInfo, String> modelnameColumn;
 	
+	@FXML
+	Button okayButton;
+	
 	private ModelInfo selectedRow;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		
 		modelTable.setPlaceholder(new Label(GuiConstants.NO_MODEL_LOADED));
+		
+		okayButton.setDisable(true);
 
 		// define date-column and set format
 		timestampColumn.setCellValueFactory(
@@ -111,11 +119,9 @@ public class SavedModelController extends AbstractController implements Initiali
 		modelTable.setRowFactory(tv -> {
 		    TableRow<ModelInfo> row = new TableRow<>();
 		    row.setOnMouseClicked(event -> {
-		        if (! row.isEmpty() && event.getButton()==MouseButton.PRIMARY 
-		             && event.getClickCount() == 2) {
-
+		        if (! row.isEmpty() && event.getButton()==MouseButton.PRIMARY) {
 		        	selectRow(row.getItem());
-		        	closeStage(event);
+		        	okayButton.setDisable(false);
 		        }
 		    });
 		    return row ;
@@ -125,15 +131,28 @@ public class SavedModelController extends AbstractController implements Initiali
 		
 	}
 	
+	public void pressOk(ActionEvent event) {
+		pressedOkay = true;
+    	closeStage(event);
+	}
+	
+	public void pressCancel(ActionEvent event) {
+		closeStage(event);
+	}
+	
 	public void selectRow(ModelInfo row) {
 		this.selectedRow = row;
 	}
 	
 	public ModelInfo getSelectedRow() {
-		return selectedRow;
+		if(pressedOkay) {
+			return selectedRow;
+		} else {
+			return null;
+		}
 	}
 	
-	private void closeStage(MouseEvent event) {
+	private void closeStage(ActionEvent event) {
         Node  source = (Node)  event.getSource(); 
         Stage stage  = (Stage) source.getScene().getWindow();
         stage.close();
