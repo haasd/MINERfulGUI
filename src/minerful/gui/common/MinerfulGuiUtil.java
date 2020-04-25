@@ -331,15 +331,15 @@ public class MinerfulGuiUtil {
 			typeHierarchy.setToggleGroup(togglePostAnalysisGroup);
 			typeHierarchy.setUserData(PostProcessingAnalysisType.HIERARCHY);
 			typeHierarchy.setSelected(true);
-			RadioButton typeHierarchyConflict = new RadioButton("HierarchyConflict");
+			RadioButton typeHierarchyConflict = new RadioButton("Hierarchy and Conflict");
 			typeHierarchyConflict.setToggleGroup(togglePostAnalysisGroup);
 			typeHierarchyConflict.setUserData(PostProcessingAnalysisType.HIERARCHYCONFLICT);
 			typeHierarchyConflict.setSelected(false);
-			RadioButton typeHierarchyConflictRedundancy = new RadioButton("HierarchyConflictRedundancy");
+			RadioButton typeHierarchyConflictRedundancy = new RadioButton("Hierarchy, Conflict and Redundancy");
 			typeHierarchyConflictRedundancy.setToggleGroup(togglePostAnalysisGroup);
 			typeHierarchyConflictRedundancy.setUserData(PostProcessingAnalysisType.HIERARCHYCONFLICTREDUNDANCY);
 			typeHierarchyConflictRedundancy.setSelected(false);
-			RadioButton typeHierarchyConflictRedundancyDouble = new RadioButton("HierarchyConflictRedundancyDouble");
+			RadioButton typeHierarchyConflictRedundancyDouble = new RadioButton("Hierarchy, Conflict, double Redundancy");
 			typeHierarchyConflictRedundancyDouble.setToggleGroup(togglePostAnalysisGroup);
 			typeHierarchyConflictRedundancyDouble.setUserData(PostProcessingAnalysisType.HIERARCHYCONFLICTREDUNDANCYDOUBLE);
 			typeHierarchyConflictRedundancyDouble.setSelected(false);

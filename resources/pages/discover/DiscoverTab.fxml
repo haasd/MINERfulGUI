@@ -56,12 +56,12 @@
     			</TableView>
 
 				<!-- Meta-Information -->
-    			<Label styleClass="section-header2" text="Meta-Information" />
+    			<Label styleClass="section-header2" text="File information" />
     			<ListView styleClass="log-infos" fx:id="logInfoList" prefWidth="200.0">
     			</ListView>
     			
     			<!-- Trace-Filter -->
-    			<Label styleClass="section-header2" text="Trace-Filter" style="-fx-content-display: right">
+    			<Label styleClass="section-header2" text="Trace filter" style="-fx-content-display: right">
     				<graphic>
               			<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
                		</graphic>
@@ -87,7 +87,7 @@
 				</GridPane>
 				
 				<!-- Event-Filter -->
-    			<Label styleClass="section-header2" text="Event-Filter" style="-fx-content-display: right">
+    			<Label styleClass="section-header2" text="Event filter" style="-fx-content-display: right">
     				<graphic>
               			<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
                		</graphic>
@@ -124,7 +124,7 @@
 	    		</VBox>
     			
     			<!-- Post Processing Analysis Type -->
-    			<Label styleClass="section-header2" text="Pruning Type" style="-fx-content-display: right">
+    			<Label styleClass="section-header2" text="Post processing type" style="-fx-content-display: right">
     				<graphic>
               			<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
                		</graphic>
