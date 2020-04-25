@@ -166,8 +166,19 @@ public class InventoryController extends AbstractController implements Initializ
 					getMainController().openModelInArea("modelgenerator", getItem());
 				}
 			});
+			
+			MenuItem openInCreateEventLog = new MenuItem("Open Model in event log generator");
+			openInCreateEventLog.setOnAction(new EventHandler<ActionEvent>() {
+
+				@Override
+				public void handle(ActionEvent event) {
+					logger.info("Open Model in event log generator");
+					getMainController().openModelInArea("eventloggenerator", getItem());
+				}
+			});
 
 			contextMenu.getItems().add(openInDiscover);
+			contextMenu.getItems().add(openInCreateEventLog);
 
 			content.setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
 
@@ -203,6 +214,7 @@ public class InventoryController extends AbstractController implements Initializ
 
 		// open FileChooser and handle response
 		File selectedFile = fileChooser.showOpenDialog(new Stage());
+		
 		if (selectedFile != null) {
 			logger.info("Process File: " + selectedFile.getAbsolutePath());
 

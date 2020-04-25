@@ -16,6 +16,23 @@
 	-fx-cursor: hand;
 }
 
+.context-menu {
+  -fx-background-color: -color-darker-blue;
+  -fx-text-fill: white;
+}
+
+.context-menu .menu-item .label {
+  -fx-text-fill: white;
+}
+
+.context-menu .menu-item {
+  -fx-background-color: -color-darker-blue;
+}
+
+.context-menu .menu-item:focused {
+  -fx-background-color: -color-light-blue;
+}
+
 .save-icon {
 	visibility: hidden;
 }

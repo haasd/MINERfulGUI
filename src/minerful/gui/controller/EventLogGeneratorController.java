@@ -23,6 +23,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import minerful.gui.common.GuiConstants;
 import minerful.gui.common.ModelInfo;
+import minerful.gui.graph.util.GraphUtil;
 
 public class EventLogGeneratorController extends AbstractController implements Initializable {
 	
@@ -57,7 +58,6 @@ public class EventLogGeneratorController extends AbstractController implements I
 			modelController.updateEntries();
 			
 			stage.setScene(new Scene(root));
-
 		    stage.setTitle(GuiConstants.SAVED_PROCESS_MAPS);
 		    stage.initModality(Modality.WINDOW_MODAL);
 		    stage.initOwner(((Node)event.getSource()).getScene().getWindow() );
@@ -81,6 +81,35 @@ public class EventLogGeneratorController extends AbstractController implements I
 			
 		} catch (IOException e) {
 			logger.info("Problem occured during selection!");
+			e.printStackTrace();
+		}
+	}
+
+	public void openModelinNewTab(ModelInfo modelInfo) {
+		try {
+
+			ModelInfo newModelInfo = new ModelInfo();
+			newModelInfo.setSaveName(modelInfo.getSaveName());
+			newModelInfo.setProcessModel(modelInfo.getProcessModel());
+			newModelInfo.setSaveDate((Date) modelInfo.getSaveDate().clone());
+			newModelInfo.setProcessElement(GraphUtil.cloneProcessElement(modelInfo.getProcessElement()));
+
+			logger.info("User selected " + newModelInfo.getSaveName());
+			Tab tab = new Tab();
+			FXMLLoader loader = new FXMLLoader(
+					getClass().getClassLoader().getResource("pages/eventloggenerator/EventLogGeneratorTab.fxml"));
+			GridPane gridPane = loader.load();
+			EventLogGeneratorTabController controller = loader.getController();
+			controller.setStage((Stage) ((Node) eventLogGeneratorTabPane).getScene().getWindow());
+			controller.setMainController(getMainController());
+			controller.setModelInfo(newModelInfo);
+
+			tab.setContent(gridPane);
+			tab.setText(newModelInfo.getSaveName());
+			eventLogGeneratorTabPane.getTabs().add(tab);
+			eventLogGeneratorTabPane.getSelectionModel().select(tab);
+		} catch (IOException e) {
+			logger.info("Problem occured during processing model!");
 			e.printStackTrace();
 		}
 	}

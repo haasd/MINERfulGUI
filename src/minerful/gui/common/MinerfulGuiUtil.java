@@ -41,6 +41,7 @@ import minerful.concept.ProcessModel;
 import minerful.concept.constraint.Constraint;
 import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.model.ActivityElement;
+import minerful.gui.model.ProcessElement;
 import minerful.gui.model.io.JFXToSVGConverter;
 import minerful.gui.model.io.XmlModelReader;
 import minerful.gui.model.io.XmlModelWriter;
@@ -108,10 +109,12 @@ public class MinerfulGuiUtil {
 			    	ModelInfo modelInfo = new ModelInfo();
 
 			    	if(openFile != null) {
-						XmlModelReader modelReader = new XmlModelReader(openFile.getAbsolutePath());
-						modelInfo.setProcessElement(modelReader.importXmlsAsProcessModel());
+			    		XmlModelReader modelReader = new XmlModelReader(openFile.getAbsolutePath());
+			    		ProcessElement processElement = modelReader.importXmlsAsProcessModel();
+						modelInfo.setProcessElement(processElement);
 						modelInfo.setSaveDate(new Date());
 						modelInfo.setSaveName(openFile.getName());
+						modelInfo.setProcessModel(GraphUtil.transformProcessElementIntoProcessModel(processElement));
 					} 
 			    	
 			        return modelInfo;

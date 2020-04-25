@@ -297,8 +297,14 @@ public class StartPageController extends AbstractController implements Initializ
     	switch(area) {
 	    	case "modelgenerator" : 
 	    		openModelGenerator();
-	    		ModelGeneratorController controller = (ModelGeneratorController) controllerMap.get("modelgenerator");
-		    	controller.openModelinNewTab(modelInfo);
+	    		ModelGeneratorController modelGeneratorcontroller = (ModelGeneratorController) controllerMap.get("modelgenerator");
+	    		modelGeneratorcontroller.openModelinNewTab(modelInfo);
+		    	inventoryStage.close();
+		    	break;
+	    	case "eventloggenerator" :
+	    		openEventLogGenerator();
+	    		EventLogGeneratorController eventlogController = (EventLogGeneratorController) controllerMap.get("eventloggenerator");
+	    		eventlogController.openModelinNewTab(modelInfo);
 		    	inventoryStage.close();
 		    	break;
     	}

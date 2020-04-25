@@ -33,10 +33,21 @@
 				<TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
 			</columnResizePolicy>
 		</TableView>
-		<HBox alignment="CENTER_RIGHT" style="-fx-spacing: 20; -fx-padding: 10px;"  >
-			<Button styleClass="btn-default" text="Cancel" onAction="#pressCancel" />
-			<Button fx:id="okayButton" styleClass="btn-default" text="Okay" onAction="#pressOk" />
-		</HBox>
+		<GridPane hgap="10" style="-fx-spacing: 20; -fx-padding: 10px;" >
+			<children>
+				<Button GridPane.columnIndex="0" GridPane.rowIndex="0" styleClass="btn-default" text="Import" onAction="#pressImport" />
+				<Button GridPane.columnIndex="1" GridPane.rowIndex="0" styleClass="btn-default" text="Cancel" onAction="#pressCancel" />
+				<Button GridPane.columnIndex="2" GridPane.rowIndex="0" fx:id="okayButton" styleClass="btn-default" text="Okay" onAction="#pressOk" />
+			</children>
+			<rowConstraints>
+				<RowConstraints/>
+			</rowConstraints>
+			<columnConstraints>
+				<ColumnConstraints hgrow="ALWAYS" />
+				<ColumnConstraints />
+				<ColumnConstraints />
+			</columnConstraints>
+		</GridPane>
  	</VBox>
 </GridPane>
 
