@@ -282,10 +282,11 @@ public class StartPageController extends AbstractController implements Initializ
     public void openLogInArea(String area, LogInfo logInfo) {
     	
     	switch(area) {
-	    	case "discover" : 
+	    	case "discover" :
 	    		openDiscovery();
 		    	DiscoverController controller = (DiscoverController) controllerMap.get("discover");
 		    	controller.openInfoLogInNewTab(logInfo);
+		    	inventoryStage.close();
 		    	break;
     	}
     	
@@ -298,6 +299,7 @@ public class StartPageController extends AbstractController implements Initializ
 	    		openModelGenerator();
 	    		ModelGeneratorController controller = (ModelGeneratorController) controllerMap.get("modelgenerator");
 		    	controller.openModelinNewTab(modelInfo);
+		    	inventoryStage.close();
 		    	break;
     	}
     	

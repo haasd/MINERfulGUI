@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeSet;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
@@ -17,6 +18,8 @@ import org.deckfour.xes.model.XLog;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -39,6 +42,7 @@ import minerful.concept.constraint.Constraint;
 import minerful.gui.graph.util.GraphUtil;
 import minerful.gui.model.ActivityElement;
 import minerful.gui.model.io.JFXToSVGConverter;
+import minerful.gui.model.io.XmlModelReader;
 import minerful.gui.model.io.XmlModelWriter;
 import minerful.gui.service.ProcessElementInterface;
 import minerful.gui.service.loginfo.LogInfo;
@@ -95,6 +99,46 @@ public class MinerfulGuiUtil {
 			alert.setContentText(contentText);
 			alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 			return alert.showAndWait();
+		}
+		
+		public static Task<ModelInfo> importModel(File openFile) {
+		    
+			Task<ModelInfo> task = new Task<ModelInfo>() {
+			    @Override public ModelInfo call() {
+			    	ModelInfo modelInfo = new ModelInfo();
+
+			    	if(openFile != null) {
+						XmlModelReader modelReader = new XmlModelReader(openFile.getAbsolutePath());
+						modelInfo.setProcessElement(modelReader.importXmlsAsProcessModel());
+						modelInfo.setSaveDate(new Date());
+						modelInfo.setSaveName(openFile.getName());
+					} 
+			    	
+			        return modelInfo;
+			    }
+			};
+			
+			return task;
+		}
+		
+		private static Task<ModelInfo> importXmlModel(File openFile) {
+			Task<ModelInfo> task = new Task<ModelInfo>() {
+			    @Override public ModelInfo call() {
+			    	
+			    	ModelInfo modelInfo = new ModelInfo();
+
+			    	if(openFile != null) {
+						XmlModelReader modelReader = new XmlModelReader(openFile.getAbsolutePath());
+						modelInfo.setProcessElement(modelReader.importXmlsAsProcessModel());
+						modelInfo.setSaveDate(new Date());
+						modelInfo.setSaveName(openFile.getName());
+					}
+
+			        return modelInfo;
+			    }
+			};
+			
+			return task;
 		}
 		
 		public static List<FitnessCheckInfo> deriveFitnessCheckInfo(ModelFitnessEvaluation mfe) {

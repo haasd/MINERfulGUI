@@ -170,7 +170,7 @@
 	-fx-font-family: open sans;
 	-fx-font-size: 14px;
 	-fx-cursor: hand;
-	-fx-graphic-text-gap: 25px;
+	-fx-graphic-text-gap: 15px;
 	-fx-padding: 15px;
 	-fx-font-weight: bold;
 }
@@ -577,6 +577,7 @@
 
 .window {
 	-fx-background-color: #4bb3fd;
+	-fx-padding: 0 0 15px 0;
 }
 
 .window-header {
@@ -599,6 +600,7 @@
 
 .eventlog-list, .models-list {
 	-fx-background-color: transparent;
+	-fx-padding: 10px;
 }
 
 .eventlog-list .list-cell, .models-list .list-cell {

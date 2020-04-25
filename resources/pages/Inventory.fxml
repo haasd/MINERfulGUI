@@ -6,8 +6,9 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
 
-<GridPane styleClass="window" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx" fx:controller="minerful.gui.controller.InventoryController">
+<GridPane styleClass="window" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx" fx:controller="minerful.gui.controller.InventoryController">
   <columnConstraints>
     <ColumnConstraints hgrow="ALWAYS" percentWidth="50.0" />
     <ColumnConstraints hgrow="ALWAYS" />
@@ -16,6 +17,7 @@
     <RowConstraints />
     <RowConstraints />
     <RowConstraints vgrow="ALWAYS" />
+    <RowConstraints  />
   </rowConstraints>
    <children>
    	<HBox styleClass="window-header" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2">
@@ -25,5 +27,7 @@
     <Label styleClass="window-header2" text="Process maps" GridPane.columnIndex="1" GridPane.rowIndex="1" />
     <ListView fx:id="eventLogList" styleClass="eventlog-list" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="0" GridPane.rowIndex="2" />
     <ListView fx:id="modelsList" styleClass="models-list" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+    <Button styleClass="btn-default" onAction="#importEventLog" style="-fx-padding: 10px;" GridPane.halignment="CENTER" text="Import event log" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+    <Button styleClass="btn-default" onAction="#importModel" style="-fx-padding: 10px;" GridPane.halignment="CENTER" text="Import process map" GridPane.columnIndex="1" GridPane.rowIndex="3" />
    </children>
 </GridPane>
