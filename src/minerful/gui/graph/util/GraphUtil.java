@@ -300,7 +300,7 @@ public class GraphUtil {
 		determineConstraintElements(processElement, processModel.getAllUnmarkedConstraints(), pane, eventHandler, controller);
 		
 		if(reminingRequired || relocatingRequired) {
-			LayoutAlgorithm testAlgorithm = new FruchtermanReingoldAlgorithm(1000, 500, processElement, controller, 1000);
+			LayoutAlgorithm testAlgorithm = new FruchtermanReingoldAlgorithm(1500,1500, processElement, controller, 1000);
 			testAlgorithm.optimizeLayout();
 		}
 		

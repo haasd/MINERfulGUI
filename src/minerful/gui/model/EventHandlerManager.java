@@ -91,8 +91,9 @@ public class EventHandlerManager {
  
         @Override
         public void handle(MouseEvent t) {
-            double offsetX = t.getSceneX() - activityX;
-            double offsetY = t.getSceneY() - activityY;
+        	double scaleValue = processTab.getScrollPane().getScaleValue();
+            double offsetX = ((t.getSceneX() - activityX)/scaleValue);
+            double offsetY = ((t.getSceneY() - activityY)/scaleValue);
             double newTranslateX = Math.max(config.getDouble("sheet.padding"), activityTranslateX + offsetX);
             double newTranslateY = Math.max(config.getDouble("sheet.padding"), activityTranslateY + offsetY);
             ActivityNode aNode = (ActivityNode)(t.getSource());
