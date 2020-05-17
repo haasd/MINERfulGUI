@@ -21,6 +21,10 @@
 			<id>openmindonline.it</id>
 			<url>http://repository.openmindonline.it</url>
 		</repository>
+		<repository>
+			<id>github</id>
+			<url>https://maven.pkg.github.com/cdc08x</url>
+		</repository>
 	</repositories>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,18 +33,13 @@
 	</properties>
 	<dependencies>
 		<dependency>
+			<groupId>MINERful</groupId>
+			<artifactId>MINERful</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+		<dependency>
 			<groupId>org.deckfour</groupId>
 			<artifactId>xes</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google</groupId>
-			<artifactId>gson</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google</groupId>
-			<artifactId>common</artifactId>
 			<version>1.0</version>
 		</dependency>
 		<dependency>
@@ -49,70 +48,9 @@
 			<version>1.0</version>
 		</dependency>
 		<dependency>
-			<groupId>org.paukov</groupId>
-			<artifactId>combinatorics</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jgraph</groupId>
-			<artifactId>layout</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.reflections</groupId>
-			<artifactId>reflections</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>nl.flotsam</groupId>
-			<artifactId>xeger</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.thoughtworks</groupId>
-			<artifactId>xstream</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>javassist.convert</groupId>
-			<artifactId>convert</artifactId>
-			<version>1.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.jfxconverter</groupId>
 			<artifactId>jfxconverter</artifactId>
 			<version>1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-lang3</artifactId>
-			<version>3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-cli</groupId>
-			<artifactId>commons-cli</artifactId>
-			<version>1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>dk.brics</groupId>
-			<artifactId>automaton</artifactId>
-			<version>1.12-1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
-			<version>2.3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.xml.bind</groupId>
-			<artifactId>jaxb-core</artifactId>
-			<version>2.3.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.xml.bind</groupId>
-			<artifactId>jaxb-impl</artifactId>
-			<version>2.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.openjfx</groupId>
@@ -137,6 +75,21 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-core</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.3.0</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -219,14 +172,13 @@
 			<artifactId>jcommon</artifactId>
 			<version>1.0.17</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-cli</groupId>
+			<artifactId>commons-cli</artifactId>
+			<version>1.2</version>
+		</dependency>
 	</dependencies>
 	<build>
-		<sourceDirectory>../</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>resources</directory>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -234,10 +186,6 @@
 				<configuration>
 					<mainClass>minerful.MinerFulGuiStarterHelper</mainClass>
 					<release>11</release>
-					<includes>
-						<include>*/src/**/*.java</include>
-						<include>lib/*.jar</include>
-					</includes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -255,7 +203,7 @@
 									implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
 								<transformer
 									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<mainClass>minerful.MinerFulGuiStarterHelper</mainClass>
+									<mainClass>minerfulgui.MinerFulGuiStarterHelper</mainClass>
 								</transformer>
 							</transformers>
 						</configuration>
@@ -267,7 +215,7 @@
 				<artifactId>javafx-maven-plugin</artifactId>
 				<version>0.0.4</version>
 				<configuration>
-					<mainClass>minerful.MinerFulGuiStarterHelper</mainClass>
+					<mainClass>minerfulgui.MinerFulGuiStarterHelper</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>

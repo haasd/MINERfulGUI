@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Slider?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import org.controlsfx.control.HiddenSidesPane?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import minerfulgui.common.AreaChartWithMarker?>
+<?import minerfulgui.model.ZoomableScrollPane?>
+<?import org.controlsfx.control.ToggleSwitch?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Tooltip?>
+<?import minerfulgui.common.GuiConstants?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml/" fx:controller="minerfulgui.controller.SimplifierTabController">
+	<fx:define>
+		<GuiConstants fx:id="constants"/>
+ 	</fx:define>
+	<children>
+		<!-- Event-Log  -->
+		<VBox styleClass="section, section-menu" GridPane.columnIndex="0" GridPane.rowIndex="0">
+         	<children>
+         		
+         		<!-- Event-Log -->
+				<Label styleClass="section-header1" text="Settings">
+				</Label>
+				
+				<!-- Event-Filter -->
+    			<Label styleClass="section-header2" text="Event-Filter" style="-fx-content-display: right">
+    				<graphic>
+              			<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+               		</graphic>
+               		<tooltip>
+        				<Tooltip>
+        					<text>
+        						<GuiConstants fx:constant="TOOLTIP_EVENT_FILTER" />
+        					</text>
+        				</Tooltip>
+    				</tooltip>
+    			</Label>
+    			<ListView fx:id="eventsList" styleClass="table">
+    			</ListView>
+    			
+    			<!-- Post Processing Analysis Type -->
+    			<Label styleClass="section-header2" text="Pruning Type" style="-fx-content-display: right">
+    				<graphic>
+              			<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+               		</graphic>
+               		<tooltip>
+        				<Tooltip>
+        					<text>
+        						<GuiConstants fx:constant="TOOLTIP_PRUNING_TYPE" />
+        					</text>
+        				</Tooltip>
+    				</tooltip>
+    			</Label>
+    			<VBox fx:id="processingType" style="-fx-spacing: 10; -fx-padding: 5px; -fx-border-width: 1 0 1 0; -fx-border-color: #A5A39C;"></VBox>
+         		
+         		<!-- cropRedundantAndInconsistentConstraints -->
+    			<Label styleClass="section-header2" text="Crop Constraints" style="-fx-content-display: right">
+    				<graphic>
+              			<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+               		</graphic>
+               		<tooltip>
+        				<Tooltip>
+        					<text>
+        						<GuiConstants fx:constant="TOOLTIP_CROP_CONSTANTS" />
+        					</text>
+        				</Tooltip>
+    				</tooltip>
+    			</Label>
+         		<VBox fx:id="cropType">
+         			<ToggleSwitch style="-fx-padding: 5px 0px;" fx:id="negativeConstraints" text="Crop negative Constraints" />
+    				<ToggleSwitch style="-fx-padding: 5px 0px;" fx:id="positiveConstraints" text="Crop positive Constraints" />
+         		</VBox>
+         		
+         		<!-- Mining-Parameter interface -->
+       			<VBox>
+        			<Label styleClass="section-header2" text="Mining-Parameter" style="-fx-padding: 0 0 30px 0"/>
+        			<GridPane vgap="5" hgap="10">
+        				<children>
+        				
+        					<!-- Display Support-Threshold interface -->
+         				<Label text="Support-Threshold" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" style="-fx-content-display: right">
+         					<graphic>
+              					<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+               				</graphic>
+               				<tooltip>
+		        				<Tooltip>
+		        					<text>
+		        						<GuiConstants fx:constant="TOOLTIP_SUPPORT_THRESHOLD" />
+		        					</text>
+		        				</Tooltip>
+		    				</tooltip>
+         				</Label>
+         				<TextField fx:id="supportThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="1" ></TextField>
+         				<Slider fx:id="supportThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="1">
+         				</Slider>
+         				
+         				<!-- Display Confidence-Threshold interface -->
+         				<Label text="Confidence-Threshold" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2" style="-fx-content-display: right">
+         					<graphic>
+              					<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+               				</graphic>
+               				<tooltip>
+		        				<Tooltip>
+		        					<text>
+		        						<GuiConstants fx:constant="TOOLTIP_CONFIDENCE_THRESHOLD" />
+		        					</text>
+		        				</Tooltip>
+		    				</tooltip>
+         				</Label>
+         				<TextField fx:id="confidenceThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="3" ></TextField>
+         				<Slider fx:id="confidenceThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="3">
+         				</Slider>
+         				
+         				<!-- Display Interest Factor-Threshold interface -->
+         				<Label text="Interest Factor-Threshold" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2" style="-fx-content-display: right">
+         					<graphic>
+              					<FontIcon iconColor="#0966d7" iconLiteral="fa-question-circle" iconSize="15" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+               				</graphic>
+               				<tooltip>
+		        				<Tooltip>
+		        					<text>
+		        						<GuiConstants fx:constant="TOOLTIP_INTEREST_THRESHOLD" />
+		        					</text>
+		        				</Tooltip>
+		    				</tooltip>
+         				</Label>
+         				<TextField fx:id="interestThresholdField" GridPane.columnIndex="0" GridPane.rowIndex="5" ></TextField>
+         				<Slider fx:id="interestThresholdSlider" showTickLabels="true" showTickMarks="true" min="0.0" max="1.0" majorTickUnit="0.2" GridPane.columnIndex="1" GridPane.rowIndex="5">
+         				</Slider>
+ 
+        				</children>
+        				<columnConstraints>
+					        <ColumnConstraints percentWidth="20.0" />
+					        <ColumnConstraints percentWidth="80.0" />
+						</columnConstraints>
+        			</GridPane>
+       			</VBox>
+         			
+         	</children>
+		</VBox>
+		
+		<!-- Model -->
+		<HiddenSidesPane fx:id="hiddenSidesPane" GridPane.columnIndex="1" GridPane.rowIndex="0">
+			<content>
+				<GridPane styleClass="section" hgap="30">
+		         	<children>
+		         	
+		         		<!-- Canvas -->
+			         	<GridPane styleClass="area-content" GridPane.columnIndex="0" GridPane.rowIndex="0">
+			         		<children>
+			         			<HBox style="-fx-spacing: 10; -fx-padding: 5px;">
+				         			<Label styleClass="section-header1" text="Model" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+				         			<Button styleClass="btn-default, btn-save" text="Take Snapshot" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+				         			<Button styleClass="btn-default" text="Export" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+				         			<HBox HBox.hgrow="ALWAYS" alignment="CENTER_RIGHT">
+				         				<Label text="Displayed Constraints: " />
+         								<Label fx:id="numberOfConstraints" text="0" style="-fx-font-weight: bold"/>
+				         			</HBox>
+				         		</HBox>
+				         		<ZoomableScrollPane fx:id="scrollPane" styleClass="model-canvas, background" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="3">
+		         					<anchorPane>
+			         					<AnchorPane fx:id="anchorPane" styleClass="background">
+			         						<BorderPane fx:id="backgroundPane">
+			         						</BorderPane>
+			         					</AnchorPane>
+		         					</anchorPane>
+	         					</ZoomableScrollPane>
+			         		</children>
+			         		<columnConstraints>
+						        <ColumnConstraints hgrow="ALWAYS" />
+							</columnConstraints>
+							<rowConstraints>
+							   <RowConstraints />
+							   <RowConstraints vgrow="ALWAYS" />
+							</rowConstraints>
+			         	</GridPane>
+			         	
+		       			
+		       			<VBox GridPane.columnIndex="1" GridPane.rowIndex="0">
+		       				<AreaChartWithMarker fx:id="supportChart" title="Support">
+				              <xAxis>
+				                <NumberAxis side="BOTTOM" fx:id="supportXAxis" />
+				              </xAxis>
+				              <yAxis>
+				                <NumberAxis side="LEFT" fx:id="supportYAxis" />
+				              </yAxis>
+            				</AreaChartWithMarker>
+            				<AreaChartWithMarker fx:id="confidenceChart" title="Confidence">
+				              <xAxis>
+				                <NumberAxis side="BOTTOM" fx:id="confidenceXAxis"/>
+				              </xAxis>
+				              <yAxis>
+				                <NumberAxis side="LEFT" fx:id="confidenceYAxis"/>
+				              </yAxis>
+            				</AreaChartWithMarker>
+            				<AreaChartWithMarker fx:id="interestChart" title="Interest-Factor">
+				              <xAxis>
+				                <NumberAxis side="BOTTOM" fx:id="interestXAxis"/>
+				              </xAxis>
+				              <yAxis>
+				                <NumberAxis side="LEFT" fx:id="interestYAxis"/>
+				              </yAxis>
+            				</AreaChartWithMarker>
+		       			</VBox>
+		         	</children>
+					<rowConstraints>
+					   <RowConstraints vgrow="ALWAYS" />
+					</rowConstraints>
+					<columnConstraints>
+						<ColumnConstraints percentWidth="80.0" />
+						<ColumnConstraints percentWidth="20.0" />
+					</columnConstraints>
+		        </GridPane>
+	        </content>
+	        <right>
+	        	<!-- Constraints -->
+      			<GridPane fx:id="constraintsTableWrapper" styleClass="constraints-table">
+      				<children>
+	        			<Label styleClass="section-header2" text="Constraints" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+	        			<TableView fx:id="constraintsTable" styleClass="table" GridPane.columnIndex="0" GridPane.rowIndex="1">
+							<columns>
+							   <TableColumn styleClass="column-left" text="Constraint" fx:id="constraintColumn" prefWidth="300.0"> 
+							   </TableColumn>
+							   <TableColumn text="Support" prefWidth="150.0" minWidth="150.0" maxWidth="150.0" fx:id="supportColumn"> 
+							   </TableColumn>
+							   <TableColumn text="Confidence" prefWidth="150.0" minWidth="150.0" maxWidth="150.0" fx:id="confidenceColumn"> 
+							   </TableColumn>
+							   <TableColumn text="Interest Factor" prefWidth="150.0" minWidth="150.0" maxWidth="150.0" fx:id="interestColumn"> 
+							   </TableColumn>
+							</columns>
+	  					</TableView>
+  					</children>
+  					<rowConstraints>
+  						<RowConstraints />
+					    <RowConstraints vgrow="ALWAYS" />
+					</rowConstraints>
+				</GridPane>
+	        </right>
+        </HiddenSidesPane>
+       </children>
+       <columnConstraints>
+			<ColumnConstraints percentWidth="20.0" />
+			<ColumnConstraints percentWidth="80.0" />
+		</columnConstraints>
+		<rowConstraints>
+				   <RowConstraints vgrow="ALWAYS" />
+		</rowConstraints>
+</GridPane>
+
+
+
