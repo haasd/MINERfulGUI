@@ -72,6 +72,7 @@ public class EventLogGeneratorController extends AbstractController implements I
 				controller.setStage((Stage)((Node) event.getSource()).getScene().getWindow());
 				controller.setMainController(getMainController());
 				controller.setModelInfo(modelController.getSelectedRow());
+				controller.setDefaultValues();
 	    		
 				tab.setContent(gridPane);
 				tab.setText(modelController.getSelectedRow().getSaveName());
@@ -103,6 +104,7 @@ public class EventLogGeneratorController extends AbstractController implements I
 			controller.setStage((Stage) ((Node) eventLogGeneratorTabPane).getScene().getWindow());
 			controller.setMainController(getMainController());
 			controller.setModelInfo(newModelInfo);
+			controller.setDefaultValues();
 
 			tab.setContent(gridPane);
 			tab.setText(newModelInfo.getSaveName());

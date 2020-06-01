@@ -374,6 +374,12 @@ public class EventLogGeneratorTabController extends AbstractController implement
 
 		return true;
 	}
+	
+	public void setDefaultValues() {
+		minEventsPerTrace.setText("4");
+		maxEventsPerTrace.setText("8");
+		tracesInLog.setText("100");
+	}
 
 	public ModelInfo getModelInfo() {
 		return modelInfo;
