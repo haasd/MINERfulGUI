@@ -185,8 +185,9 @@ public class EventHandlerManager {
  
         @Override
         public void handle(MouseEvent t) {
-            double offsetX = t.getSceneX() - constraintX;
-            double offsetY = t.getSceneY() - constraintY;
+        	double scaleValue = processTab.getScrollPane().getScaleValue();
+            double offsetX = ((t.getSceneX() - constraintX)/scaleValue);
+            double offsetY = ((t.getSceneY() - constraintY)/scaleValue);
             double newTranslateX = Math.max(config.getDouble("sheet.padding"), constraintTranslateX + offsetX);
             double newTranslateY = Math.max(config.getDouble("sheet.padding"), constraintTranslateY + offsetY);
             
