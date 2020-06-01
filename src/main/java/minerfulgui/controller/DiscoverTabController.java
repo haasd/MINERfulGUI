@@ -279,7 +279,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 	public void initialize(URL location, ResourceBundle resources) {
 		
 		scrollPane.getStyleClass().add("model-canvas");
-		
+
 		System.setProperty("gs.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
 		eventLogTable.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));
 		logInfoList.setPlaceholder(new Label(GuiConstants.NO_EVENT_LOG));

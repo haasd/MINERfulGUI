@@ -16,6 +16,10 @@
 	-fx-cursor: hand;
 }
 
+.zoom-hint {
+	-fx-font-weight: bold;
+}
+
 .context-menu {
   -fx-background-color: -color-darker-blue;
   -fx-text-fill: white;

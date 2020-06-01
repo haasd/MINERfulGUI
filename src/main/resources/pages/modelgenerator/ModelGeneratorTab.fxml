@@ -48,6 +48,7 @@
 	         					</AnchorPane>
          					</anchorPane>
 	         			</ZoomableScrollPane>
+	         			<Label GridPane.columnIndex="0" GridPane.rowIndex="1" styleClass="zoom-hint" text="Zoom with mousewheel" style="-fx-padding: 0 20px 15px 0"/>
 	         			<GridPane GridPane.columnIndex="0" GridPane.rowIndex="2">
 	         				<children>
 		         				<!-- Activities -->
@@ -84,17 +85,18 @@
 	         			</GridPane>
 	         		</children>
 	         		<columnConstraints>
-				        <ColumnConstraints hgrow="ALWAYS" />
+				        <ColumnConstraints hgrow="ALWAYS" halignment="RIGHT"/>
 					</columnConstraints>
 					<rowConstraints>
 					   <RowConstraints />
-					   <RowConstraints vgrow="ALWAYS" />
+					   <RowConstraints vgrow="ALWAYS" valignment="BOTTOM"/>
 					   <RowConstraints percentHeight="30.0" />
 					</rowConstraints>
 	         	</GridPane>
        			
          	</children>
 			<rowConstraints>
+			   <RowConstraints vgrow="ALWAYS" />
 			   <RowConstraints vgrow="ALWAYS" />
 			</rowConstraints>
 			<columnConstraints>

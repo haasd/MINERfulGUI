@@ -6,6 +6,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
@@ -38,6 +39,7 @@ public class ZoomableScrollPane extends ScrollPane {
 
     private Node centeredNode(Node node) {
         VBox vBox = new VBox(node);
+        
         vBox.setAlignment(Pos.CENTER);
         return vBox;
     }
