@@ -910,7 +910,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 		
 		modelInfo.setProcessModel(processModel);
 		modelInfo.setSaveDate(new Date());
-
+		modelInfo.setLogParser(currentEventLog.getLogParser());
 		modelInfo.setProcessElement(GraphUtil.cloneProcessElement(processElement));
 		
 		getMainController().addSavedProcessModels(modelInfo);

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src='viz.js'></script>
+	<script src='full.render.js'></script>
+	<style type="text/css">
+        #rootDiv {
+            font-family: Helvetica;
+            font-size: small;
+        }
+    </style>
+</head>
+<body>
+	<div id="rootDiv"></div>
+	<script>
+		var rootDiv = document.getElementById("rootDiv");
+		
+		var activitiesTitle = document.createElement("h2");
+		activitiesTitle.innerHTML = "Activities";
+		var activitiesDiv = document.createElement("div");
+		
+		var hrTag1 = document.createElement("hr");
+		var hrTag2 = document.createElement("hr");
+		
+		var constraintsTitle = document.createElement("h2");
+		constraintsTitle.innerHTML = "Constraints";
+		var constraintsDiv = document.createElement("div");
+		
+
+		//Function to display dot graph visualization (Declare and automaton views)
+		function setModel(model) {
+			
+			var viz = new Viz();
+			var graphRoot;
+			viz.renderSVGElement(model)
+				.then(function(element) {
+					//clears the page
+					rootDiv.innerHTML = '';
+				
+					//show the new model graph
+					rootDiv.appendChild(element);
+					//test to see if the craph could be clickable
+					//rum_application.addGraphClickHandlers();
+				})
+				.catch(error => {
+					// Create a new Viz instance (@see Caveats page for more info)
+					viz = new Viz();
+
+					// Possibly display the error
+					console.error(error);
+			});
+		}
+		
+		
+		//Function to display textual model description
+		function setText(activities, constraints) {
+			//clears the page
+			rootDiv.innerHTML = '';
+			
+			if(activities !== "null" && activities !== "") {
+				rootDiv.appendChild(activitiesTitle);
+				activitiesDiv.innerHTML = '';
+				var actArr = activities.split("\n");
+				var index = 1;
+				actArr.forEach(a => {
+					if(a !== '') {
+						var p = document.createElement("p");
+						p.innerHTML = a;
+						activitiesDiv.appendChild(p);
+						index = index + 1;
+					}
+				});
+				rootDiv.appendChild(activitiesDiv);
+			}
+
+			if(constraints !== "null" && constraints !== "") {
+				rootDiv.appendChild(hrTag1);
+				rootDiv.appendChild(constraintsTitle);
+				constraintsDiv.innerHTML = '';
+				var actArr = constraints.split("\n");
+				index = 1;
+				actArr.forEach(a => {
+					if(a !== '') {
+						var p = document.createElement("p");
+						p.innerHTML = a;
+						constraintsDiv.appendChild(p);
+						index = index + 1;
+					}
+				});
+				rootDiv.appendChild(constraintsDiv);
+			}
+		}
+		
+		function clearModel() {
+			rootDiv.innerHTML = '';
+		}
+
+	</script>
+</body>
+</html>

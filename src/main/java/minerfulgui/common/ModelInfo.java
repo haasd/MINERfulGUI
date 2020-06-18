@@ -3,6 +3,7 @@ package minerfulgui.common;
 import java.util.Date;
 
 import minerful.concept.ProcessModel;
+import minerful.logparser.LogParser;
 import minerfulgui.model.ProcessElement;
 
 public class ModelInfo {
@@ -11,6 +12,7 @@ public class ModelInfo {
 	private Date saveDate;
 	private String saveName;
 	private ProcessElement processElement;
+	private LogParser logParser;
 	
 	public ModelInfo() {
 		
@@ -48,6 +50,14 @@ public class ModelInfo {
 
 	public void setProcessElement(ProcessElement processElement) {
 		this.processElement = processElement;
+	}
+
+	public LogParser getLogParser() {
+		return logParser;
+	}
+
+	public void setLogParser(LogParser logParser) {
+		this.logParser = logParser;
 	}
 	
 }

@@ -23,6 +23,11 @@
 		<!-- Area-Header -->
 		<HBox styleClass="area-header" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2" >
 			<Label styleClass="area-header-label" text="Generate Automata" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
+			<Button styleClass="btn-default, btn-header" text="Select process map" onAction="#selectEventLog">
+				<graphic>
+           			<FontIcon iconColor="white" iconLiteral="typ-document" iconSize="30" layoutX="20.0" layoutY="91.0" textAlignment="CENTER" wrappingWidth="26.0" />
+            	</graphic>
+			</Button>
 		</HBox>
 		
 		<!-- TabPane -->
