@@ -19,6 +19,7 @@ public final class GuiConstants {
 	public static final String SAVED_EVENT_LOGS="Saved event logs";
 	public static final String IMPORT_PROCESS_MAP="Import process map";
 	public static final String OPEN_EVENT_LOG="Open event log";
+	public static final String EXPORT_AUTOMATON="Export Atomaton";
 	public static final Integer NUMBER_CONSTRAINTS_WARNING=40;
 	
 	//Tooltips

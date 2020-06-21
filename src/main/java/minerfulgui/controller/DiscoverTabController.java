@@ -833,7 +833,6 @@ public class DiscoverTabController extends AbstractController implements Initial
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				// TODO Auto-generated method stub
 				String doubleValue = String.format("%.3f", newValue.doubleValue());
 				doubleValue = doubleValue.replace(",", ".");
 				textField.setText(doubleValue);
@@ -853,7 +852,6 @@ public class DiscoverTabController extends AbstractController implements Initial
 	            {
 	            	reminingRequired=true;
 	                updateModel();
-	                
 	            }
 	        }
 	    };
@@ -912,6 +910,10 @@ public class DiscoverTabController extends AbstractController implements Initial
 		modelInfo.setSaveDate(new Date());
 		modelInfo.setLogParser(currentEventLog.getLogParser());
 		modelInfo.setProcessElement(GraphUtil.cloneProcessElement(processElement));
+		modelInfo.setSupportThreshold(Double.parseDouble(supportThresholdField.getText()));
+		modelInfo.setConfidenceThreshold(Double.parseDouble(confidenceThresholdField.getText()));
+		modelInfo.setInterestThreshold(Double.parseDouble(interestThresholdField.getText()));
+		modelInfo.setPath(currentEventLog.getPath());
 		
 		getMainController().addSavedProcessModels(modelInfo);
 		

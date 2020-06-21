@@ -82,6 +82,7 @@ public class AutomataGeneratorController extends AbstractController implements I
 				tab.setContent(gridPane);
 				tab.setText(modelController.getSelectedRow().getSaveName());
 				automataGeneratorTabPane.getTabs().add(tab);
+				automataGeneratorTabPane.getSelectionModel().select(tab);
 		    }
 			
 		} catch (IOException e) {

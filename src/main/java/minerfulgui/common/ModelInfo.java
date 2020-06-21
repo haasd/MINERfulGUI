@@ -13,6 +13,10 @@ public class ModelInfo {
 	private String saveName;
 	private ProcessElement processElement;
 	private LogParser logParser;
+	private double supportThreshold;
+	private double confidenceThreshold;
+	private double interestThreshold;
+	private String path;
 	
 	public ModelInfo() {
 		
@@ -59,5 +63,36 @@ public class ModelInfo {
 	public void setLogParser(LogParser logParser) {
 		this.logParser = logParser;
 	}
-	
+
+	public double getSupportThreshold() {
+		return supportThreshold;
+	}
+
+	public void setSupportThreshold(double supportThreshold) {
+		this.supportThreshold = supportThreshold;
+	}
+
+	public double getConfidenceThreshold() {
+		return confidenceThreshold;
+	}
+
+	public void setConfidenceThreshold(double confidenceThreshold) {
+		this.confidenceThreshold = confidenceThreshold;
+	}
+
+	public double getInterestThreshold() {
+		return interestThreshold;
+	}
+
+	public void setInterestThreshold(double interestThreshold) {
+		this.interestThreshold = interestThreshold;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
 }

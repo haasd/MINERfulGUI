@@ -45,7 +45,6 @@
     <xsl:text><![CDATA[ []]></xsl:text>
 
     <xsl:if test="@accept = 'true'">
-      <xsl:value-of select="@id" />
       <xsl:text><![CDATA[label="·", shape="doublecircle", ]]></xsl:text>
     </xsl:if>
     <xsl:if test="@weight = '0' and $DO_APPLY_TRANSPARENCY_FOR_NOT_TRAVERSED">

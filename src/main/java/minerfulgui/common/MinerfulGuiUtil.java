@@ -1,24 +1,44 @@
 package minerfulgui.common;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 import org.deckfour.xes.model.XLog;
 
+import dk.brics.automaton.Automaton;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
+import javafx.concurrent.Worker.State;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
@@ -32,13 +52,17 @@ import minerful.MinerFulFitnessCheckLauncher;
 import minerful.MinerFulMinerLauncher;
 import minerful.MinerFulOutputManagementLauncher;
 import minerful.MinerFulSimplificationLauncher;
+import minerful.automaton.concept.weight.WeightedAutomaton;
+import minerful.automaton.encdec.WeightedAutomatonFactory;
 import minerful.checking.params.CheckingCmdParameters;
 import minerful.checking.relevance.dao.ModelFitnessEvaluation;
 import minerful.concept.ProcessModel;
 import minerful.concept.constraint.Constraint;
+import minerful.io.encdec.TaskCharEncoderDecoder;
 import minerful.io.params.OutputModelParameters;
 import minerful.logmaker.MinerFulLogMaker;
 import minerful.logmaker.params.LogMakerParameters.Encoding;
+import minerful.logparser.LogParser;
 import minerful.params.InputLogCmdParameters.InputEncoding;
 import minerful.postprocessing.params.PostProcessingCmdParameters.PostProcessingAnalysisType;
 import minerfulgui.graph.util.GraphUtil;
@@ -121,20 +145,44 @@ public class MinerfulGuiUtil {
 			return task;
 		}
 		
-		private static Task<ModelInfo> importXmlModel(File openFile) {
-			Task<ModelInfo> task = new Task<ModelInfo>() {
-			    @Override public ModelInfo call() {
-			    	
-			    	ModelInfo modelInfo = new ModelInfo();
+		public static Task<List<String>> createAutomaton(ProcessModel processModel, LogParser logParser) {
+		    
+			Task<List<String>> task = new Task<List<String>>() {
+			    @Override public List<String> call() throws IOException, TransformerException, JAXBException {
+			    	List<String> automaton = new ArrayList<>();
 
-			    	if(openFile != null) {
-						XmlModelReader modelReader = new XmlModelReader(openFile.getAbsolutePath());
-						modelInfo.setProcessElement(modelReader.importXmlsAsProcessModel());
-						modelInfo.setSaveDate(new Date());
-						modelInfo.setSaveName(openFile.getName());
+					// Create Automaton XML
+					String weightedXml = printWeightedXmlAutomaton(processModel,logParser, false);
+					if (weightedXml != null) {
+						File automatonXml = new File("help.xml");
+						PrintWriter outWriter = new PrintWriter(automatonXml);
+						outWriter.print(weightedXml);
+						outWriter.flush();
+						outWriter.close();
+						transitionCluster();
+						transitionFurtherCluster();
+						weightedAutomatonDotter();
+
+						try {
+							File myObj = new File("help.clustered.withnot.xml.dot");
+							Scanner myReader = new Scanner(myObj);
+							List<String> textFile = new ArrayList<>();
+
+							while (myReader.hasNextLine()) {
+								textFile.add(myReader.nextLine().replace("&gt;", ">").replace("'", "\\'"));
+							}
+							myReader.close();
+
+							deleteAllFiles();
+							automaton = textFile;
+
+						} catch (FileNotFoundException e) {
+							System.out.println("An error occurred.");
+							e.printStackTrace();
+						}
 					}
-
-			        return modelInfo;
+			    	
+			        return automaton;
 			    }
 			};
 			
@@ -394,5 +442,65 @@ public class MinerfulGuiUtil {
 				logger.info("Export canceled!"); 
 			}
 			
+		}
+		
+		public static String printWeightedXmlAutomaton(ProcessModel processModel, LogParser logParser, boolean skimIt) throws JAXBException {
+			Automaton processAutomaton = processModel.buildAutomaton();
+
+			WeightedAutomatonFactory wAF = new WeightedAutomatonFactory(
+					TaskCharEncoderDecoder.getTranslationMap(processModel.bag));
+			WeightedAutomaton wAut = wAF.augmentByReplay(processAutomaton, logParser, skimIt);
+
+			if (wAut == null)
+				return null;
+
+			JAXBContext jaxbCtx = JAXBContext.newInstance(WeightedAutomaton.class);
+			Marshaller marsh = jaxbCtx.createMarshaller();
+			marsh.setProperty("jaxb.formatted.output", true);
+			StringWriter strixWriter = new StringWriter();
+			marsh.marshal(wAut, strixWriter);
+			strixWriter.flush();
+			StringBuffer strixBuffer = strixWriter.getBuffer();
+
+			// OINK
+			strixBuffer.replace(strixBuffer.indexOf(">", strixBuffer.indexOf("?>") + 3),
+					strixBuffer.indexOf(">", strixBuffer.indexOf("?>") + 3),
+					" xmlns=\"" + ProcessModel.MINERFUL_XMLNS + "\"");
+
+			return strixWriter.toString();
+		}
+		
+		private static void deleteAllFiles() {
+			logger.info("help.xml was deleted " + new File("help.xml").delete());
+			logger.info("help.clustered.xml was deleted " + new File("help.clustered.xml").delete());
+			logger.info("help.clustered.withnot.xml was deleted " + new File("help.clustered.withnot.xml").delete());
+			logger.info(
+					"help.clustered.withnot.xml.dot was deleted " + new File("help.clustered.withnot.xml.dot").delete());
+		}
+
+		public static void transitionCluster() throws FileNotFoundException, TransformerException {
+			TransformerFactory tFactory = javax.xml.transform.TransformerFactory.newInstance();
+			Transformer transformer = tFactory.newTransformer(new StreamSource(
+					(MinerfulGuiUtil.class.getClassLoader().getResource("dot-xsl/transitionCluster.xsl")).toString()));
+			transformer.transform(new StreamSource("help.xml"),
+					new StreamResult(new FileOutputStream("help.clustered.xml")));
+		}
+
+		public static void transitionFurtherCluster() throws FileNotFoundException, TransformerException {
+			TransformerFactory tFactory = javax.xml.transform.TransformerFactory.newInstance();
+			Transformer transformer = tFactory.newTransformer(new StreamSource(
+					(MinerfulGuiUtil.class.getClassLoader().getResource("dot-xsl/transitionFurtherCluster.xsl")).toString()));
+			transformer.transform(new StreamSource("help.clustered.xml"),
+					new StreamResult(new FileOutputStream("help.clustered.withnot.xml")));
+		}
+
+		public static void weightedAutomatonDotter() throws FileNotFoundException, TransformerException {
+			TransformerFactory tFactory = javax.xml.transform.TransformerFactory.newInstance();
+			Transformer transformer = tFactory.newTransformer(new StreamSource(
+					(MinerfulGuiUtil.class.getClassLoader().getResource("dot-xsl/weightedAutomatonDotter.xsl")).toString()));
+			transformer.setParameter("DO_WEIGH_LINES", "true()");
+			transformer.setParameter("DO_APPLY_TRANSPARENCY_FOR_NOT_TRAVERSED", "true()");
+			transformer.transform(new StreamSource("help.clustered.withnot.xml"),
+					new StreamResult(new FileOutputStream("help.clustered.withnot.xml.dot")));
 		}
 }
