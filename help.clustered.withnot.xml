@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?><weightedAutomaton xmlns="https://github.com/cdc08x/MINERful/" deterministic="true">
+    <deterministic>true</deterministic>
+    <states>
+        <state accept="true" illegal="false" nonConformityWeight="0" nonConformityWeightQuantile="0" weight="1420" weightQuantile="3" id="sGcmPq2De">
+            <accept>true</accept>
+            <transitions>
+                <transitionGroup idref="t4ij9FC7Z" to="sGcmPq2De" totalWeight="388" maxQuantile="2" listingMissingTransitions="true">
+                    <transition name="E" taskName="ER Sepsis Triage"/>
+                    <transition name="D" taskName="ER Registration"/>
+                </transitionGroup>
+                <transition to="sNRFlddMF" illegal="false" name="E" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Sepsis Triage" id="tShVleU1H" weight="1031" weightQuantile="3"/>
+            </transitions>
+        </state>
+        <state accept="false" illegal="false" nonConformityWeight="0" nonConformityWeightQuantile="0" weight="1183" weightQuantile="2" id="sLib0hw6Q">
+            <accept>false</accept>
+            <transitions>
+                <transitionGroup idref="tkqkOIXIg" to="sLib0hw6Q" totalWeight="147" maxQuantile="2" listingMissingTransitions="true">
+                    <transition name="F" taskName="ER Triage"/>
+                    <transition name="E" taskName="ER Sepsis Triage"/>
+                    <transition name="D" taskName="ER Registration"/>
+                </transitionGroup>
+                <transition to="sIveh0As9" illegal="false" name="E" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Sepsis Triage" id="tXyclCpaX" weight="10" weightQuantile="1"/>
+                <transition to="sGcmPq2De" illegal="false" name="F" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Triage" id="t3Ss4Z4zg" weight="1026" weightQuantile="3"/>
+            </transitions>
+        </state>
+        <state accept="false" illegal="false" nonConformityWeight="0" nonConformityWeightQuantile="0" weight="23" weightQuantile="1" id="sIveh0As9">
+            <accept>false</accept>
+            <transitions>
+                <transitionGroup idref="tTyIAxtvD" to="sIveh0As9" totalWeight="6" maxQuantile="1" listingMissingTransitions="true">
+                    <transition name="F" taskName="ER Triage"/>
+                    <transition name="E" taskName="ER Sepsis Triage"/>
+                    <transition name="D" taskName="ER Registration"/>
+                </transitionGroup>
+                <transition to="sNRFlddMF" illegal="false" name="F" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Triage" id="tmmFRVonq" weight="17" weightQuantile="1"/>
+            </transitions>
+        </state>
+        <state accept="false" illegal="false" nonConformityWeight="0" nonConformityWeightQuantile="0" weight="0" weightQuantile="0" id="sEp6OA3g8">
+            <accept>false</accept>
+            <transitions>
+                <transitionGroup idref="t3v6h2ION" to="sEp6OA3g8" totalWeight="0" maxQuantile="0" listingMissingTransitions="true">
+                    <transition name="E" taskName="ER Sepsis Triage"/>
+                    <transition name="D" taskName="ER Registration"/>
+                </transitionGroup>
+                <transition to="sNRFlddMF" illegal="false" name="D" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Registration" id="tgO7S9sxs" weight="0" weightQuantile="0"/>
+            </transitions>
+        </state>
+        <state accept="false" illegal="false" nonConformityWeight="0" nonConformityWeightQuantile="0" weight="1115" weightQuantile="2" initial="true" id="sta0Z4q17">
+            <accept>false</accept>
+            <transitions>
+                <transitionGroup idref="tbNlsVkwC" to="sta0Z4q17" totalWeight="66" maxQuantile="2" listingMissingTransitions="true">
+                    <transition name="F" taskName="ER Triage"/>
+                    <transition name="E" taskName="ER Sepsis Triage"/>
+                    <transition name="D" taskName="ER Registration"/>
+                </transitionGroup>
+                <transition to="sLib0hw6Q" illegal="false" name="D" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Registration" id="tIl2YU3H9" weight="1036" weightQuantile="3"/>
+                <transition to="sdFlu171d" illegal="false" name="E" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Sepsis Triage" id="tkdqLR3mm" weight="7" weightQuantile="1"/>
+                <transition to="spH2wflOh" illegal="false" name="F" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Triage" id="tmXHILnFq" weight="6" weightQuantile="1"/>
+            </transitions>
+        </state>
+        <state accept="true" illegal="false" nonConformityWeight="0" nonConformityWeightQuantile="0" weight="12498" weightQuantile="3" id="sNRFlddMF">
+            <accept>true</accept>
+            <transitions>
+                <transitionGroup idref="te3G8qDRM" to="sNRFlddMF" totalWeight="11450" maxQuantile="3" listingMissingTransitions="true">
+                    <transition name="E" taskName="ER Sepsis Triage"/>
+                    <transition name="D" taskName="ER Registration"/>
+                </transitionGroup>
+            </transitions>
+        </state>
+        <state accept="false" illegal="false" nonConformityWeight="0" nonConformityWeightQuantile="0" weight="11" weightQuantile="1" id="sdFlu171d">
+            <accept>false</accept>
+            <transitions>
+                <transitionGroup idref="tqpnXQNMt" to="sdFlu171d" totalWeight="4" maxQuantile="0" listingMissingTransitions="true">
+                    <transition name="F" taskName="ER Triage"/>
+                    <transition name="E" taskName="ER Sepsis Triage"/>
+                    <transition name="D" taskName="ER Registration"/>
+                </transitionGroup>
+                <transition to="sIveh0As9" illegal="false" name="D" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Registration" id="tFlbXpGPW" weight="7" weightQuantile="1"/>
+                <transition to="sEp6OA3g8" illegal="false" name="F" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Triage" id="tChv9DpII" weight="0" weightQuantile="0"/>
+            </transitions>
+        </state>
+        <state accept="false" illegal="false" nonConformityWeight="0" nonConformityWeightQuantile="0" weight="10" weightQuantile="0" id="spH2wflOh">
+            <accept>false</accept>
+            <transitions>
+                <transitionGroup idref="tYV1L0yH9" to="spH2wflOh" totalWeight="4" maxQuantile="0" listingMissingTransitions="true">
+                    <transition name="E" taskName="ER Sepsis Triage"/>
+                    <transition name="D" taskName="ER Registration"/>
+                </transitionGroup>
+                <transition to="sGcmPq2De" illegal="false" name="D" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Registration" id="t44yX1jRA" weight="6" weightQuantile="1"/>
+                <transition to="sEp6OA3g8" illegal="false" name="E" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Sepsis Triage" id="t62cxUBzF" weight="0" weightQuantile="0"/>
+            </transitions>
+        </state>
+    </states>
+</weightedAutomaton>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?><weightedAutomaton xmlns="https://github.com/cdc08x/MINERful/" deterministic="true">
+    <deterministic>true</deterministic>
+    <states>
+        <state accept="true" illegal="false" nonConformityWeight="0" nonConformityWeightQuantile="0" weight="1420" weightQuantile="3" id="sGcmPq2De">
+            <accept>true</accept>
+            <transitions>
+                <transitionGroup idref="t4ij9FC7Z" to="sGcmPq2De" totalWeight="388" maxQuantile="2">
+                    <transition illegal="false" name="M" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release C" id="t4ij9FC7Z" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="G" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="IV Antibiotics" id="tot47HP4M" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="A" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Admission IC" id="tJO300s6s" weight="2" weightQuantile="0"/>
+                    <transition illegal="false" name="N" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release D" id="t9UV2q7VC" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="H" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="IV Liquid" id="tvC1dRmIU" weight="12" weightQuantile="1"/>
+                    <transition illegal="false" name="B" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Admission NC" id="tFO0rP55J" weight="6" weightQuantile="1"/>
+                    <transition illegal="false" name="O" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release E" id="tOoAEaxdK" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="I" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="LacticAcid" id="tyNFTOGEG" weight="107" weightQuantile="2"/>
+                    <transition illegal="false" name="C" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="CRP" id="tmcxgPBiF" weight="129" weightQuantile="2"/>
+                    <transition illegal="false" name="P" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Return ER" id="tsK0lRSL9" weight="1" weightQuantile="0"/>
+                    <transition illegal="false" name="J" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Leucocytes" id="tUmLQiJOQ" weight="130" weightQuantile="2"/>
+                    <transition illegal="false" name="K" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release A" id="tP5daMD76" weight="1" weightQuantile="0"/>
+                    <transition illegal="false" name="L" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release B" id="t1REw74zk" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="F" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Triage" id="tr5HVtW7A" weight="0" weightQuantile="0"/>
+                </transitionGroup>
+                <transition to="sNRFlddMF" illegal="false" name="E" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Sepsis Triage" id="tShVleU1H" weight="1031" weightQuantile="3"/>
+            </transitions>
+        </state>
+        <state accept="false" illegal="false" nonConformityWeight="0" nonConformityWeightQuantile="0" weight="1183" weightQuantile="2" id="sLib0hw6Q">
+            <accept>false</accept>
+            <transitions>
+                <transitionGroup idref="tkqkOIXIg" to="sLib0hw6Q" totalWeight="147" maxQuantile="2">
+                    <transition illegal="false" name="M" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release C" id="tkqkOIXIg" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="G" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="IV Antibiotics" id="trEOgI9t6" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="A" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Admission IC" id="tadKYPu9g" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="N" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release D" id="tUXyZg3MY" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="H" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="IV Liquid" id="tS1bP75oR" weight="25" weightQuantile="2"/>
+                    <transition illegal="false" name="B" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Admission NC" id="tmqm2viYB" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="O" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release E" id="tMvB74HBC" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="I" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="LacticAcid" id="tQhyX5ZNY" weight="36" weightQuantile="2"/>
+                    <transition illegal="false" name="C" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="CRP" id="tWNmeyiGv" weight="43" weightQuantile="2"/>
+                    <transition illegal="false" name="P" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Return ER" id="tDawnL3ew" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="J" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Leucocytes" id="t6OSuyAl6" weight="43" weightQuantile="2"/>
+                    <transition illegal="false" name="K" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release A" id="t3fVS2OnP" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="L" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release B" id="tk0qp4aTH" weight="0" weightQuantile="0"/>
+                </transitionGroup>
+                <transition to="sIveh0As9" illegal="false" name="E" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Sepsis Triage" id="tXyclCpaX" weight="10" weightQuantile="1"/>
+                <transition to="sGcmPq2De" illegal="false" name="F" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Triage" id="t3Ss4Z4zg" weight="1026" weightQuantile="3"/>
+            </transitions>
+        </state>
+        <state accept="false" illegal="false" nonConformityWeight="0" nonConformityWeightQuantile="0" weight="23" weightQuantile="1" id="sIveh0As9">
+            <accept>false</accept>
+            <transitions>
+                <transitionGroup idref="tTyIAxtvD" to="sIveh0As9" totalWeight="6" maxQuantile="1">
+                    <transition illegal="false" name="M" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release C" id="tTyIAxtvD" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="G" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="IV Antibiotics" id="tsttv7ac2" weight="5" weightQuantile="1"/>
+                    <transition illegal="false" name="A" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Admission IC" id="tAfx0wCIP" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="N" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release D" id="tBvzoiLk1" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="H" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="IV Liquid" id="t51gPbbPM" weight="1" weightQuantile="0"/>
+                    <transition illegal="false" name="B" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Admission NC" id="t5QRohvwS" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="O" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release E" id="tZCKJrHlO" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="I" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="LacticAcid" id="tdNtJ3rE1" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="C" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="CRP" id="tMrlwk0cX" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="P" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Return ER" id="tmlLNm0DK" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="J" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Leucocytes" id="trCs0gbSE" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="K" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release A" id="tgeqzqXWM" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="L" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release B" id="t2OrxSWEp" weight="0" weightQuantile="0"/>
+                </transitionGroup>
+                <transition to="sNRFlddMF" illegal="false" name="F" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Triage" id="tmmFRVonq" weight="17" weightQuantile="1"/>
+            </transitions>
+        </state>
+        <state accept="false" illegal="false" nonConformityWeight="0" nonConformityWeightQuantile="0" weight="0" weightQuantile="0" id="sEp6OA3g8">
+            <accept>false</accept>
+            <transitions>
+                <transitionGroup idref="t3v6h2ION" to="sEp6OA3g8" totalWeight="0" maxQuantile="0">
+                    <transition illegal="false" name="M" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release C" id="t3v6h2ION" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="G" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="IV Antibiotics" id="t99IxFgE1" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="A" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Admission IC" id="tofZnXosA" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="N" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release D" id="tddvzfAaI" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="H" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="IV Liquid" id="tw3lVMHOu" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="B" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Admission NC" id="t6VVJRpzJ" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="O" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release E" id="trihwVNtR" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="I" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="LacticAcid" id="tG540LETX" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="C" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="CRP" id="tGgHNAgT6" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="P" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Return ER" id="tyKzGyRtz" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="J" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Leucocytes" id="tHxrl34JA" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="K" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release A" id="tUtikqaUL" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="L" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release B" id="t5SHjTgc9" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="F" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Triage" id="tMzKv0rLN" weight="0" weightQuantile="0"/>
+                </transitionGroup>
+                <transition to="sNRFlddMF" illegal="false" name="D" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Registration" id="tgO7S9sxs" weight="0" weightQuantile="0"/>
+            </transitions>
+        </state>
+        <state accept="false" illegal="false" nonConformityWeight="0" nonConformityWeightQuantile="0" weight="1115" weightQuantile="2" initial="true" id="sta0Z4q17">
+            <accept>false</accept>
+            <transitions>
+                <transitionGroup idref="tbNlsVkwC" to="sta0Z4q17" totalWeight="66" maxQuantile="2">
+                    <transition illegal="false" name="M" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release C" id="tbNlsVkwC" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="G" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="IV Antibiotics" id="txwAiaXXu" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="A" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Admission IC" id="tAPz14ip3" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="N" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release D" id="ttLFm3IAI" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="H" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="IV Liquid" id="tvxHvY0UZ" weight="14" weightQuantile="1"/>
+                    <transition illegal="false" name="B" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Admission NC" id="tcWPDEJvA" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="O" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release E" id="tu4wFT1VJ" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="I" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="LacticAcid" id="tRNsej0Xm" weight="2" weightQuantile="0"/>
+                    <transition illegal="false" name="C" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="CRP" id="t1FiUGCtG" weight="23" weightQuantile="1"/>
+                    <transition illegal="false" name="P" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Return ER" id="tWfnfZc3n" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="J" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Leucocytes" id="tc1VEaEjT" weight="27" weightQuantile="2"/>
+                    <transition illegal="false" name="K" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release A" id="teBd7fSgT" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="L" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release B" id="tsY7ZyjxS" weight="0" weightQuantile="0"/>
+                </transitionGroup>
+                <transition to="sLib0hw6Q" illegal="false" name="D" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Registration" id="tIl2YU3H9" weight="1036" weightQuantile="3"/>
+                <transition to="sdFlu171d" illegal="false" name="E" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Sepsis Triage" id="tkdqLR3mm" weight="7" weightQuantile="1"/>
+                <transition to="spH2wflOh" illegal="false" name="F" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Triage" id="tmXHILnFq" weight="6" weightQuantile="1"/>
+            </transitions>
+        </state>
+        <state accept="true" illegal="false" nonConformityWeight="0" nonConformityWeightQuantile="0" weight="12498" weightQuantile="3" id="sNRFlddMF">
+            <accept>true</accept>
+            <transitions>
+                <transitionGroup idref="te3G8qDRM" to="sNRFlddMF" totalWeight="11450" maxQuantile="3">
+                    <transition illegal="false" name="M" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release C" id="te3G8qDRM" weight="25" weightQuantile="2"/>
+                    <transition illegal="false" name="G" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="IV Antibiotics" id="tr9cfe2x3" weight="816" weightQuantile="3"/>
+                    <transition illegal="false" name="A" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Admission IC" id="t72fUgQis" weight="115" weightQuantile="2"/>
+                    <transition illegal="false" name="N" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release D" id="tm0wZ2gdM" weight="24" weightQuantile="2"/>
+                    <transition illegal="false" name="H" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="IV Liquid" id="tfW6nAVyd" weight="699" weightQuantile="3"/>
+                    <transition illegal="false" name="B" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Admission NC" id="twO47MTyD" weight="1176" weightQuantile="3"/>
+                    <transition illegal="false" name="O" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release E" id="tiXV83Atw" weight="6" weightQuantile="1"/>
+                    <transition illegal="false" name="I" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="LacticAcid" id="tf7yg2MMg" weight="1320" weightQuantile="3"/>
+                    <transition illegal="false" name="C" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="CRP" id="tHUV32wGt" weight="3066" weightQuantile="3"/>
+                    <transition illegal="false" name="P" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Return ER" id="t4E7opaZR" weight="293" weightQuantile="3"/>
+                    <transition illegal="false" name="J" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Leucocytes" id="tHMoz7H94" weight="3181" weightQuantile="3"/>
+                    <transition illegal="false" name="K" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release A" id="t5f0s5o1s" weight="670" weightQuantile="3"/>
+                    <transition illegal="false" name="L" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release B" id="t6wXEUCm6" weight="56" weightQuantile="2"/>
+                    <transition illegal="false" name="F" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Triage" id="tLZsGIIW5" weight="3" weightQuantile="0"/>
+                </transitionGroup>
+            </transitions>
+        </state>
+        <state accept="false" illegal="false" nonConformityWeight="0" nonConformityWeightQuantile="0" weight="11" weightQuantile="1" id="sdFlu171d">
+            <accept>false</accept>
+            <transitions>
+                <transitionGroup idref="tqpnXQNMt" to="sdFlu171d" totalWeight="4" maxQuantile="0">
+                    <transition illegal="false" name="M" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release C" id="tqpnXQNMt" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="G" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="IV Antibiotics" id="tE0yUV8gT" weight="2" weightQuantile="0"/>
+                    <transition illegal="false" name="A" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Admission IC" id="t0BmYHXE6" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="N" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release D" id="tuwUsUC7r" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="H" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="IV Liquid" id="tEdq5glqe" weight="2" weightQuantile="0"/>
+                    <transition illegal="false" name="B" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Admission NC" id="tG8v3JrFr" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="O" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release E" id="tKya1ex1s" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="I" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="LacticAcid" id="tLhJyQUMg" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="C" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="CRP" id="tENFGqsrg" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="P" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Return ER" id="tjD2ieUf1" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="J" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Leucocytes" id="tXv48KYEw" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="K" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release A" id="tNrOEse5f" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="L" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release B" id="tCxwlrJzV" weight="0" weightQuantile="0"/>
+                </transitionGroup>
+                <transition to="sIveh0As9" illegal="false" name="D" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Registration" id="tFlbXpGPW" weight="7" weightQuantile="1"/>
+                <transition to="sEp6OA3g8" illegal="false" name="F" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Triage" id="tChv9DpII" weight="0" weightQuantile="0"/>
+            </transitions>
+        </state>
+        <state accept="false" illegal="false" nonConformityWeight="0" nonConformityWeightQuantile="0" weight="10" weightQuantile="0" id="spH2wflOh">
+            <accept>false</accept>
+            <transitions>
+                <transitionGroup idref="tYV1L0yH9" to="spH2wflOh" totalWeight="4" maxQuantile="0">
+                    <transition illegal="false" name="M" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release C" id="tYV1L0yH9" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="G" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="IV Antibiotics" id="t2hq3YhFY" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="A" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Admission IC" id="tND7od2s8" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="N" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release D" id="tnepr4I2u" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="H" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="IV Liquid" id="tGmKQIMMr" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="B" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Admission NC" id="tIeGyUMph" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="O" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release E" id="tBDesRMMz" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="I" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="LacticAcid" id="t0nq7tGnC" weight="1" weightQuantile="0"/>
+                    <transition illegal="false" name="C" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="CRP" id="tLxKbm4Ml" weight="1" weightQuantile="0"/>
+                    <transition illegal="false" name="P" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Return ER" id="tWrK2NfJF" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="J" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Leucocytes" id="tz6OGncu6" weight="2" weightQuantile="0"/>
+                    <transition illegal="false" name="K" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release A" id="tclMujX9p" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="L" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="Release B" id="tmt9SppvD" weight="0" weightQuantile="0"/>
+                    <transition illegal="false" name="F" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Triage" id="t9jsCHNVE" weight="0" weightQuantile="0"/>
+                </transitionGroup>
+                <transition to="sGcmPq2De" illegal="false" name="D" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Registration" id="t44yX1jRA" weight="6" weightQuantile="1"/>
+                <transition to="sEp6OA3g8" illegal="false" name="E" nonConformityWeight="0" nonConformityWeightQuantile="0" taskName="ER Sepsis Triage" id="t62cxUBzF" weight="0" weightQuantile="0"/>
+            </transitions>
+        </state>
+    </states>
+</weightedAutomaton>

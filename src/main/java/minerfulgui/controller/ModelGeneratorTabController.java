@@ -548,7 +548,7 @@ public class ModelGeneratorTabController extends AbstractController implements I
 		//int position = currentProcessElement.getActivityEList().size() + 1;		// line has to be added after Activities
 		anchorPane.getChildren().add(1,newLine);		// position 0 is BackgroundPane, but has to be behind other Nodes
 	
-		sendMouseReleaseEvent(cNode);
+		sendMouseReleaseEvent(rcNode);
 	}
 	
 	
