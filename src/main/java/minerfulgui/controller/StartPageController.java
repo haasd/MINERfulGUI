@@ -7,11 +7,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.log4j.Logger;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Worker.State;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +26,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import minerfulgui.common.GuiConstants;
@@ -112,14 +117,19 @@ public class StartPageController extends AbstractController implements Initializ
     }
 	
 	private void initDocumentation() {
+		
 		try {
-	        Scene scene = new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("pages/Documentation.fxml")), 600, 400);
+			FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("pages/Documentation.fxml"));
+			GridPane gridPane = loader.load();
+			
+	        Scene scene = new Scene(gridPane, 600, 400);
 	        scene.getStylesheets().add(getClass().getClassLoader().getResource("css/main.css").toExternalForm());
 	        infoStage.setTitle("Documentation");
 	        infoStage.setScene(scene);
 	    } catch (IOException e) {
 	    	e.printStackTrace();
 	    }
+		
 	}
 	
 	@FXML
