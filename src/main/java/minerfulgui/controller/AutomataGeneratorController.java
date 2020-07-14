@@ -19,10 +19,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import minerfulgui.common.GuiConstants;
+import minerfulgui.common.MinerfulGuiUtil;
 
 public class AutomataGeneratorController extends AbstractController implements Initializable {
 	
@@ -72,6 +74,12 @@ public class AutomataGeneratorController extends AbstractController implements I
 				controller.setStage((Stage)((Node) event.getSource()).getScene().getWindow());
 				controller.setMainController(getMainController());
 				controller.setModelInfo(modelController.getSelectedRow());
+				
+				if(modelController.getSelectedRow().getLogParser() == null) {
+					MinerfulGuiUtil.displayAlert("Error", "No event log found!", "Cannot generate automaton as no event log was provided!", AlertType.ERROR);
+					return;
+				}
+				
 				try {
 					controller.displayAutomaton();
 				} catch (TransformerException | JAXBException e) {

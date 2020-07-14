@@ -896,6 +896,8 @@ public class DiscoverTabController extends AbstractController implements Initial
 		dialog.getDialogPane().setMinWidth(500.0);
 		dialog.getDialogPane().getStylesheets().add(MinerfulGuiUtil.class.getClassLoader().getResource("css/main.css").toExternalForm());
 		dialog.getDialogPane().getStyleClass().add("alert");
+		((Button) dialog.getDialogPane().lookupButton(ButtonType.OK)).setText("Okay");
+		((Button) dialog.getDialogPane().lookupButton(ButtonType.CANCEL)).setText("Cancel");
 		
 		
 		ModelInfo modelInfo = new ModelInfo();
