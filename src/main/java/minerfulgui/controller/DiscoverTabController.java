@@ -822,6 +822,7 @@ public class DiscoverTabController extends AbstractController implements Initial
 						slider.setValue(Double.parseDouble(newValue));
 						if(Double.parseDouble(newValue) < Double.parseDouble(oldValue)) {
 							relocatingRequired = true;
+							reminingRequired = true;
 						}
 					}
 			}

@@ -15,6 +15,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Logger;
+import org.controlsfx.control.ToggleSwitch;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -57,6 +58,7 @@ import minerfulgui.common.MinerfulGuiUtil;
 import minerfulgui.common.ModelInfo;
 import minerfulgui.common.ProgressForm;
 import minerfulgui.common.ValidationEngine;
+import minerfulgui.graph.util.GraphUtil;
 import minerfulgui.service.loginfo.EventFilter;
 
 public class AutomataGeneratorTabController extends AbstractController implements Initializable {
@@ -118,6 +120,9 @@ public class AutomataGeneratorTabController extends AbstractController implement
 
 	@FXML
 	Label numberOfConstraints;
+	
+	@FXML
+	ToggleSwitch parameterStyling;
 
 	private EventClassification eventClassification = EventClassification.name;
 	private Boolean reminingRequired = false;
@@ -180,6 +185,10 @@ public class AutomataGeneratorTabController extends AbstractController implement
 
 			return cell;
 		});
+		
+		parameterStyling.selectedProperty().addListener(it -> {
+			updateModel();
+        });
 
 		// define eventTable
 		filterColumn.setCellValueFactory(new PropertyValueFactory<EventFilter, Boolean>("selected"));
@@ -209,7 +218,7 @@ public class AutomataGeneratorTabController extends AbstractController implement
 	}
 
 	private void createAutomaton(ProcessModel processModel, LogParser logParser) {
-		Task<List<String>> createAutomatonTask = MinerfulGuiUtil.createAutomaton(processModel, logParser);
+		Task<List<String>> createAutomatonTask = MinerfulGuiUtil.createAutomaton(processModel, logParser,!parameterStyling.isSelected());
 
 		// set up ProgressForm
 		ProgressForm progressForm = new ProgressForm("Create Automata!");
@@ -351,6 +360,7 @@ public class AutomataGeneratorTabController extends AbstractController implement
 				if (newValue != null && !newValue.isEmpty()) {
 					slider.setValue(Double.parseDouble(newValue));
 					if (Double.parseDouble(newValue) < Double.parseDouble(oldValue)) {
+						reminingRequired =true;
 					}
 				}
 			}

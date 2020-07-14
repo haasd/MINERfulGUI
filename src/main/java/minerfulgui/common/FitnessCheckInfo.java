@@ -1,5 +1,8 @@
 package minerfulgui.common;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FitnessCheckInfo {
 	
 	private String template; 
@@ -10,6 +13,9 @@ public class FitnessCheckInfo {
 	private Integer fullSatisfactions;
 	private Integer vacuousSatisfactions;
 	private Integer violations;
+	private List<String> fullSatisfyingTraces = new ArrayList<>(); 
+	private List<String> vacuousSatisfyingTraces = new ArrayList<>(); ; 
+	private List<String> violatingSatisfyingTraces = new ArrayList<>(); ; 
 	
 	public String getTemplate() {
 		return template;
@@ -74,7 +80,29 @@ public class FitnessCheckInfo {
 	public void setConstraintTarget(String constraintTarget) {
 		this.constraintTarget = constraintTarget;
 	}
-	
-	
+
+	public List<String> getFullSatisfyingTraces() {
+		return fullSatisfyingTraces;
+	}
+
+	public void setFullSatisfyingTraces(List<String> fullSatisfyingTraces) {
+		this.fullSatisfyingTraces = fullSatisfyingTraces;
+	}
+
+	public List<String> getVacuousSatisfyingTraces() {
+		return vacuousSatisfyingTraces;
+	}
+
+	public void setVacuousSatisfyingTraces(List<String> vacuousSatisfyingTraces) {
+		this.vacuousSatisfyingTraces = vacuousSatisfyingTraces;
+	}
+
+	public List<String> getViolatingSatisfyingTraces() {
+		return violatingSatisfyingTraces;
+	}
+
+	public void setViolatingSatisfyingTraces(List<String> violatingSatisfyingTraces) {
+		this.violatingSatisfyingTraces = violatingSatisfyingTraces;
+	}
 
 }

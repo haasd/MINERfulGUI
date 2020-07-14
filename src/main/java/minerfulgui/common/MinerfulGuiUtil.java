@@ -145,7 +145,7 @@ public class MinerfulGuiUtil {
 			return task;
 		}
 		
-		public static Task<List<String>> createAutomaton(ProcessModel processModel, LogParser logParser) {
+		public static Task<List<String>> createAutomaton(ProcessModel processModel, LogParser logParser, boolean transparencyForNotTraversed) {
 		    
 			Task<List<String>> task = new Task<List<String>>() {
 			    @Override public List<String> call() throws IOException, TransformerException, JAXBException {
@@ -161,7 +161,7 @@ public class MinerfulGuiUtil {
 						outWriter.close();
 						transitionCluster();
 						transitionFurtherCluster();
-						weightedAutomatonDotter();
+						weightedAutomatonDotter(transparencyForNotTraversed);
 
 						try {
 							File myObj = new File("help.clustered.withnot.xml.dot");
@@ -202,6 +202,10 @@ public class MinerfulGuiUtil {
 				if(con.getImplied() != null) {
 					fci.setConstraintTarget(con.getImplied().toString());
 				}
+				
+				fci.setFullSatisfyingTraces(mfe.evaloMap.evaluationsOnLog.get(con).getFullySatisfyingTraces());
+				fci.setVacuousSatisfyingTraces(mfe.evaloMap.evaluationsOnLog.get(con).getVacuousSatisfyingTraces());
+				fci.setViolatingSatisfyingTraces(mfe.evaloMap.evaluationsOnLog.get(con).getViolatingTraces());
 				fci.setFitness(con.getFitness());
 				fci.setFullSatisfactions(mfe.evaloMap.evaluationsOnLog.get(con).numberOfFullySatisfyingTraces);
 				fci.setVacuousSatisfactions(mfe.evaloMap.evaluationsOnLog.get(con).numberOfVacuouslySatisfyingTraces);
@@ -494,12 +498,12 @@ public class MinerfulGuiUtil {
 					new StreamResult(new FileOutputStream("help.clustered.withnot.xml")));
 		}
 
-		public static void weightedAutomatonDotter() throws FileNotFoundException, TransformerException {
+		public static void weightedAutomatonDotter(boolean transparencyForNotTraversed) throws FileNotFoundException, TransformerException {
 			TransformerFactory tFactory = javax.xml.transform.TransformerFactory.newInstance();
 			Transformer transformer = tFactory.newTransformer(new StreamSource(
 					(MinerfulGuiUtil.class.getClassLoader().getResource("dot-xsl/weightedAutomatonDotter.xsl")).toString()));
 			transformer.setParameter("DO_WEIGH_LINES", "true()");
-			transformer.setParameter("DO_APPLY_TRANSPARENCY_FOR_NOT_TRAVERSED", "true()");
+			transformer.setParameter("DO_APPLY_TRANSPARENCY_FOR_NOT_TRAVERSED", transparencyForNotTraversed);
 			transformer.transform(new StreamSource("help.clustered.withnot.xml"),
 					new StreamResult(new FileOutputStream("help.clustered.withnot.xml.dot")));
 		}
