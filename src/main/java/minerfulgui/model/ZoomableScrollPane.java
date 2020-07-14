@@ -44,7 +44,7 @@ public class ZoomableScrollPane extends ScrollPane {
         return vBox;
     }
 
-    private void updateScale() {
+    public void updateScale() {
         target.setScaleX(scaleValue);
         target.setScaleY(scaleValue);
     }

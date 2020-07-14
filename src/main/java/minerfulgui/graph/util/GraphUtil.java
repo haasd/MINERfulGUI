@@ -306,9 +306,37 @@ public class GraphUtil {
 		
 		determineLocation(controller,processElement);
 		
+		displayWholeProcessMap(controller, processElement);
+		
 		return processElement;
 	}
 	
+	private static void displayWholeProcessMap(ProcessElementInterface controller, ProcessElement processElement) {
+		
+		double maxX = 0.0;
+		double maxY = 0.0;
+		
+		for(ActivityElement node : processElement.getActivityEList()) {
+			if(Math.abs(node.getPosY()) > maxY) {
+				maxY = node.getPosY();
+			}
+			
+			if(Math.abs(node.getPosX()) > maxX) {
+				maxX = node.getPosX();
+			}
+			
+		}
+		
+		double height = Math.max(controller.getScrollPane().getHeight(), 400d);
+		Double maxYabs = Math.abs(maxY);
+		
+		if(maxYabs > height) {
+			controller.getScrollPane().setScaleValue(height/(maxYabs+200d));
+			controller.getScrollPane().updateScale();
+		}
+		
+	}
+
 	public static void determineLocation(ProcessElementInterface controller, ProcessElement processElement) {
 		
 		int constraintCounter = 0;
@@ -724,7 +752,9 @@ public class GraphUtil {
 			
 			for(ActivityNode aNode : aNodes) {
 				if(aNode.getActivityElement().getExistenceConstraint() != null) {
-					setShapeWithFadeOpacity(aNode.getCardinalityShape(), 255, 255, 255, aNode.getActivityElement().getExistenceConstraint().getCard().getMin(), aNode.getActivityElement().getExistenceConstraint().getCard().getMax());
+					if(aNode.getActivityElement().getExistenceConstraint().getCard() != null) {
+						setShapeWithFadeOpacity(aNode.getCardinalityShape(), 255, 255, 255, aNode.getActivityElement().getExistenceConstraint().getCard().getMin(), aNode.getActivityElement().getExistenceConstraint().getCard().getMax());
+					}
 					setShapeOpacity("-fx-fill", aNode.getInitShape(), 255, 255, 255, aNode.getActivityElement().getExistenceConstraint().getInitConstraint());
 					setShapeOpacity("-fx-fill", aNode.getEndShape(), 255, 255, 255, aNode.getActivityElement().getExistenceConstraint().getEndConstraint());
 				}
