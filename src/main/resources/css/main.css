@@ -561,6 +561,10 @@
     -fx-font-weight: bold;
 }
 
+.tooltip {
+	-fx-font-size: 12px;
+}
+
 .tab:selected .tab-label { 
     -fx-alignment: CENTER;
     -fx-text-fill: #393939;

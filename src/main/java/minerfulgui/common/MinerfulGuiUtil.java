@@ -203,9 +203,6 @@ public class MinerfulGuiUtil {
 					fci.setConstraintTarget(con.getImplied().toString());
 				}
 				
-				fci.setFullSatisfyingTraces(mfe.evaloMap.evaluationsOnLog.get(con).getFullySatisfyingTraces());
-				fci.setVacuousSatisfyingTraces(mfe.evaloMap.evaluationsOnLog.get(con).getVacuousSatisfyingTraces());
-				fci.setViolatingSatisfyingTraces(mfe.evaloMap.evaluationsOnLog.get(con).getViolatingTraces());
 				fci.setFitness(con.getFitness());
 				fci.setFullSatisfactions(mfe.evaloMap.evaluationsOnLog.get(con).numberOfFullySatisfyingTraces);
 				fci.setVacuousSatisfactions(mfe.evaloMap.evaluationsOnLog.get(con).numberOfVacuouslySatisfyingTraces);

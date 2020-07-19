@@ -360,7 +360,7 @@ public class AutomataGeneratorTabController extends AbstractController implement
 				if (newValue != null && !newValue.isEmpty()) {
 					slider.setValue(Double.parseDouble(newValue));
 					if (Double.parseDouble(newValue) < Double.parseDouble(oldValue)) {
-						reminingRequired =true;
+						reminingRequired = true;
 					}
 				}
 			}
@@ -515,7 +515,7 @@ public class AutomataGeneratorTabController extends AbstractController implement
 			}
 		}
 
-		createAutomaton(modelInfo.getProcessModel(), currentLogParser);
+		createAutomaton(processModel, currentLogParser);
 
 		classificationChanged = false;
 		reminingRequired = false;

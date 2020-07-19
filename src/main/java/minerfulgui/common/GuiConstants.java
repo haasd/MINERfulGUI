@@ -23,8 +23,8 @@ public final class GuiConstants {
 	public static final Integer NUMBER_CONSTRAINTS_WARNING=40;
 	
 	//Tooltips
-	public static final String TOOLTIP_TRACE_FILTER = "Trace filter tooltip";
-	public static final String TOOLTIP_EVENT_FILTER = "Event filter tooltip";
+	public static final String TOOLTIP_TRACE_FILTER = "Can be used to define ";
+	public static final String TOOLTIP_EVENT_FILTER = "Can be used to filter out not relevant events";
 	public static final String TOOLTIP_PRUNING_TYPE = "Pruning type tooltip";
 	public static final String TOOLTIP_CROP_CONSTANTS = "Pruning Type tooltip";
 	public static final String TOOLTIP_SUPPORT_THRESHOLD = "Support threshold tooltip";
