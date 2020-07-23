@@ -117,6 +117,8 @@ public class ModelGeneratorController extends AbstractController implements Init
 
 		Task<ModelInfo> modelInfoTask = MinerfulGuiUtil.importModel(openFile);
 		
+		new Thread(modelInfoTask).start();
+		
 		modelInfoTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent event) {
